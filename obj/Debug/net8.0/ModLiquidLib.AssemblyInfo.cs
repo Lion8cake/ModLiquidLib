@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: System.Runtime.CompilerServices.IgnoresAccessChecksToAttribute("tModLoader")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("ModLiquidLib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1130fd104f68713b12c57d4eedc443cd431ab12e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ModLiquidLib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ModLiquidLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

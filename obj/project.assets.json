@@ -2,12 +2,66 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "BepInEx.AssemblyPublicizer.MSBuild/0.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/AsmResolver.DotNet.dll": {},
+          "lib/netstandard2.1/AsmResolver.PE.File.dll": {},
+          "lib/netstandard2.1/AsmResolver.PE.dll": {},
+          "lib/netstandard2.1/AsmResolver.dll": {},
+          "lib/netstandard2.1/BepInEx.AssemblyPublicizer.MSBuild.dll": {},
+          "lib/netstandard2.1/BepInEx.AssemblyPublicizer.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/AsmResolver.DotNet.dll": {},
+          "lib/netstandard2.1/AsmResolver.PE.File.dll": {},
+          "lib/netstandard2.1/AsmResolver.PE.dll": {},
+          "lib/netstandard2.1/AsmResolver.dll": {},
+          "lib/netstandard2.1/BepInEx.AssemblyPublicizer.MSBuild.dll": {},
+          "lib/netstandard2.1/BepInEx.AssemblyPublicizer.dll": {}
+        },
+        "contentFiles": {
+          "contentFiles/cs/any/IgnoresAccessChecksToAttribute.cs": {
+            "buildAction": "Compile",
+            "codeLanguage": "cs",
+            "copyToOutput": false
+          }
+        },
+        "build": {
+          "build/BepInEx.AssemblyPublicizer.MSBuild.props": {}
+        }
+      },
       "tModLoader.CodeAssist/0.1.5": {
         "type": "package"
       }
     }
   },
   "libraries": {
+    "BepInEx.AssemblyPublicizer.MSBuild/0.4.1": {
+      "sha512": "bbTaXa0CKDuap0vDR+NkSz9crQIYhMvIbId9njUajYZAcr8OTuVcyiSlexzeGxfkYAbbn0z9YpgbIoeyHADXqA==",
+      "type": "package",
+      "path": "bepinex.assemblypublicizer.msbuild/0.4.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "bepinex.assemblypublicizer.msbuild.0.4.1.nupkg.sha512",
+        "bepinex.assemblypublicizer.msbuild.nuspec",
+        "build/BepInEx.AssemblyPublicizer.MSBuild.props",
+        "contentFiles/cs/any/IgnoresAccessChecksToAttribute.cs",
+        "lib/net472/AsmResolver.DotNet.dll",
+        "lib/net472/AsmResolver.PE.File.dll",
+        "lib/net472/AsmResolver.PE.dll",
+        "lib/net472/AsmResolver.dll",
+        "lib/net472/BepInEx.AssemblyPublicizer.MSBuild.dll",
+        "lib/net472/BepInEx.AssemblyPublicizer.dll",
+        "lib/netstandard2.1/AsmResolver.DotNet.dll",
+        "lib/netstandard2.1/AsmResolver.PE.File.dll",
+        "lib/netstandard2.1/AsmResolver.PE.dll",
+        "lib/netstandard2.1/AsmResolver.dll",
+        "lib/netstandard2.1/BepInEx.AssemblyPublicizer.MSBuild.dll",
+        "lib/netstandard2.1/BepInEx.AssemblyPublicizer.dll"
+      ]
+    },
     "tModLoader.CodeAssist/0.1.5": {
       "sha512": "Sg/jKEg/z5eN+Cdi3/9CU4JfJwvXHVH+UDJf4Lipo26uTa+guLLJXH1XDJNPShTFwKK8jMUYbthINP4QhsgHSA==",
       "type": "package",
@@ -27,6 +81,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "BepInEx.AssemblyPublicizer.MSBuild >= 0.4.1",
       "tModLoader.CodeAssist >= 0.1.*"
     ]
   },
@@ -74,6 +129,11 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "BepInEx.AssemblyPublicizer.MSBuild": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[0.4.1, )"
+          },
           "tModLoader.CodeAssist": {
             "target": "Package",
             "version": "[0.1.*, )"

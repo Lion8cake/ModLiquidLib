@@ -12,6 +12,19 @@
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <SourceRoot Include="C:\Users\Lion8\.nuget\packages\" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(Language)' == 'C#' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Compile Include="$(NuGetPackageRoot)bepinex.assemblypublicizer.msbuild\0.4.1\contentFiles\cs\any\IgnoresAccessChecksToAttribute.cs" Condition="Exists('$(NuGetPackageRoot)bepinex.assemblypublicizer.msbuild\0.4.1\contentFiles\cs\any\IgnoresAccessChecksToAttribute.cs')">
+      <NuGetPackageId>BepInEx.AssemblyPublicizer.MSBuild</NuGetPackageId>
+      <NuGetPackageVersion>0.4.1</NuGetPackageVersion>
+      <NuGetItemType>Compile</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>IgnoresAccessChecksToAttribute.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)bepinex.assemblypublicizer.msbuild\0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props" Condition="Exists('$(NuGetPackageRoot)bepinex.assemblypublicizer.msbuild\0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props')" />
+  </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgtModLoader_CodeAssist Condition=" '$(PkgtModLoader_CodeAssist)' == '' ">C:\Users\Lion8\.nuget\packages\tmodloader.codeassist\0.1.5</PkgtModLoader_CodeAssist>
   </PropertyGroup>

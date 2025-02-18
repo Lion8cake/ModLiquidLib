@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "opgAyNAziKY=",
+  "dgSpecHash": "3NdXjt8wkIU=",
   "success": true,
   "projectFilePath": "C:\\Users\\Lion8\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\ModLiquidLib\\ModLiquidLib.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Lion8\\.nuget\\packages\\bepinex.assemblypublicizer.msbuild\\0.4.1\\bepinex.assemblypublicizer.msbuild.0.4.1.nupkg.sha512",
     "C:\\Users\\Lion8\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
   ],
   "logs": []

@@ -45,6 +45,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BepInEx.AssemblyPublicizer.MSBuild": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.1, )"
+            },
             "tModLoader.CodeAssist": {
               "target": "Package",
               "version": "[0.1.*, )"
