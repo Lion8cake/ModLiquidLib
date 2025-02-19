@@ -7,6 +7,7 @@ using System;
 using Terraria.GameContent.Liquid;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.Graphics;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -15,6 +16,10 @@ namespace ModLiquidLib.ModLoader
 		public string LocalizationCategory => "Liquids";
 
 		public ushort Type { get; internal set; }
+
+		public virtual string BlockTexture => Texture + "_Block";
+
+		public virtual string SlopeTexture => Texture + "_Slope";
 
 		public int LiquidFallLength { get; internal set; }
 
@@ -73,6 +78,8 @@ namespace ModLiquidLib.ModLoader
 		public sealed override void SetupContent()
 		{
 			LiquidLoader.LiquidAssets[Type] = ModContent.Request<Texture2D>(Texture, (AssetRequestMode)2);
+			LiquidLoader.LiquidBlockAssets[Type] = ModContent.Request<Texture2D>(BlockTexture, (AssetRequestMode)2);
+			LiquidLoader.LiquidSlopeAssets[Type] = ModContent.Request<Texture2D>(SlopeTexture, (AssetRequestMode)2);
 			SetStaticDefaults();
 			LiquidRenderer.WATERFALL_LENGTH[Type] = LiquidFallLength;
 			LiquidRenderer.DEFAULT_OPACITY[Type] = DefaultOpacity;
@@ -130,6 +137,46 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
 		public virtual void PostDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		{
+		}
+
+		/// <summary>
+		/// Allows you to draw things behind the tile/wall at the given coordinates. Return false to stop the game from drawing the tile normally. Returns true by default.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		public virtual bool PreOldDraw(int i, int j, Vector2 drawOffset, bool isBackgroundDraw)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Allows you to draw things in front of the tile/wall at the given coordinates. This can also be used to do things such as creating dust.<para />
+		/// Note that this method will be called for tiles even when the tile is <see cref="P:Terraria.Tile.IsTileInvisible" /> due to Echo Coating. Use the <see cref="M:Terraria.GameContent.Drawing.TileDrawing.IsVisible(Terraria.Tile)" /> method to skip effects that shouldn't show when the tile is invisible. This method won't be called for invisible walls.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		public virtual void PostOldDraw(int i, int j, Vector2 drawOffset, bool isBackgroundDraw)
+		{
+		}
+
+		/// <summary>
+		/// Allows you to draw things behind the tile/wall at the given coordinates. Return false to stop the game from drawing the tile normally. Returns true by default.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		public virtual bool PreSlopeDraw(int i, int j, bool behindBlocks, ref Vector2 drawPosition, ref Rectangle liquidSize, ref VertexColors colors)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Allows you to draw things in front of the tile/wall at the given coordinates. This can also be used to do things such as creating dust.<para />
+		/// Note that this method will be called for tiles even when the tile is <see cref="P:Terraria.Tile.IsTileInvisible" /> due to Echo Coating. Use the <see cref="M:Terraria.GameContent.Drawing.TileDrawing.IsVisible(Terraria.Tile)" /> method to skip effects that shouldn't show when the tile is invisible. This method won't be called for invisible walls.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		public virtual void PostSlopeDraw(int i, int j, bool behindBlocks, ref Vector2 drawPosition, ref Rectangle liquidSize, ref VertexColors colors)
 		{
 		}
 

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.GameContent.UI.States;
 using Terraria.Graphics.Light;
@@ -35,6 +36,9 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath += MapLiquidIOHooks.AddLiquidMapFile;
 			IL_WorldMap.Load += MapLiquidIOHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapLiquidIOHooks.SaveTLMap;
+			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
+			//IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
+			On_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.On_TileDrawing_DrawTile_LiquidBehindTile;
 
 			MapHelper.Initialize();
 		}

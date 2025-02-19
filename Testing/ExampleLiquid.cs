@@ -5,6 +5,7 @@ using ModLiquidLib.Utils;
 using System;
 using Terraria;
 using Terraria.GameContent.Liquid;
+using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.Graphics.Capture.IL_CaptureBiome.Sets;
@@ -28,6 +29,16 @@ namespace ModLiquidLib.Testing
 		public override ushort GetMapOption(int i, int j)
 		{
 			return (ushort)((i + j) % 3);
+		}
+
+		public override bool PreDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		{
+			return true;
+		}
+
+		public override bool PreSlopeDraw(int i, int j, bool behindBlocks, ref Vector2 drawPosition, ref Rectangle liquidSize, ref VertexColors colors)
+		{
+			return true;
 		}
 
 		/*public override bool PreDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
