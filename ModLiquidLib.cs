@@ -11,7 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.Liquid;
+using Terraria.GameContent.UI.States;
 using Terraria.Graphics.Light;
+using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
 
@@ -23,17 +25,23 @@ namespace ModLiquidLib
 		{
 			TModLoaderUtils.Load();
 			LiquidLoader.ResizeArrays();
-			MapLiquidLoader.FinishSetup();
 
 			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray;
 			IL_LiquidRenderer.DrawNormalLiquids += LiquidRendererHooks.EditLiquidRendering;
 			On_TileLightScanner.ApplyLiquidLight += TileLightScannerHooks.ApplyModliquidLight;
 			IL_MapHelper.CreateMapTile += MapHelperHooks.AddLiquidMapEntrys;
 			IL_MapLoader.FinishSetup += MapLoaderHooks.AddLiquidToFinishSetup;
-			IL_MapLoader.ModMapOption += MapLoaderHooks.AddLiquidColorstoMap;
 			IL_MapHelper.Initialize += MapHelperHooks.IncrimentLiquidMapEntries;
+			IL_PlayerFileData.MapBelongsToPath += MapLiquidIOHooks.AddLiquidMapFile;
+			IL_WorldMap.Load += MapLiquidIOHooks.InitaliseTLMap;
+			IL_MapHelper.InternalSaveMap += MapLiquidIOHooks.SaveTLMap;
 
 			MapHelper.Initialize();
+		}
+
+		public override void PostSetupContent()
+		{
+			MapLiquidLoader.FinishSetup();
 		}
 
 		public override void Unload()
@@ -45,7 +53,13 @@ namespace ModLiquidLib
 
 			On_SceneMetrics.Reset -= SceneMetricsHooks.ResizeLiquidArray;
 			IL_LiquidRenderer.DrawNormalLiquids -= LiquidRendererHooks.EditLiquidRendering;
+			On_TileLightScanner.ApplyLiquidLight -= TileLightScannerHooks.ApplyModliquidLight;
+			IL_MapHelper.CreateMapTile -= MapHelperHooks.AddLiquidMapEntrys;
+			IL_MapLoader.FinishSetup -= MapLoaderHooks.AddLiquidToFinishSetup;
 			IL_MapHelper.Initialize -= MapHelperHooks.IncrimentLiquidMapEntries;
+			IL_PlayerFileData.MapBelongsToPath -= MapLiquidIOHooks.AddLiquidMapFile;
+			IL_WorldMap.Load -= MapLiquidIOHooks.InitaliseTLMap;
+			IL_MapHelper.InternalSaveMap -= MapLiquidIOHooks.SaveTLMap;
 
 			MapHelper.Initialize();
 		}

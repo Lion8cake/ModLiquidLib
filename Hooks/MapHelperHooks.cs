@@ -24,14 +24,14 @@ namespace ModLiquidLib.Hooks
 			{
 				num5 = MapLiquidLoader.liquidLookup[num7];
 			});
-			/*c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.ModLoader.MapLoader", "ModMapOption"));
+			c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.ModLoader.MapLoader", "ModMapOption"));
 			c.EmitLdloca(5);
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
 			c.EmitDelegate((ref ushort mapType, int i, int j) =>
 			{
 				MapLiquidLoader.ModMapOption(ref mapType, i, j);
-			});*/
+			});
 		}
 
 		internal static void IncrimentLiquidMapEntries(ILContext il)

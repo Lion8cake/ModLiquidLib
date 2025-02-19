@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Map;
-using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
+using System.Reflection;
+using ModLiquidLib.Utils;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -18,11 +20,19 @@ namespace ModLiquidLib.ModLoader
 
 		internal static readonly IDictionary<ushort, IList<MapEntry>> liquidEntries = new Dictionary<ushort, IList<MapEntry>>();
 
-		//internal static readonly IDictionary<ushort, Func<string, int, int, string>> nameFuncs = new Dictionary<ushort, Func<string, int, int, string>>();
-
 		internal static readonly IDictionary<ushort, ushort> entryToLiquid = new Dictionary<ushort, ushort>();
 
 		public static ushort[] liquidLookup;
+
+		internal static int modTileOptions(ushort type)
+		{
+			return TModLoaderUtils.tileEntries[type].Count;
+		}
+
+		internal static int modWallOptions(ushort type)
+		{
+			return TModLoaderUtils.wallEntries[type].Count;
+		}
 
 		internal static int modLiquidOptions(ushort type)
 		{
@@ -43,7 +53,6 @@ namespace ModLiquidLib.ModLoader
 			liquidEntries.Clear();
 			if (!Main.dedServ)
 			{
-				//nameFuncs.Clear();
 				entryToLiquid.Clear();
 				Array.Resize(ref liquidLookup, LiquidID.Count);
 				initialized = false;

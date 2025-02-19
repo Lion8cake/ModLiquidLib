@@ -18,12 +18,6 @@ namespace ModLiquidLib.Utils
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static ILHook ILHook_FinishSetup = null;
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal static ILHook ILHook_UnloadModMap = null;
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal static ILHook ILHook_ModMapOption = null;
-
 		public static event ILContext.Manipulator FinishSetup
 		{
 			add
@@ -36,36 +30,6 @@ namespace ModLiquidLib.Utils
 			{
 				if (ILHook_FinishSetup != null)
 					ILHook_FinishSetup.Dispose();
-			}
-		}
-
-		public static event ILContext.Manipulator UnloadModMap
-		{
-			add
-			{
-				ILHook_UnloadModMap = new ILHook(typeof(MapLoader).GetMethod("UnloadModMap", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance), value);
-				if (ILHook_UnloadModMap != null)
-					ILHook_UnloadModMap.Apply();
-			}
-			remove
-			{
-				if (ILHook_UnloadModMap != null)
-					ILHook_UnloadModMap.Dispose();
-			}
-		}
-
-		public static event ILContext.Manipulator ModMapOption
-		{
-			add
-			{
-				ILHook_ModMapOption = new ILHook(typeof(MapLoader).GetMethod("ModMapOption", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance), value);
-				if (ILHook_ModMapOption != null)
-					ILHook_ModMapOption.Apply();
-			}
-			remove
-			{
-				if (ILHook_ModMapOption != null)
-					ILHook_ModMapOption.Dispose();
 			}
 		}
 	}

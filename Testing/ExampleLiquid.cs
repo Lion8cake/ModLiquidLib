@@ -20,8 +20,14 @@ namespace ModLiquidLib.Testing
 			LiquidFallLength = 3;
 			DefaultOpacity = 0.95f;
 			VisualViscosity = 200;
-			AddMapEntry(new Color(5, 5, 7));
-			//AddMapEntry(new Color(255, 0, 255));
+			AddMapEntry(new Color(255, 0, 255), CreateMapEntryName());
+			AddMapEntry(new Color(0, 255, 255), CreateMapEntryName());
+			AddMapEntry(new Color(255, 255, 0), CreateMapEntryName());
+		}
+
+		public override ushort GetMapOption(int i, int j)
+		{
+			return (ushort)((i + j) % 3);
 		}
 
 		/*public override bool PreDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)

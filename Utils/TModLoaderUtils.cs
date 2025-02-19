@@ -19,14 +19,19 @@ namespace ModLiquidLib.Utils
 		public static void Load()
 		{
 			_addliquidCounts = typeof(SceneMetrics).GetField("_liquidCounts", BindingFlags.NonPublic | BindingFlags.Instance);
+			tileEntries = (IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>>)typeof(MapLoader).GetField("tileEntries", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+			wallEntries = (IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>>)typeof(MapLoader).GetField("wallEntries", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 		}
 
 		public static void Unload()
 		{
 			_addliquidCounts = null;
+			wallEntries = null;
 		}
 
 		public static FieldInfo _addliquidCounts;
+		public static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> tileEntries;
+		public static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> wallEntries;
 
 		public static int[] Get_liquidCounts(this SceneMetrics self)
 		{
