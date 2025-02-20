@@ -22,14 +22,14 @@ namespace ModLiquidLib.ModLoader
 
 		public virtual string SlopeTexture => Texture + "_Slope";
 
-		public int LiquidFallLength { get; internal set; }
+		public int LiquidFallLength { get; set; }
 
-		public float DefaultOpacity { get; internal set; }
+		public float DefaultOpacity { get; set; }
 
-		public byte VisualViscosity { get; internal set; }
-		
-		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
-		public ushort VanillaFallbackOnModDeletion { get; set; }
+        public byte VisualViscosity { get; set; }
+
+        /// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
+        public ushort VanillaFallbackOnModDeletion { get; set; }
 
 		/// <summary>
 		/// Adds an entry to the minimap for this tile with the given color and display name. This should be called in SetDefaults.
