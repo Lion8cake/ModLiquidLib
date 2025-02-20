@@ -36,9 +36,10 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath += MapLiquidIOHooks.AddLiquidMapFile;
 			IL_WorldMap.Load += MapLiquidIOHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapLiquidIOHooks.SaveTLMap;
-			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
-			//IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
-			On_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.On_TileDrawing_DrawTile_LiquidBehindTile;
+			//IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
+			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
+			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
+			On_Main.oldDrawWater += MainHooks.On_Main_oldDrawWater;
 
 			MapHelper.Initialize();
 		}

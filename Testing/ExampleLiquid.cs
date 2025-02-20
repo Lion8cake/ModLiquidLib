@@ -41,6 +41,25 @@ namespace ModLiquidLib.Testing
 			return true;
 		}
 
+		public override bool PreRetroDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			return true;
+		}
+
+		public override void RetroDrawEffects(int i, int j, SpriteBatch spriteBatch, ref RetroLiquidDrawInfo drawData, float liquidAmountModified, int liquidGFXQuality)
+		{
+			float num9 = drawData.liquidAlphaMultiplier;
+			num9 *= 1.8f;
+			if (num9 > 1f)
+			{
+				num9 = 1f;
+			}
+			drawData.liquidAlphaMultiplier = num9;
+			drawData.liquidColor = Lighting.GetColor(i, j, Main.DiscoColor);
+			//drawData.liquidFraming = new(0, 2, drawData.liquidFraming.Width, drawData.liquidFraming.Height);
+			//drawData.liquidScreenPos += new Vector2(16, 16);
+		}
+
 		/*public override bool PreDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
 		{
 			Rectangle sourceRectangle = liquidDrawCache.SourceRectangle;

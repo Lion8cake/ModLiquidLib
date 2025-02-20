@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 
@@ -56,7 +57,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="type"></param>
 		/// <param name="spriteBatch"></param>
 		/// <returns></returns>
-		public virtual bool PreOldDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public virtual bool PreRetroDraw(int i, int j, int type, SpriteBatch spriteBatch)
 		{
 			return true;
 		}
@@ -68,7 +69,20 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="j"></param>
 		/// <param name="type"></param>
 		/// <param name="spriteBatch"></param>
-		public virtual void PostOldDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public virtual void PostRetroDraw(int i, int j, int type, SpriteBatch spriteBatch)
+		{
+		}
+
+		/// <summary>
+		/// Allows you to make stuff happen whenever the tile at the given coordinates is drawn. For example, creating dust or changing the color the tile is drawn in.
+		/// SpecialDraw will only be called if coordinates are added using Main.instance.TilesRenderer.AddSpecialLegacyPoint here.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="type">The Tile type of the tile being drawn</param>
+		/// <param name="spriteBatch">The SpriteBatch that should be used for all draw calls</param>
+		/// <param name="drawData">Various information about the tile that is being drawn, such as color, framing, glow textures, etc.</param>
+		public virtual void RetroDrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref RetroLiquidDrawInfo drawData, float liquidAmountModified, int liquidGFXQuality)
 		{
 		}
 

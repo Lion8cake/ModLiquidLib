@@ -28,6 +28,8 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegatePostSlopeDraw(int i, int j, int type, bool behindBlocks, ref Vector2 drawPosition, ref Rectangle liquidSize, ref VertexColors colors);
 
+		private delegate void DelegateRetroDrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref RetroLiquidDrawInfo drawData, float liquidAmountModified, int liquidGFXQuality);
+
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -41,6 +43,12 @@ namespace ModLiquidLib.ModLoader
 		private static Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>[] HookPreDraw;
 
 		private static Action<int, int, int, LiquidDrawCache, Vector2, bool>[] HookPostDraw;
+
+		private static Func<int, int, int, SpriteBatch, bool>[] HookPreRetroDraw;
+
+		private static DelegateRetroDrawEffects[] HookRetroDrawEffects;
+
+		private static Action<int, int, int, SpriteBatch>[] HookPostRetroDraw;
 
 		private static DelegatePreSlopeDraw[] HookPreSlopeDraw;
 
@@ -86,6 +94,9 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateModifyLight>(ref HookModifyLight, globalLiquids, (GlobalLiquid g) => g.ModifyLight);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>>(ref HookPreDraw, globalLiquids, (GlobalLiquid g) => g.PreDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, LiquidDrawCache, Vector2, bool>>(ref HookPostDraw, globalLiquids, (GlobalLiquid g) => g.PostDraw);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, SpriteBatch, bool>>(ref HookPreRetroDraw, globalLiquids, (GlobalLiquid g) => g.PreRetroDraw);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateRetroDrawEffects>(ref HookRetroDrawEffects, globalLiquids, (GlobalLiquid g) => g.RetroDrawEffects);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, SpriteBatch>>(ref HookPostRetroDraw, globalLiquids, (GlobalLiquid g) => g.PostRetroDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePreSlopeDraw>(ref HookPreSlopeDraw, globalLiquids, (GlobalLiquid g) => g.PreSlopeDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePostSlopeDraw>(ref HookPostSlopeDraw, globalLiquids, (GlobalLiquid g) => g.PostSlopeDraw);
 			if (!unloading)
@@ -139,26 +150,36 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public static bool PreOldDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public static bool PreRetroDraw(int i, int j, int type, SpriteBatch spriteBatch)
 		{
-			Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>[] hookPreDraw = HookPreDraw;
-			for (int k = 0; k < hookPreDraw.Length; k++)
+			Func<int, int, int, SpriteBatch, bool>[] hookPreRetroDraw = HookPreRetroDraw;
+			for (int k = 0; k < hookPreRetroDraw.Length; k++)
 			{
-				if (!hookPreDraw[k](i, j, type, liquidDrawCache, drawOffset, isBackgroundDraw))
+				if (!hookPreRetroDraw[k](i, j, type, spriteBatch))
 				{
 					return false;
 				}
 			}
-			return GetLiquid(type)?.PreDraw(i, j, liquidDrawCache, drawOffset, isBackgroundDraw) ?? true;
+			return GetLiquid(type)?.PreRetroDraw(i, j, spriteBatch) ?? true;
 		}
 
-		public static void PostOldDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public static void RetroDrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref RetroLiquidDrawInfo drawData, float liquidAmountModified, int liquidGFXQuality)
 		{
-			GetLiquid(type)?.PostDraw(i, j, liquidDrawCache, drawOffset, isBackgroundDraw);
-			Action<int, int, int, LiquidDrawCache, Vector2, bool>[] hookPostDraw = HookPostDraw;
-			for (int k = 0; k < hookPostDraw.Length; k++)
+			GetLiquid(type)?.RetroDrawEffects(i, j, spriteBatch, ref drawData, liquidAmountModified, liquidGFXQuality);
+			DelegateRetroDrawEffects[] hookRetroDrawEffects = HookRetroDrawEffects;
+			for (int k = 0; k < hookRetroDrawEffects.Length; k++)
 			{
-				hookPostDraw[k](i, j, type, liquidDrawCache, drawOffset, isBackgroundDraw);
+				hookRetroDrawEffects[k](i, j, type, spriteBatch, ref drawData, liquidAmountModified, liquidGFXQuality);
+			}
+		}
+
+		public static void PostRetroDraw(int i, int j, int type, SpriteBatch spriteBatch)
+		{
+			GetLiquid(type)?.PostRetroDraw(i, j, spriteBatch);
+			Action<int, int, int, SpriteBatch>[] hookPostRetroDraw = HookPostRetroDraw;
+			for (int k = 0; k < hookPostRetroDraw.Length; k++)
+			{
+				hookPostRetroDraw[k](i, j, type, spriteBatch);
 			}
 		}
 
