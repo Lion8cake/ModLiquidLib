@@ -105,7 +105,21 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		internal static void Unload()
+        internal static void FillArrays()
+        {
+            foreach (ModLiquid modLiquid in ModContent.GetContent<ModLiquid>())
+            {
+                int type = modLiquid.Type;
+                LiquidAssets[type] = ModContent.Request<Texture2D>(modLiquid.Texture, (AssetRequestMode)2);
+                LiquidBlockAssets[type] = ModContent.Request<Texture2D>(modLiquid.BlockTexture, (AssetRequestMode)2);
+                LiquidSlopeAssets[type] = ModContent.Request<Texture2D>(modLiquid.SlopeTexture, (AssetRequestMode)2);
+                LiquidRenderer.WATERFALL_LENGTH[type] = modLiquid.LiquidFallLength;
+                LiquidRenderer.DEFAULT_OPACITY[type] = modLiquid.DefaultOpacity;
+                LiquidRenderer.VISCOSITY_MASK[type] = modLiquid.VisualViscosity;
+            }
+        }
+
+        internal static void Unload()
 		{
 			loaded = false;
 			liquids.Clear();

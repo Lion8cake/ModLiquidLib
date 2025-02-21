@@ -45,11 +45,13 @@ namespace ModLiquidLib
 		}
 
 		public override void PostSetupContent()
-		{
-			MapLiquidLoader.FinishSetup();
-		}
+        {
+            LiquidLoader.ResizeArrays();
+            LiquidLoader.FillArrays();
+            MapLiquidLoader.FinishSetup();
+        }
 
-		public override void Unload()
+        public override void Unload()
 		{
 			TModLoaderUtils.Unload();
 			LiquidLoader.Unload();

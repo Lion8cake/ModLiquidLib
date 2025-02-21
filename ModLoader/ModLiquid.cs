@@ -78,13 +78,7 @@ namespace ModLiquidLib.ModLoader
 
 		public sealed override void SetupContent()
 		{
-			LiquidLoader.LiquidAssets[Type] = ModContent.Request<Texture2D>(Texture, (AssetRequestMode)2);
-			LiquidLoader.LiquidBlockAssets[Type] = ModContent.Request<Texture2D>(BlockTexture, (AssetRequestMode)2);
-			LiquidLoader.LiquidSlopeAssets[Type] = ModContent.Request<Texture2D>(SlopeTexture, (AssetRequestMode)2);
 			SetStaticDefaults();
-			LiquidRenderer.WATERFALL_LENGTH[Type] = LiquidFallLength;
-			LiquidRenderer.DEFAULT_OPACITY[Type] = DefaultOpacity;
-			LiquidRenderer.VISCOSITY_MASK[Type] = VisualViscosity;
 		}
 
 		/// <summary>
