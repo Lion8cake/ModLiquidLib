@@ -2,13 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
-using System;
 using Terraria;
-using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.Graphics.Capture.IL_CaptureBiome.Sets;
 
 namespace ModLiquidLib.Testing
 {
@@ -56,8 +53,47 @@ namespace ModLiquidLib.Testing
 			}
 			drawData.liquidAlphaMultiplier = num9;
 			drawData.liquidColor = Lighting.GetColor(i, j, Main.DiscoColor);
+			drawData.waterfallLength = 12;
+			drawData.waterfallStrength = 0.25f;
 			//drawData.liquidFraming = new(0, 2, drawData.liquidFraming.Width, drawData.liquidFraming.Height);
-			//drawData.liquidScreenPos += new Vector2(16, 16);
+			//drawData.liquidPositionOffset += new Vector2(16, 16);
+		}
+
+		public override void EmitEffects(int i, int j, LiquidCache liquidCache)
+		{
+			return;
+			if (liquidCache.HasVisibleLiquid)
+			{
+				if (Main.rand.Next(700) == 0)
+				{
+					Dust.NewDust(new Vector2((float)(i * 16), (float)(j * 16)), 16, 16, DustID.Lava, 0f, 0f, 0, Color.White);
+				}
+				if (Main.rand.Next(350) == 0)
+				{
+					int num20 = Dust.NewDust(new Vector2((float)(i * 16), (float)(j * 16)), 16, 8, DustID.Lava, 0f, 0f, 50, Color.White, 1.5f);
+					Dust obj = Main.dust[num20];
+					obj.velocity *= 0.8f;
+					Main.dust[num20].velocity.X *= 2f;
+					Main.dust[num20].velocity.Y -= (float)Main.rand.Next(1, 7) * 0.1f;
+					if (Main.rand.Next(10) == 0)
+					{
+						Main.dust[num20].velocity.Y *= Main.rand.Next(2, 5);
+					}
+					Main.dust[num20].noGravity = true;
+				}
+			}
+		}
+
+		public override void PostRetroDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			return;
+			Vector2 vector2 = new Vector2((float)(i * 16), (float)(j * 16 + 16));
+			Vector2 vector = new((float)Main.offScreenRange, (float)Main.offScreenRange);
+			if (Main.drawToScreen)
+			{
+				vector = Vector2.Zero;
+			}
+			spriteBatch.Draw(LiquidLoader.LiquidBlockAssets[Type].Value, vector2 - Main.screenPosition + vector, (Rectangle?)new Rectangle(0, 4, 16, 8), Color.Black, 0f, default(Vector2), 1f, (SpriteEffects)0, 0f);
 		}
 
 		/*public override bool PreDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
@@ -156,5 +192,10 @@ namespace ModLiquidLib.Testing
 			g = 2.55f;
 			b = 2.55f;
 		}*/
+
+		public override int ChooseWaterfallStyle(int i, int j)
+		{
+			return ModContent.GetInstance<ExampleWaterfallStyle>().Slot;
+		}
 	}
 }

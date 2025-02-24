@@ -36,10 +36,12 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath += MapLiquidIOHooks.AddLiquidMapFile;
 			IL_WorldMap.Load += MapLiquidIOHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapLiquidIOHooks.SaveTLMap;
-			//IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
+			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
 			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
-			On_Main.oldDrawWater += MainHooks.On_Main_oldDrawWater;
+			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
+			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
+			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
 
 			MapHelper.Initialize();
 		}
@@ -65,6 +67,10 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath -= MapLiquidIOHooks.AddLiquidMapFile;
 			IL_WorldMap.Load -= MapLiquidIOHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap -= MapLiquidIOHooks.SaveTLMap;
+			IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering;
+			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering;
+			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
+			IL_LiquidRenderer.InternalPrepareDraw -= LiquidRendererHooks.SpawnDustBubbles;
 
 			MapHelper.Initialize();
 		}

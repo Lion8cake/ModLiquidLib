@@ -17,6 +17,7 @@ using ReLogic.Content;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Terraria.Graphics;
+using static log4net.Appender.ColoredConsoleAppender;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -44,6 +45,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Action<int, int, int, LiquidDrawCache, Vector2, bool>[] HookPostDraw;
 
+		private static Func<int, int, int, LiquidCache, bool>[] HookEmitEffects;
+
 		private static Func<int, int, int, SpriteBatch, bool>[] HookPreRetroDraw;
 
 		private static DelegateRetroDrawEffects[] HookRetroDrawEffects;
@@ -53,6 +56,10 @@ namespace ModLiquidLib.ModLoader
 		private static DelegatePreSlopeDraw[] HookPreSlopeDraw;
 
 		private static DelegatePostSlopeDraw[] HookPostSlopeDraw;
+
+		private static Func<int, int, bool>[] HookDisableRetroLavaBubbles;
+
+		private static Func<int, int, int, int?>[] HookDrawWaterfall;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -93,12 +100,15 @@ namespace ModLiquidLib.ModLoader
 			LoaderUtils.ResetStaticMembers(typeof(LiquidID));
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateModifyLight>(ref HookModifyLight, globalLiquids, (GlobalLiquid g) => g.ModifyLight);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>>(ref HookPreDraw, globalLiquids, (GlobalLiquid g) => g.PreDraw);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, LiquidDrawCache, Vector2, bool>>(ref HookPostDraw, globalLiquids, (GlobalLiquid g) => g.PostDraw);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, LiquidDrawCache, Vector2, bool>>(ref HookPostDraw, globalLiquids, (GlobalLiquid g) => g.PostDraw); 
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidCache, bool>>(ref HookEmitEffects, globalLiquids, (GlobalLiquid g) => g.EmitEffects);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, SpriteBatch, bool>>(ref HookPreRetroDraw, globalLiquids, (GlobalLiquid g) => g.PreRetroDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateRetroDrawEffects>(ref HookRetroDrawEffects, globalLiquids, (GlobalLiquid g) => g.RetroDrawEffects);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, SpriteBatch>>(ref HookPostRetroDraw, globalLiquids, (GlobalLiquid g) => g.PostRetroDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePreSlopeDraw>(ref HookPreSlopeDraw, globalLiquids, (GlobalLiquid g) => g.PreSlopeDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePostSlopeDraw>(ref HookPostSlopeDraw, globalLiquids, (GlobalLiquid g) => g.PostSlopeDraw);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, bool>>(ref HookDisableRetroLavaBubbles, globalLiquids, (GlobalLiquid g) => g.DisableRetroLavaBubbles);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int?>>(ref HookDrawWaterfall, globalLiquids, (GlobalLiquid g) => g.ChooseWaterfallStyle);
 			if (!unloading)
 			{
 				loaded = true;
@@ -173,6 +183,20 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
+		public static bool EmitEffects(int i, int j, byte type, LiquidCache liquidCache)
+		{
+			GetLiquid(type)?.EmitEffects(i, j, liquidCache);
+			Func<int, int, int, LiquidCache, bool>[] hookEmitEffects = HookEmitEffects;
+			for (int k = 0; k < hookEmitEffects.Length; k++)
+			{
+				if (!hookEmitEffects[k](i, j, type, liquidCache))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public static void PostRetroDraw(int i, int j, int type, SpriteBatch spriteBatch)
 		{
 			GetLiquid(type)?.PostRetroDraw(i, j, spriteBatch);
@@ -204,6 +228,30 @@ namespace ModLiquidLib.ModLoader
 			{
 				hookPostSlopeDraw[k](i, j, type, behindBlocks, ref drawPosition, ref liquidSize, ref colors);
 			}
+		}
+
+		public static bool DisableRetroLavaBubbles(int i, int j)
+		{
+			Func<int, int, bool>[] hookDisableRetroBubbles = HookDisableRetroLavaBubbles;
+			for (int k = 0; k < hookDisableRetroBubbles.Length; k++)
+			{
+				if (!hookDisableRetroBubbles[k](i, j))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public static int? DrawWaterfall(int i, int j, int type)
+		{
+			Func<int, int, int, int?>[] hookDrawWaterfall = HookDrawWaterfall;
+			for (int k = 0; k < hookDrawWaterfall.Length; k++)
+			{
+				if (hookDrawWaterfall[k](i, j, type) != null)
+					return hookDrawWaterfall[k](i, j, type);
+			}
+			return GetLiquid(type)?.ChooseWaterfallStyle(i, j) ?? null;
 		}
 	}
 }

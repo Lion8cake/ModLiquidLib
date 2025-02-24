@@ -19,8 +19,10 @@ namespace ModLiquidLib.Utils
 
 		public Rectangle liquidFraming;
 
-		public Vector2 liquidScreenPos;
-
 		public Vector2 liquidPositionOffset;
+
+		public int waterfallLength;
+
+		public float waterfallStrength;
 	}
 }

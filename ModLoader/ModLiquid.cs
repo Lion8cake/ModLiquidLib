@@ -22,11 +22,11 @@ namespace ModLiquidLib.ModLoader
 
 		public virtual string SlopeTexture => Texture + "_Slope";
 
-		public int LiquidFallLength { get; internal set; }
+		public int LiquidFallLength { get; set; }
 
-		public float DefaultOpacity { get; internal set; }
+		public float DefaultOpacity { get; set; }
 
-		public byte VisualViscosity { get; internal set; }
+		public byte VisualViscosity { get; set; }
 		
 		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
 		public ushort VanillaFallbackOnModDeletion { get; set; }
@@ -142,6 +142,19 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
+		/// Allows you to make stuff happen whenever the tile at the given coordinates is drawn. For example, creating dust or changing the color the tile is drawn in.
+		/// SpecialDraw will only be called if coordinates are added using Main.instance.TilesRenderer.AddSpecialLegacyPoint here.
+		/// Only works on Color and White lighting, see RetroDrawEffects for retro lighting of emitting particles
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="spriteBatch"></param>
+		/// <param name="drawData">Various information about the tile that is being drawn, such as color, framing, glow textures, etc.</param>
+		public virtual void EmitEffects(int i, int j, LiquidCache liquidCache)
+		{
+		}
+
+		/// <summary>
 		/// Allows you to draw things behind the tile/wall at the given coordinates. Return false to stop the game from drawing the tile normally. Returns true by default.
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
@@ -206,6 +219,14 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="b">The blue component of light, usually a value between 0 and 1</param>
 		public virtual void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
+		}
+
+		/// <summary>
+		/// The ID of the waterfall style the game should use when this water style is in use.
+		/// </summary>
+		public virtual int ChooseWaterfallStyle(int i, int j)
+		{
+			return 1;
 		}
 	}
 }

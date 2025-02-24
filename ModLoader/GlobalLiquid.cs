@@ -50,6 +50,21 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
+		/// Allows you to make stuff happen whenever the tile at the given coordinates is drawn. For example, creating dust or changing the color the tile is drawn in.
+		/// SpecialDraw will only be called if coordinates are added using Main.instance.TilesRenderer.AddSpecialLegacyPoint here.
+		/// Only works on Color and White lighting, see RetroDrawEffects for retro lighting of emitting particles
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="type">The Tile type of the tile being drawn</param>
+		/// <param name="spriteBatch">The SpriteBatch that should be used for all draw calls</param>
+		/// <param name="drawData">Various information about the tile that is being drawn, such as color, framing, glow textures, etc.</param>
+		public virtual bool EmitEffects(int i, int j, int type, LiquidCache liquidCache)
+		{
+			return true;
+		}
+
+		/// <summary>
 		/// Allows you to draw things behind the tile/wall at the given coordinates. Return false to stop the game from drawing the tile/wall normally. Returns true by default.
 		/// </summary>
 		/// <param name="i"></param>
@@ -123,6 +138,20 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="b"></param>
 		public virtual void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
 		{
+		}
+
+		public virtual bool DisableRetroLavaBubbles(int i, int j)
+		{
+			return false;
+		}
+
+		/// <summary>
+		/// The ID of the waterfall style the game should use when this water style is in use.
+		/// return null to call the normal waterfall style
+		/// </summary>
+		public virtual int? ChooseWaterfallStyle(int i, int j, int type)
+		{
+			return null;
 		}
 	}
 }
