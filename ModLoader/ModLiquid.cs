@@ -69,7 +69,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		protected sealed override void Register()
+		public sealed override void Register()
 		{
 			Type = (ushort)LiquidLoader.ReserveLiquidID();
 			ModTypeLookup<ModLiquid>.Register(this);

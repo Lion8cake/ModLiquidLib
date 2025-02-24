@@ -14,7 +14,7 @@ namespace ModLiquidLib.ModLoader
 {
 	public abstract class GlobalLiquid : ModType
 	{
-		protected sealed override void Register()
+		public sealed override void Register()
 		{
 			ModTypeLookup<GlobalLiquid>.Register(this);
 			LiquidLoader.globalLiquids.Add(this);

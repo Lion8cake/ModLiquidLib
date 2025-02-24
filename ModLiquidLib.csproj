@@ -13,7 +13,7 @@
 	  <Folder Include="Localization\" />
 		<PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
-		<Publicize Include="tModLoader" PublicizeTarget="Fields, Types" />
+		<Publicize Include="tModLoader" PublicizeTarget="Fields, Types, Methods" />
 	</ItemGroup>
 
 </Project>

@@ -42,6 +42,7 @@ namespace ModLiquidLib
 			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
+			IL_WaterfallManager.GetAlpha += WaterfallManagerHooks.editWaterfallAlpha;
 
 			MapHelper.Initialize();
 		}

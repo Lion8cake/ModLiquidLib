@@ -1,4 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
+using ModLiquidLib.Utils;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,36 @@ namespace ModLiquidLib.Hooks
 				return !LiquidFallLoader.PreDraw(i, num5, num6, num4, Main.spriteBatch); //{
 			});                                                                     //	continue;
 			c.EmitBrtrue(IL_149d);                                                  //}
+			c.GotoNext(MoveType.Before, i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(10));
+			c.EmitLdloc(12); //Type of waterfall
+			c.EmitLdloc(13); //X position of the waterfall
+			c.EmitLdloc(14); //Y position of the waterfall
+			c.EmitDelegate((int i, int num4, int num5, int num6) =>
+			{
+				LiquidFallLoader.PostDraw(i, num5, num6, num4, Main.spriteBatch);
+			});
+			c.EmitLdloc(10);
+		}
+
+		internal static void editWaterfallAlpha(ILContext il)
+		{
+			ILCursor c = new(il);
+			c.GotoNext(MoveType.After, i => i.MatchDiv(), i => i.MatchMul(), i => i.MatchStloc(0), i => i.MatchLdloc(0));
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitLdarg(2);
+			c.EmitLdarg(3);
+			c.EmitLdarg(4);
+			c.EmitLdarg(5);
+			c.EmitDelegate((float num, float Alpha, int maxSteps, int waterfallType, int y, int s, Tile tileCache) =>
+			{
+				float? alpha = LiquidFallLoader.Alpha(tileCache.X(), y, waterfallType, Alpha, maxSteps, s, tileCache);
+				if (alpha != null)
+				{
+					return (float)alpha;
+				}
+				return num;
+			});
 		}
 	}
 }
