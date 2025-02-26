@@ -26,8 +26,8 @@ namespace ModLiquidLib
 		{
 			TModLoaderUtils.Load();
 
-			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray;
-			IL_LiquidRenderer.DrawNormalLiquids += LiquidRendererHooks.EditLiquidRendering;
+			On_ModContent.ResizeArrays += ModContentHooks.ResizeArrayTest;
+			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray; //stuff to be done BEFORE resizing arrays
 			On_TileLightScanner.ApplyLiquidLight += TileLightScannerHooks.ApplyModliquidLight;
 			IL_MapHelper.CreateMapTile += MapHelperHooks.AddLiquidMapEntrys;
 			IL_MapLoader.FinishSetup += MapLoaderHooks.AddLiquidToFinishSetup;
@@ -38,29 +38,25 @@ namespace ModLiquidLib
 			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
 			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
-			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
 			IL_WaterfallManager.GetAlpha += WaterfallManagerHooks.editWaterfallAlpha;
-			On_ModContent.ResizeArrays += ResizeArrayTest;
 
 			MapHelper.Initialize();
 		}
 
-		private void ResizeArrayTest(On_ModContent.orig_ResizeArrays orig, bool unloading = false)
-		{
-			orig.Invoke(unloading);
-			LiquidLoader.ResizeArrays(unloading);
-		}
-
 		public override void PostSetupContent()
 		{
+			IL_LiquidRenderer.DrawNormalLiquids += LiquidRendererHooks.EditLiquidRendering; //stuff to be done AFTER resizing arrays
+			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
+			
+
 			MapLiquidLoader.FinishSetup();
 		}
 
 		public override void Unload()
 		{
-			On_ModContent.ResizeArrays -= ResizeArrayTest;
+			On_ModContent.ResizeArrays -= ModContentHooks.ResizeArrayTest;
 			TModLoaderUtils.Unload();
 			LiquidLoader.ResizeArrays(true);
 			LiquidLoader.Unload();
@@ -79,6 +75,9 @@ namespace ModLiquidLib
 			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_LiquidRenderer.InternalPrepareDraw -= LiquidRendererHooks.SpawnDustBubbles;
+			IL_WaterfallManager.FindWaterfalls -= WaterfallManagerHooks.EditWaterfallStyle;
+			IL_WaterfallManager.DrawWaterfall_int_float -= WaterfallManagerHooks.PreDrawWaterfallModifier;
+			IL_WaterfallManager.GetAlpha -= WaterfallManagerHooks.editWaterfallAlpha;
 		}
 
 		/// <inheritdoc cref="M:Terraria.ModLoader.WallLoader.GetWall(System.Int32)" />

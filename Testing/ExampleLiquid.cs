@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using Terraria;
+using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,6 +31,7 @@ namespace ModLiquidLib.Testing
 
 		public override bool PreDraw(int i, int j, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
 		{
+			
 			return true;
 		}
 
@@ -59,7 +61,7 @@ namespace ModLiquidLib.Testing
 			//drawData.liquidPositionOffset += new Vector2(16, 16);
 		}
 
-		public override void EmitEffects(int i, int j, LiquidCache liquidCache)
+		/*public override void EmitEffects(int i, int j, LiquidCache liquidCache)
 		{
 			return;
 			if (liquidCache.HasVisibleLiquid)
@@ -82,7 +84,7 @@ namespace ModLiquidLib.Testing
 					Main.dust[num20].noGravity = true;
 				}
 			}
-		}
+		}*/
 
 		public override void PostRetroDraw(int i, int j, SpriteBatch spriteBatch)
 		{

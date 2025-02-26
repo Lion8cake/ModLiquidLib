@@ -22,11 +22,41 @@ namespace ModLiquidLib.ModLoader
 
 		public virtual string SlopeTexture => Texture + "_Slope";
 
-		public int LiquidFallLength { get; set; }
+		public int LiquidFallLength 
+		{
+			get
+			{
+				return LiquidRenderer.WATERFALL_LENGTH[Type];
+			}
+			set
+			{
+				LiquidRenderer.WATERFALL_LENGTH[Type] = value;
+			}
+		}
 
-		public float DefaultOpacity { get; set; }
+		public float DefaultOpacity 
+		{
+			get
+			{
+				return LiquidRenderer.DEFAULT_OPACITY[Type];
+			}
+			set
+			{
+				LiquidRenderer.DEFAULT_OPACITY[Type] = value;
+			}
+		}
 
-		public byte VisualViscosity { get; set; }
+		public byte VisualViscosity 
+		{
+			get
+			{
+				return LiquidRenderer.VISCOSITY_MASK[Type];
+			}
+			set
+			{
+				LiquidRenderer.VISCOSITY_MASK[Type] = value;
+			}
+		}
 		
 		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
 		public ushort VanillaFallbackOnModDeletion { get; set; }
