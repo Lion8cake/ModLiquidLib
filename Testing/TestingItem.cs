@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModLiquidLib.ModLoader.Default;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace ModLiquidLib.Testing
 		public override bool? UseItem(Player player)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-			tile.LiquidType = ModLiquidLib.LiquidType<ExampleLiquid>();
+			//tile.LiquidType = 6;//ModLiquidLib.LiquidType<ExampleLiquid>();
 			//tile.LiquidType = LiquidID.Honey;
 			tile.LiquidAmount = 255;
 			return null;

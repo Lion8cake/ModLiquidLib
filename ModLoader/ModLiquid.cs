@@ -111,10 +111,10 @@ namespace ModLiquidLib.ModLoader
 			LiquidLoader.LiquidAssets[Type] = ModContent.Request<Texture2D>(Texture, (AssetRequestMode)2);
 			LiquidLoader.LiquidBlockAssets[Type] = ModContent.Request<Texture2D>(BlockTexture, (AssetRequestMode)2);
 			LiquidLoader.LiquidSlopeAssets[Type] = ModContent.Request<Texture2D>(SlopeTexture, (AssetRequestMode)2);
-			SetStaticDefaults();
-			LiquidRenderer.WATERFALL_LENGTH[Type] = LiquidFallLength;
-			LiquidRenderer.DEFAULT_OPACITY[Type] = DefaultOpacity;
+			LiquidRenderer.WATERFALL_LENGTH[Type] = 10;
+			LiquidRenderer.DEFAULT_OPACITY[Type] = 0.6f;
 			LiquidRenderer.VISCOSITY_MASK[Type] = VisualViscosity;
+			SetStaticDefaults();
 		}
 
 		/// <summary>
@@ -256,7 +256,7 @@ namespace ModLiquidLib.ModLoader
 		/// </summary>
 		public virtual int ChooseWaterfallStyle(int i, int j)
 		{
-			return 1;
+			return 0;
 		}
 	}
 }
