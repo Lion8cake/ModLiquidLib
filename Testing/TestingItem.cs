@@ -27,7 +27,8 @@ namespace ModLiquidLib.Testing
 		public override bool? UseItem(Player player)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-			//tile.LiquidType = 6;//ModLiquidLib.LiquidType<ExampleLiquid>();
+			//tile.LiquidType = 6;
+			tile.LiquidType = ModLiquidLib.LiquidType<ExampleLiquid>();
 			//tile.LiquidType = LiquidID.Honey;
 			tile.LiquidAmount = 255;
 			return null;

@@ -206,5 +206,10 @@ namespace ModLiquidLib.ModLoader
 		{
 			return null;
 		}
+
+		public virtual bool PlayWaterfallSounds()
+		{
+			return true;
+		}
 	}
 }

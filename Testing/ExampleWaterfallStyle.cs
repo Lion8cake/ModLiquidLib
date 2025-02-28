@@ -490,5 +490,10 @@ namespace ModLiquidLib.Testing
 				b = 190f * a;
 			}
 		}
+
+		public override bool PlayWaterfallSounds()
+		{
+			return false;
+		}
 	}
 }

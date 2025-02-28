@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
@@ -40,6 +41,7 @@ namespace ModLiquidLib.Hooks
 		{
 			ILCursor c = new(il);
 			ILLabel IL_149d = null;
+			ILLabel IL_0a27 = null;
 			c.GotoNext( //Gets the IL_149d instruction lable
 				MoveType.After,
 				i => i.MatchLdloc(12),               //if (Main.drewLava || waterfalls[i].stopAtStep == 0)
@@ -63,6 +65,18 @@ namespace ModLiquidLib.Hooks
 				return !LiquidFallLoader.PreDraw(i, num5, num6, num4, Main.spriteBatch); //{
 			});                                                                     //	continue;
 			c.EmitBrtrue(IL_149d);                                                  //}
+
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(12), i => i.MatchLdcI4(12), i => i.MatchBeq(out _), i => i.MatchLdloc(12), i => i.MatchLdcI4(22), i => i.MatchBeq(out IL_0a27));
+			c.EmitLdloc(12);
+			c.EmitDelegate((int style) =>
+			{
+				ModLiquidFall modLiquidFall = (ModLiquidFall)(ModContent.GetModWaterfallStyle(style));
+				if (modLiquidFall != null)
+					return modLiquidFall.PlayWaterfallSounds();
+				return true;
+			});
+			c.EmitBrfalse(IL_0a27);
+
 			c.GotoNext(MoveType.Before, i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(10));
 			c.EmitLdloc(12); //Type of waterfall
 			c.EmitLdloc(13); //X position of the waterfall

@@ -1,25 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using ModLiquidLib.ModLoader;
-using ModLiquidLib.ModLoader.Default;
-using ModLiquidLib.Utils;
-using System;
+﻿using ModLiquidLib.ModLoader;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static Terraria.ModLoader.IO.TileIO;
 
 namespace ModLiquidLib.IO
 {
 	internal class LiquidIO : ModSystem
 	{
-		public abstract class IOImpl<TLiquid, TEntry> where TLiquid : ModLiquid where TEntry : ModLiquidEntry
+		public abstract class IOLiquidImpl<TLiquid, TEntry> where TLiquid : ModLiquid where TEntry : ModLiquidEntry
 		{
 			public readonly string entriesKey;
 
@@ -35,7 +27,7 @@ namespace ModLiquidLib.IO
 
 			protected abstract IEnumerable<TLiquid> LoadedLiquids { get; }
 
-			protected IOImpl(string entriesKey, string dataKey)
+			protected IOLiquidImpl(string entriesKey, string dataKey)
 			{
 				this.entriesKey = entriesKey;
 				this.dataKey = dataKey;
@@ -59,7 +51,7 @@ namespace ModLiquidLib.IO
 			public void LoadEntries(TagCompound tag, out TEntry[] savedEntryLookup)
 			{
 				IList<TEntry> savedEntryList = tag.GetList<TEntry>(entriesKey);
-				List<TEntry> entries = CreateEntries();
+				List<TEntry> Entries = CreateEntries();
 				if (savedEntryList.Count == 0)
 				{
 					savedEntryLookup = null;
@@ -75,17 +67,17 @@ namespace ModLiquidLib.IO
 							entry.type = (entry.loadedLiquid = Liquid.Type);
 							continue;
 						}
-						if (canPurgeOldData)
+						if (TileIO.canPurgeOldData)
 						{
 							entry.type = (entry.loadedLiquid = entry.vanillaReplacementType);
 							continue;
 						}
-						entry.type = (ushort)entries.Count;
+						entry.type = (ushort)Entries.Count;
 						entry.loadedLiquid = (ModContent.TryFind<TLiquid>(entry.unloadedType, out var unloadedLiquid) ? unloadedLiquid : entry.DefaultUnloadedPlaceholder).Type;
-						entries.Add(entry);
+						Entries.Add(entry);
 					}
 				}
-				this.entries = entries.ToArray();
+				entries = Entries.ToArray();
 			}
 
 			protected abstract void ReadData(Tile tile, TEntry entry, BinaryReader reader);
@@ -177,7 +169,7 @@ namespace ModLiquidLib.IO
 			}
 		}
 
-		public class LiquidIOImpl : IOImpl<ModLiquid, ModLiquidEntry>
+		public class LiquidIOImpl : IOLiquidImpl<ModLiquid, ModLiquidEntry>
 		{
 			protected override int LoadedLiquidCount => LiquidLoader.LiquidCount;
 
@@ -229,14 +221,6 @@ namespace ModLiquidLib.IO
 		public override void Unload()
 		{
 			Liquids.unloadedTypes.Clear();
-		}
-
-		public override void OnWorldLoad()
-		{
-			foreach (ModLiquid modLiquid in ModContent.GetContent<ModLiquid>())
-			{
-				ModContent.GetInstance<ModLiquidLib>().Logger.Debug(modLiquid.Name + ", ID: " + modLiquid.Type);
-			}
 		}
 	}
 }
