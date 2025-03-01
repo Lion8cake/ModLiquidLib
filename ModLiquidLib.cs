@@ -85,7 +85,7 @@ namespace ModLiquidLib
 			IL_Liquid.SettleWaterAt -= LiquidHooks.EditLiquidGenMovement;
 		}
 
-		/// <inheritdoc cref="M:Terraria.ModLoader.WallLoader.GetWall(System.Int32)" />
+		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
 		public static ModLiquid GetModLiquid(int type)
 		{
 			return LiquidLoader.GetLiquid(type);
