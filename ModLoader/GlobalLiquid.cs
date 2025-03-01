@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace ModLiquidLib.ModLoader
@@ -152,6 +154,29 @@ namespace ModLiquidLib.ModLoader
 		public virtual int? ChooseWaterfallStyle(int i, int j, int type)
 		{
 			return null;
+		}
+
+		/// <summary>
+		/// Return false to prevent normal liquid updates
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="type"></param>
+		/// <param name="liquid"></param>
+		/// <returns></returns>
+		public virtual bool UpdateLiquid(int i, int j, int type, Liquid liquid)
+		{
+			return true;
+		}
+
+		public virtual bool? EvaporatesInHell(int i, int j, int type)
+		{
+			return null;
+		}
+
+		public virtual bool SettleLiquidMovement(int i, int j, int type)
+		{
+			return true;
 		}
 	}
 }

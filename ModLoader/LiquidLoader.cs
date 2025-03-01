@@ -61,6 +61,12 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<int, int, int, int?>[] HookDrawWaterfall;
 
+		private static Func<int, int, int, Liquid, bool>[] HookUpdate;
+
+		private static Func<int, int, int, bool?>[] HookEvaporation;
+
+		private static Func<int, int, int, bool>[] HookSettleLiquidMovement;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -109,6 +115,9 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePostSlopeDraw>(ref HookPostSlopeDraw, globalLiquids, (GlobalLiquid g) => g.PostSlopeDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, bool>>(ref HookDisableRetroLavaBubbles, globalLiquids, (GlobalLiquid g) => g.DisableRetroLavaBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int?>>(ref HookDrawWaterfall, globalLiquids, (GlobalLiquid g) => g.ChooseWaterfallStyle);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, Liquid, bool>>(ref HookUpdate, globalLiquids, (GlobalLiquid g) => g.UpdateLiquid);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool?>>(ref HookEvaporation, globalLiquids, (GlobalLiquid g) => g.EvaporatesInHell);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool>>(ref HookSettleLiquidMovement, globalLiquids, (GlobalLiquid g) => g.SettleLiquidMovement);
 			if (!unloading)
 			{
 				loaded = true;
@@ -252,6 +261,43 @@ namespace ModLiquidLib.ModLoader
 					return hookDrawWaterfall[k](i, j, type);
 			}
 			return GetLiquid(type)?.ChooseWaterfallStyle(i, j) ?? null;
+		}
+
+		public static bool UpdateLiquid(int i, int j, int type, Liquid liquid)
+		{
+			Func<int, int, int, Liquid, bool>[] hookUpdate = HookUpdate;
+			for (int k = 0; k < hookUpdate.Length; k++)
+			{
+				if (!hookUpdate[k](i, j, type, liquid))
+				{
+					return false;
+				}
+			}
+			return GetLiquid(type)?.UpdateLiquid(i, j, liquid) ?? true;
+		}
+
+		public static bool? EvaporatesInHell(int i, int j, int type)
+		{
+			Func<int, int, int, bool?>[] hookEvaporation = HookEvaporation;
+			for (int k = 0; k < hookEvaporation.Length; k++)
+			{
+				if (hookEvaporation[k](i, j, type) != null)
+					return hookEvaporation[k](i, j, type);
+			}
+			return GetLiquid(type)?.EvaporatesInHell(i, j) ?? null;
+		}
+
+		public static bool SettleLiquidMovement(int i, int j, int type)
+		{
+			Func<int, int, int, bool>[] hookSettleLiquidMovement = HookSettleLiquidMovement;
+			for (int k = 0; k < hookSettleLiquidMovement.Length; k++)
+			{
+				if (!hookSettleLiquidMovement[k](i, j, type))
+				{
+					return false;
+				}
+			}
+			return GetLiquid(type)?.SettleLiquidMovement(i, j) ?? true;
 		}
 	}
 }

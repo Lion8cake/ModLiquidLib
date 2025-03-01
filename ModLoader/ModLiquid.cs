@@ -9,6 +9,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Graphics;
 using Terraria.DataStructures;
+using Terraria;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -113,7 +114,7 @@ namespace ModLiquidLib.ModLoader
 			LiquidLoader.LiquidSlopeAssets[Type] = ModContent.Request<Texture2D>(SlopeTexture, (AssetRequestMode)2);
 			LiquidRenderer.WATERFALL_LENGTH[Type] = 10;
 			LiquidRenderer.DEFAULT_OPACITY[Type] = 0.6f;
-			LiquidRenderer.VISCOSITY_MASK[Type] = VisualViscosity;
+			LiquidRenderer.VISCOSITY_MASK[Type] = 0;
 			SetStaticDefaults();
 		}
 
@@ -257,6 +258,28 @@ namespace ModLiquidLib.ModLoader
 		public virtual int ChooseWaterfallStyle(int i, int j)
 		{
 			return 0;
+		}
+
+		/// <summary>
+		/// Return false to stop normal liquid updates
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="liquid"></param>
+		/// <returns></returns>
+		public virtual bool UpdateLiquid(int i, int j, Liquid liquid)
+		{
+			return true;
+		}
+
+		public virtual bool EvaporatesInHell(int i, int j)
+		{
+			return false;
+		}
+
+		public virtual bool SettleLiquidMovement(int i, int j)
+		{
+			return true;
 		}
 	}
 }

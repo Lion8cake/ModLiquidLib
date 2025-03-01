@@ -65,5 +65,14 @@ namespace ModLiquidLib.Testing
 			//}
 			return null;
 		}
+
+		public override bool? EvaporatesInHell(int i, int j, int type)
+		{
+			if (type == LiquidID.Lava)
+			{
+				return true;
+			}
+			return null;
+		}
 	}
 }

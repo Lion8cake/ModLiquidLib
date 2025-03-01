@@ -14,6 +14,7 @@ using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.GameContent.UI.States;
 using Terraria.Graphics.Light;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
@@ -41,6 +42,8 @@ namespace ModLiquidLib
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
 			IL_WaterfallManager.GetAlpha += WaterfallManagerHooks.editWaterfallAlpha;
+			IL_Liquid.Update += LiquidHooks.EditLiquidUpdates;
+			IL_Liquid.SettleWaterAt += LiquidHooks.EditLiquidGenMovement;
 
 			MapHelper.Initialize();
 		}
@@ -78,6 +81,8 @@ namespace ModLiquidLib
 			IL_WaterfallManager.FindWaterfalls -= WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float -= WaterfallManagerHooks.PreDrawWaterfallModifier;
 			IL_WaterfallManager.GetAlpha -= WaterfallManagerHooks.editWaterfallAlpha;
+			IL_Liquid.Update -= LiquidHooks.EditLiquidUpdates;
+			IL_Liquid.SettleWaterAt -= LiquidHooks.EditLiquidGenMovement;
 		}
 
 		/// <inheritdoc cref="M:Terraria.ModLoader.WallLoader.GetWall(System.Int32)" />
