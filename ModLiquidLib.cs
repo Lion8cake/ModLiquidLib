@@ -44,6 +44,7 @@ namespace ModLiquidLib
 			IL_WaterfallManager.GetAlpha += WaterfallManagerHooks.editWaterfallAlpha;
 			IL_Liquid.Update += LiquidHooks.EditLiquidUpdates;
 			IL_Liquid.SettleWaterAt += LiquidHooks.EditLiquidGenMovement;
+			On_UIModItem.OnInitialize += UIModItemHooks.AddLiquidCount;
 
 			MapHelper.Initialize();
 		}
@@ -83,6 +84,7 @@ namespace ModLiquidLib
 			IL_WaterfallManager.GetAlpha -= WaterfallManagerHooks.editWaterfallAlpha;
 			IL_Liquid.Update -= LiquidHooks.EditLiquidUpdates;
 			IL_Liquid.SettleWaterAt -= LiquidHooks.EditLiquidGenMovement;
+			On_UIModItem.OnInitialize -= UIModItemHooks.AddLiquidCount;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
