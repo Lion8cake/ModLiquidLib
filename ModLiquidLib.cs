@@ -50,6 +50,8 @@ namespace ModLiquidLib
 			IL_Liquid.LiquidCheck += LiquidHooks.EditLiquidMergeTiles;
 			On_Liquid.GetLiquidMergeTypes += LiquidHooks.PreventMergeOverloadFromExecuting;
 			On_WorldGen.PlayLiquidChangeSound += LiquidHooks.PreventSoundOverloadFromExecuting;
+			IL_NetMessage.CompressTileBlock_Inner += NetMessageHooks.SendLiquidTypes;
+			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
 
 			MapHelper.Initialize();
 		}
@@ -92,6 +94,8 @@ namespace ModLiquidLib
 			IL_Liquid.LiquidCheck -= LiquidHooks.EditLiquidMergeTiles;
 			On_Liquid.GetLiquidMergeTypes -= LiquidHooks.PreventMergeOverloadFromExecuting;
 			On_WorldGen.PlayLiquidChangeSound -= LiquidHooks.PreventSoundOverloadFromExecuting;
+			IL_NetMessage.CompressTileBlock_Inner -= NetMessageHooks.SendLiquidTypes;
+			IL_NetMessage.DecompressTileBlock_Inner -= NetMessageHooks.RecieveLiquidTypes;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
