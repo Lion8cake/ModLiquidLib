@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -217,6 +218,31 @@ namespace ModLiquidLib.ModLoader
 		public virtual bool SettleLiquidMovement(int i, int j, int type)
 		{
 			return true;
+		}
+
+		/// <summary>
+		/// Allows you to change how liquids move when loading or creating a world. Returns true by default.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual int? LiquidMerge(int i, int j, int type, int otherLiquid, ref SoundStyle? collisionSound)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Allows the editing of how fast liquids fall, return null for the regular liquid falling to apply. <br/>
+		/// For Modded Liquids, use ModLiquid.FallDelay property to edit how fast your liquid falls. This method can be used to edit other mod liquids falling as well.<br/>
+		/// Returns null by default <br/>
+		/// NOTE: liquids can only have a maximum fall delay of 10 (which is the same as the fall of Honey), this is due to the delay being reset to 10 when in quickfall mode.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual int? LiquidFallDelay(int type)
+		{
+			return null;
 		}
 	}
 }

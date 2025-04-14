@@ -10,6 +10,8 @@ using Terraria.ModLoader;
 using Terraria.Graphics;
 using Terraria.DataStructures;
 using Terraria;
+using Terraria.ID;
+using Terraria.Audio;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -58,7 +60,12 @@ namespace ModLiquidLib.ModLoader
 				LiquidRenderer.VISCOSITY_MASK[Type] = value;
 			}
 		}
-		
+
+		/// <summary>
+		/// Liquids can only have a maximum fall delay of 10 (which is the same as the fall of Honey), this is due to the delay being reset to 10 when in quickfall mode.
+		/// </summary>
+		public int FallDelay { get; set; } = 0;
+
 		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
 		public ushort VanillaFallbackOnModDeletion { get; set; }
 
@@ -309,6 +316,17 @@ namespace ModLiquidLib.ModLoader
 		public virtual bool SettleLiquidMovement(int i, int j)
 		{
 			return true;
+		}
+
+		/// <summary>
+		/// Used to change what tile the liquid generates upon a liquid coming in contact with another liquid. Use the nearbyLiquid param to check what liquid this liquid is interacting with
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <returns></returns>
+		public virtual int? LiquidMerge(int i, int j, int otherLiquid, ref SoundStyle? collisionSound)
+		{
+			return null;
 		}
 	}
 }

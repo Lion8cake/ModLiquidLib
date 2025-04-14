@@ -18,6 +18,7 @@ using System.Reflection;
 using Microsoft.Xna.Framework;
 using Terraria.Graphics;
 using static log4net.Appender.ColoredConsoleAppender;
+using Terraria.Audio;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -30,6 +31,8 @@ namespace ModLiquidLib.ModLoader
 		private delegate void DelegatePostSlopeDraw(int i, int j, int type, bool behindBlocks, ref Vector2 drawPosition, ref Rectangle liquidSize, ref VertexColors colors);
 
 		private delegate void DelegateRetroDrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref RetroLiquidDrawInfo drawData, float liquidAmountModified, int liquidGFXQuality);
+
+		private delegate int? DelegateLiquidMergeTilesType(int i, int j, int type, int otherLiquid, ref SoundStyle? changeSound);
 
 		private static int nextLiquid = LiquidID.Count;
 
@@ -66,6 +69,10 @@ namespace ModLiquidLib.ModLoader
 		private static Func<int, int, int, bool?>[] HookEvaporation;
 
 		private static Func<int, int, int, bool>[] HookSettleLiquidMovement;
+
+		private static DelegateLiquidMergeTilesType[] HookMergeTiles;
+
+		private static Func<int, int?>[] HookLiquidFallDelay;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -118,6 +125,8 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, Liquid, bool>>(ref HookUpdate, globalLiquids, (GlobalLiquid g) => g.UpdateLiquid);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool?>>(ref HookEvaporation, globalLiquids, (GlobalLiquid g) => g.EvaporatesInHell);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool>>(ref HookSettleLiquidMovement, globalLiquids, (GlobalLiquid g) => g.SettleLiquidMovement);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMergeTilesType>(ref HookMergeTiles, globalLiquids, (GlobalLiquid g) => g.LiquidMerge);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int?>>(ref HookLiquidFallDelay, globalLiquids, (GlobalLiquid g) => g.LiquidFallDelay);
 			if (!unloading)
 			{
 				loaded = true;
@@ -298,6 +307,27 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return GetLiquid(type)?.SettleLiquidMovement(i, j) ?? true;
+		}
+
+		public static int? LiquidMergeTilesType(int i, int j, int type, int otherLiquid, ref SoundStyle? changeSound)
+		{
+			DelegateLiquidMergeTilesType[] hookMergeTiles = HookMergeTiles;
+			for (int k = 0; k < hookMergeTiles.Length; k++)
+			{
+				if (hookMergeTiles[k](i, j, type, otherLiquid, ref changeSound) != null)
+					return hookMergeTiles[k](i, j, type, otherLiquid, ref changeSound);
+			}
+			return GetLiquid(type)?.LiquidMerge(i, j, otherLiquid, ref changeSound) ?? null;
+		}
+
+		public static int? LiquidEditingFallDelay(int type)
+		{
+			Func<int, int?>[] hookLiquidFallDelay = HookLiquidFallDelay;
+			for (int k = 0; k < hookLiquidFallDelay.Length; k++)
+			{
+				return hookLiquidFallDelay[k](type);
+			}
+			return null;
 		}
 	}
 }

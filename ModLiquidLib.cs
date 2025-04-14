@@ -5,11 +5,13 @@ using ModLiquidLib.Utils;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.GameContent.UI.States;
@@ -45,6 +47,9 @@ namespace ModLiquidLib
 			IL_Liquid.Update += LiquidHooks.EditLiquidUpdates;
 			IL_Liquid.SettleWaterAt += LiquidHooks.EditLiquidGenMovement;
 			On_UIModItem.OnInitialize += UIModItemHooks.AddLiquidCount;
+			IL_Liquid.LiquidCheck += LiquidHooks.EditLiquidMergeTiles;
+			On_Liquid.GetLiquidMergeTypes += LiquidHooks.PreventMergeOverloadFromExecuting;
+			On_WorldGen.PlayLiquidChangeSound += LiquidHooks.PreventSoundOverloadFromExecuting;
 
 			MapHelper.Initialize();
 		}
@@ -53,7 +58,6 @@ namespace ModLiquidLib
 		{
 			IL_LiquidRenderer.DrawNormalLiquids += LiquidRendererHooks.EditLiquidRendering; //stuff to be done AFTER resizing arrays
 			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
-			
 
 			MapLiquidLoader.FinishSetup();
 		}
@@ -85,6 +89,9 @@ namespace ModLiquidLib
 			IL_Liquid.Update -= LiquidHooks.EditLiquidUpdates;
 			IL_Liquid.SettleWaterAt -= LiquidHooks.EditLiquidGenMovement;
 			On_UIModItem.OnInitialize -= UIModItemHooks.AddLiquidCount;
+			IL_Liquid.LiquidCheck -= LiquidHooks.EditLiquidMergeTiles;
+			On_Liquid.GetLiquidMergeTypes -= LiquidHooks.PreventMergeOverloadFromExecuting;
+			On_WorldGen.PlayLiquidChangeSound -= LiquidHooks.PreventSoundOverloadFromExecuting;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
@@ -99,6 +106,27 @@ namespace ModLiquidLib
 		public static int LiquidType<T>() where T : ModLiquid
 		{
 			return ModContent.GetInstance<T>()?.Type ?? 0;
+		}
+
+		internal enum MessageType : byte
+		{
+			SyncCollisionSounds
+		}
+
+		public override void HandlePacket(BinaryReader reader, int whoAmI)
+		{
+			MessageType msgType = (MessageType)reader.ReadByte();
+
+			switch (msgType)
+			{
+				case MessageType.SyncCollisionSounds:
+					int x = reader.ReadInt32();
+					int y = reader.ReadInt32();
+					int thisLiquidType = reader.ReadInt32();
+					int liquidMergeType = reader.ReadInt32();
+					LiquidHooks.PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType);
+					break;
+			}
 		}
 	}
 }
