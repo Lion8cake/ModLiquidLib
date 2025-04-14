@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using ModLiquidLib.Hooks;
+using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
@@ -18,6 +19,7 @@ using Terraria.GameContent.UI.States;
 using Terraria.Graphics.Light;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 
@@ -52,6 +54,7 @@ namespace ModLiquidLib
 			On_WorldGen.PlayLiquidChangeSound += LiquidHooks.PreventSoundOverloadFromExecuting;
 			IL_NetMessage.CompressTileBlock_Inner += NetMessageHooks.SendLiquidTypes;
 			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
+			IL_Player.AdjTiles += PlayerHooks.AddLiquidCraftingConditions;
 
 			MapHelper.Initialize();
 		}
@@ -62,6 +65,23 @@ namespace ModLiquidLib
 			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
 
 			MapLiquidLoader.FinishSetup();
+
+			for (int i = 0; i < TileID.Sets.CountsAsWaterSource.Length; i++)
+			{
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][0] = TileID.Sets.CountsAsWaterSource[i];
+			}
+			for (int i = 0; i < TileID.Sets.CountsAsLavaSource.Length; i++)
+			{
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsHoneySource[i];
+			}
+			for (int i = 0; i < TileID.Sets.CountsAsHoneySource.Length; i++)
+			{
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsLavaSource[i];
+			}
+			for (int i = 0; i < TileID.Sets.CountsAsShimmerSource.Length; i++)
+			{
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][3] = TileID.Sets.CountsAsShimmerSource[i];
+			}
 		}
 
 		public override void Unload()
@@ -110,6 +130,21 @@ namespace ModLiquidLib
 		public static int LiquidType<T>() where T : ModLiquid
 		{
 			return ModContent.GetInstance<T>()?.Type ?? 0;
+		}
+
+		public static Condition NearLiquid(int liquidID)
+		{
+			LocalizedText text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]));
+			if (liquidID == LiquidID.Water)
+				text = Language.GetText("Conditions.NearWater");
+			else if (liquidID == LiquidID.Lava)
+				text = Language.GetText("Conditions.NearLava");
+			else if (liquidID == LiquidID.Honey)
+				text = Language.GetText("Conditions.NearHoney");
+			else if (liquidID == LiquidID.Shimmer)
+				text = Language.GetText("Conditions.NearShimmer");
+
+			return new Condition(text, () => Main.LocalPlayer.GetAdjLiquids(liquidID));
 		}
 
 		internal enum MessageType : byte

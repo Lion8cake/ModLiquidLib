@@ -7,33 +7,35 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
+using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
 namespace ModLiquidLib.Utils
 {
     //internalised to prevent malicious users from accessing tmodloader functions
-    internal static class TModLoaderUtils
+    public static class TModLoaderUtils
 	{
-		public static void Load()
+		internal static void Load()
 		{
 			_addliquidCounts = typeof(SceneMetrics).GetField("_liquidCounts", BindingFlags.NonPublic | BindingFlags.Instance);
 			tileEntries = (IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>>)typeof(MapLoader).GetField("tileEntries", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 			wallEntries = (IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>>)typeof(MapLoader).GetField("wallEntries", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 		}
 
-		public static void Unload()
+		internal static void Unload()
 		{
 			_addliquidCounts = null;
 			wallEntries = null;
 		}
 
-		public static FieldInfo _addliquidCounts;
-		public static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> tileEntries;
-		public static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> wallEntries;
+		internal static FieldInfo _addliquidCounts;
+		internal static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> tileEntries;
+		internal static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> wallEntries;
 
-		public static int[] Get_liquidCounts(this SceneMetrics self)
+		internal static int[] Get_liquidCounts(this SceneMetrics self)
 		{
 			if (_addliquidCounts.GetValue(self) is int[] _liquidCounts)
 			{
@@ -42,7 +44,7 @@ namespace ModLiquidLib.Utils
 			return null;
 		}
 
-		public static void Set_liquidCounts(this SceneMetrics self, int[] _liquidCounts)
+		internal static void Set_liquidCounts(this SceneMetrics self, int[] _liquidCounts)
 		{
 			if (_addliquidCounts.GetValue(self) is int[])
 			{
@@ -89,6 +91,11 @@ namespace ModLiquidLib.Utils
 		{
 			uint tileId = Unsafe.BitCast<Tile, uint>(tile);
 			x = Math.DivRem((int)tileId, Main.tile.Height, out y); //Thanks to FoxXD_ for the help with this
+		}
+
+		public static bool GetAdjLiquids(this Player player, int Liquid)
+		{
+			return player.GetModPlayer<ModLiquidPlayer>().adjLiquid[Liquid];
 		}
 	}
 }

@@ -69,6 +69,9 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
 		public ushort VanillaFallbackOnModDeletion { get; set; }
 
+		/// <summary> An array of the IDs of liquids that this tile can be considered as when looking for available liquids. </summary>
+		public int[] AdjLiquids { get; set; } = new int[0];
+
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
 		/// </summary>
@@ -319,14 +322,20 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Used to change what tile the liquid generates upon a liquid coming in contact with another liquid. Use the nearbyLiquid param to check what liquid this liquid is interacting with
+		/// Used to change what tile the liquid generates upon coming in contact with another liquid. Use the otherLiquid param to check what liquid this liquid is interacting with. <br/>
+		/// This hook is called multiple times to flip the statement to make sure that modders don't have to put the same statement twice for liquids to correctly generate tiles. It is sugested that only the liquid merge result and sound modifications are only put in this method.<br/>
+		/// Use collisionSound to modify what sound the liquid's make when colliding with each other. <br/>
+		/// NOTE: it is encouraged to set a default tile that this liquid results in, otherwise it will default to stone. <br/>
+		/// Returns 1 by default.
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="otherLiquid">The liquid ID of the liquid colliding with this one.</param>
+		/// <param name="collisionSound">The sound the liquids make when coming incontact with each other.</param>
 		/// <returns></returns>
-		public virtual int? LiquidMerge(int i, int j, int otherLiquid, ref SoundStyle? collisionSound)
+		public virtual int LiquidMerge(int i, int j, int otherLiquid, ref SoundStyle? collisionSound)
 		{
-			return null;
+			return TileID.Stone;
 		}
 	}
 }

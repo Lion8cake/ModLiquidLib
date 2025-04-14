@@ -244,5 +244,15 @@ namespace ModLiquidLib.ModLoader
 		{
 			return null;
 		}
+
+		/// <summary>
+		/// Allows you to determine which liquids the given liquid type can be considered as when looking for avaliable liquids.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual int[] AdjLiquids(int type)
+		{
+			return new int[0];
+		}
 	}
 }

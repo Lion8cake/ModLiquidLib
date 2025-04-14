@@ -74,6 +74,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<int, int?>[] HookLiquidFallDelay;
 
+		private static Func<int, int[]>[] HookAdjLiquids;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -127,6 +129,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool>>(ref HookSettleLiquidMovement, globalLiquids, (GlobalLiquid g) => g.SettleLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMergeTilesType>(ref HookMergeTiles, globalLiquids, (GlobalLiquid g) => g.LiquidMerge);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int?>>(ref HookLiquidFallDelay, globalLiquids, (GlobalLiquid g) => g.LiquidFallDelay);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int[]>>(ref HookAdjLiquids, globalLiquids, (GlobalLiquid g) => g.AdjLiquids);
 			if (!unloading)
 			{
 				loaded = true;
@@ -328,6 +331,28 @@ namespace ModLiquidLib.ModLoader
 				return hookLiquidFallDelay[k](type);
 			}
 			return null;
+		}
+
+		public static void AdjLiquids(Player player, int type)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				int[] adjLiquids = modLiquid.AdjLiquids;
+				foreach (int j in adjLiquids)
+				{
+					player.GetModPlayer<ModLiquidPlayer>().adjLiquid[j] = true;
+				}
+			}
+			Func<int, int[]>[] hookAdjLiquids = HookAdjLiquids;
+			for (int k = 0; k < hookAdjLiquids.Length; k++)
+			{
+				int[] adjLiquids = hookAdjLiquids[k](type);
+				foreach (int i in adjLiquids)
+				{
+					player.GetModPlayer<ModLiquidPlayer>().adjLiquid[i] = true;
+				}
+			}
 		}
 	}
 }
