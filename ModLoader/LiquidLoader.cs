@@ -76,6 +76,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<int, int[]>[] HookAdjLiquids;
 
+		private static Func<Player, int, int, int, bool?>[] HookBlocksTilePlacement;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -130,6 +132,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMergeTilesType>(ref HookMergeTiles, globalLiquids, (GlobalLiquid g) => g.LiquidMerge);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int?>>(ref HookLiquidFallDelay, globalLiquids, (GlobalLiquid g) => g.LiquidFallDelay);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int[]>>(ref HookAdjLiquids, globalLiquids, (GlobalLiquid g) => g.AdjLiquids);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, int, int, bool?>>(ref HookBlocksTilePlacement, globalLiquids, (GlobalLiquid g) => g.BlocksTilePlacement);
 			if (!unloading)
 			{
 				loaded = true;
@@ -353,6 +356,19 @@ namespace ModLiquidLib.ModLoader
 					player.GetModPlayer<ModLiquidPlayer>().adjLiquid[i] = true;
 				}
 			}
+		}
+
+		public static bool BlocksTilePlacement(Player player, int i, int j, int type)
+		{
+			Func<Player, int, int, int, bool?>[] hookBlockTilePlacement = HookBlocksTilePlacement;
+			for (int k = 0; k < hookBlockTilePlacement.Length; k++)
+			{
+				if (hookBlockTilePlacement[k](player, i, j, type) != null)
+				{
+					return (bool)hookBlockTilePlacement[k](player, i, j, type);
+				}
+			}
+			return GetLiquid(type)?.BlocksTilePlacement(player, i, j) ?? false;
 		}
 	}
 }

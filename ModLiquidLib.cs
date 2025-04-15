@@ -55,6 +55,9 @@ namespace ModLiquidLib
 			IL_NetMessage.CompressTileBlock_Inner += NetMessageHooks.SendLiquidTypes;
 			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles += PlayerHooks.AddLiquidCraftingConditions;
+			IL_Player.PlaceThing_ValidTileForReplacement += PlayerHooks.PreventLiquidBlockswap;
+			IL_Player.PlaceThing_Tiles_CheckLavaBlocking += PlayerHooks.PreventPlacingTilesInLiquids;
+			IL_Player.PlaceThing_Tiles_CheckRopeUsability += PlayerHooks.PreventRopePlacingInLiquid;
 
 			MapHelper.Initialize();
 		}
@@ -72,11 +75,11 @@ namespace ModLiquidLib
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsLavaSource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsHoneySource[i];
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsHoneySource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsHoneySource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsLavaSource[i];
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsLavaSource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsShimmerSource.Length; i++)
 			{
@@ -116,6 +119,10 @@ namespace ModLiquidLib
 			On_WorldGen.PlayLiquidChangeSound -= LiquidHooks.PreventSoundOverloadFromExecuting;
 			IL_NetMessage.CompressTileBlock_Inner -= NetMessageHooks.SendLiquidTypes;
 			IL_NetMessage.DecompressTileBlock_Inner -= NetMessageHooks.RecieveLiquidTypes;
+			IL_Player.AdjTiles -= PlayerHooks.AddLiquidCraftingConditions;
+			IL_Player.PlaceThing_ValidTileForReplacement -= PlayerHooks.PreventLiquidBlockswap;
+			IL_Player.PlaceThing_Tiles_CheckLavaBlocking -= PlayerHooks.PreventPlacingTilesInLiquids;
+			IL_Player.PlaceThing_Tiles_CheckRopeUsability -= PlayerHooks.PreventRopePlacingInLiquid;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />

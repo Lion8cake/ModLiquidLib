@@ -1,4 +1,5 @@
-﻿using ModLiquidLib.ModLoader;
+﻿using ModLiquidLib.ID;
+using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
 {
@@ -66,6 +68,68 @@ namespace ModLiquidLib.Hooks
 						break;
 					}
 				}
+			});
+		}
+
+		internal static void PreventLiquidBlockswap(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_005f = c.DefineLabel();
+
+			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Player>("tileTargetX"), i => i.MatchLdsfld<Player>("tileTargetY"), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _));
+			c.EmitLdarg(0);
+			c.EmitDelegate((Player self) =>
+			{
+				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+				{
+					if (LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, i))
+					{
+						return !WorldGen.WouldTileReplacementBeBlockedByLiquid(Player.tileTargetX, Player.tileTargetY, i);
+					}
+				}
+				return true;
+			});
+			c.EmitBrtrue(IL_005f);
+			c.EmitLdcI4(0);
+			c.EmitRet();
+			c.MarkLabel(IL_005f);
+
+			c.GotoNext(MoveType.Before, i => i.MatchCall<WorldGen>("WouldTileReplacementBeBlockedByLiquid"), i => i.MatchBrfalse(out _));
+			c.EmitLdarg(0);
+			c.EmitDelegate((int lavaID, Player self) =>
+			{
+				if (LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, lavaID))
+				{
+					return lavaID;
+				}
+				return -1;
+			});
+		}
+
+		internal static void PreventPlacingTilesInLiquids(ILContext il)
+		{
+			ILCursor c = new(il);
+			c.GotoNext(MoveType.After, i => i.MatchCall<Tile>("lava"));
+			c.EmitLdarg(0);
+			c.EmitDelegate((bool isLavaTile, Player self) =>
+			{
+				return LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidType);
+			});
+		}
+
+		internal static void PreventRopePlacingInLiquid(ILContext il)
+		{
+			ILCursor c = new(il);
+			int num2_var1 = -1;
+			int num_var2 = -1;
+
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out num2_var1), i => i.MatchLdloc(out num_var2), i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _), i => i.MatchLdloca(out _), i => i.MatchCall<Tile>("lava"));
+			c.EmitLdarg(0);
+			c.EmitLdloc(num2_var1);
+			c.EmitLdloc(num_var2);
+			c.EmitDelegate((bool isLavaTile, Player self, int num2, int num) =>
+			{
+				return LiquidLoader.BlocksTilePlacement(self, num2, num + 1, Main.tile[num2, num + 1].LiquidType);
 			});
 		}
 	}

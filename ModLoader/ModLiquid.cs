@@ -337,5 +337,19 @@ namespace ModLiquidLib.ModLoader
 		{
 			return TileID.Stone;
 		}
+
+		/// <summary>
+		/// Allows the user to specify whether the liquid prevents the placement or blockswap of a tile over this liquid. Usually used by lava to stop players from placing ontop of it. <br/>
+		/// Return true for the liquid to prevent tile placement, return false if the liquid can have tiles placed over it. <br/>
+		/// Returns false by default.
+		/// </summary>
+		/// <param name="player">The player instance thats attempting to place a tile over the liquid.</param>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <returns></returns>
+		public virtual bool BlocksTilePlacement(Player player, int i, int j)
+		{
+			return false;
+		}
 	}
 }
