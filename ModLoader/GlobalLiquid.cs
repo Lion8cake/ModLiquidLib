@@ -263,8 +263,19 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="player">The player instance thats attempting to place a tile over the liquid.</param>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="type"></param>
 		/// <returns></returns>
 		public virtual bool? BlocksTilePlacement(Player player, int i, int j, int type)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Allows you to determine what dust a liquid produces when splashed in
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual int? SplashDustType(int type, ref SoundStyle? splashSound, bool isEnter)
 		{
 			return null;
 		}

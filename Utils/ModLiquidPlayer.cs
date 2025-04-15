@@ -14,6 +14,8 @@ namespace ModLiquidLib.Utils
 
 		private bool[] _oldAdjLiquid = new bool[LiquidLoader.LiquidCount];
 
+		public bool[] moddedWet = new bool[LiquidLoader.LiquidCount];
+
 		public bool[] adjLiquid
 		{
 			get
