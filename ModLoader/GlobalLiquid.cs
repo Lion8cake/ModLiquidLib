@@ -297,5 +297,43 @@ namespace ModLiquidLib.ModLoader
 		{
 			return true;
 		}
+
+		/// <summary>
+		/// Hook for deciding whether a liquid should allow or disallow, when overtop of the Collision.CheckDrowning position, to be considered drowning or not. <br/>
+		/// Not to be confused with CanPlayersDrown, which is a hook called every frame to check if the player is drowning or not. Useful for making items such as a Breething Reed. <br/>
+		/// Return null to execute the normal Collision.CheckDrowning behaviour. Returns null by default.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual bool? ChecksForDrowning(int type)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Hook for deciding whether a liquid should emit breath dusts when the player is slowly drowning. <br/>
+		/// ChecksForDrowning must be set to true for this to run.
+		/// Return null to execute the normal breath behaviour. Returns null by default.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual bool? PlayersEmitBreathBubbles(int type)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Allows you to give conditions for when the game attempts to check to see if the player is drowning. <br/>
+		/// Set isDrowning to either true or false depending on whether the player should or should not be drowning. <br/>
+		/// This is used by items such as the Breething Reed to make the player be submerged deeper underwater. <br/>
+		/// Please see <see cref="P:Terraria.Player.CheckDrowning" /> for how vanilla uses the isDrowning boolean flag. <br/>
+		/// ChecksForDrowning must be set to true for this to run. Not to be confused with ChecksForDrowning hook.
+		/// </summary>
+		/// <param name="player">The player instance thats being effected by the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="isDrowning">The boolean flag for whether or not the player is drowning.</param>
+		public virtual void CanPlayerDrown(Player player, int type, ref bool isDrowning)
+		{
+		}
 	}
 }

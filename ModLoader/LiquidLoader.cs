@@ -34,6 +34,8 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate int? DelegateLiquidMergeTilesType(int i, int j, int type, int otherLiquid, ref SoundStyle? changeSound);
 
+		private delegate void DelegateCanPlayerDrown(Player player, int type, ref bool isDrowning);
+
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -81,6 +83,12 @@ namespace ModLiquidLib.ModLoader
 		private static Func<Player, int, bool, bool>[] HookOnPlayerSplash;
 
 		private static Func<Player, int, bool, bool, bool>[] HookPlayerCollision;
+
+		private static Func<int, bool?>[] HookChecksForDrowning;
+
+		private static Func<int, bool?>[] HookPlayersEmitBreathBubbles;
+
+		private static DelegateCanPlayerDrown[] HookCanPlayerDrown;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -139,6 +147,9 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, int, int, bool?>>(ref HookBlocksTilePlacement, globalLiquids, (GlobalLiquid g) => g.BlocksTilePlacement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool>>(ref HookOnPlayerSplash, globalLiquids, (GlobalLiquid g) => g.OnPlayerSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
 			if (!unloading)
 			{
 				loaded = true;
@@ -401,6 +412,36 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return GetLiquid(type)?.PlayerCollision(player, fallThrough, ignorePlats) ?? true;
+		}
+
+		public static bool? ChecksForDrowning(int type)
+		{
+			Func<int, bool?>[] hookChecksForDrowning = HookChecksForDrowning;
+			for (int k = 0; k < hookChecksForDrowning.Length; k++)
+			{
+				return hookChecksForDrowning[k](type);
+			}
+			return null;
+		}
+
+		public static bool? PlayersEmitBreathBubbles(int type)
+		{
+			Func<int, bool?>[] hookPlayersEmitBreathBubbles = HookPlayersEmitBreathBubbles;
+			for (int k = 0; k < hookPlayersEmitBreathBubbles.Length; k++)
+			{
+				return hookPlayersEmitBreathBubbles[k](type);
+			}
+			return null;
+		}
+
+		public static void CanPlayerDrown(int type, Player player, ref bool isDrowning)
+		{
+			GetLiquid(type)?.CanPlayerDrown(player, ref isDrowning);
+			DelegateCanPlayerDrown[] hookCanPlayerDrown = HookCanPlayerDrown;
+			for (int k = 0; k < hookCanPlayerDrown.Length; k++)
+			{
+				hookCanPlayerDrown[k](player, type, ref isDrowning);
+			}
 		}
 	}
 }

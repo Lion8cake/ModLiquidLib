@@ -59,6 +59,8 @@ namespace ModLiquidLib
 			IL_Player.PlaceThing_Tiles_CheckLavaBlocking += PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability += PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update += PlayerHooks.PlayerLiquidCollision;
+			IL_Collision.DrownCollision += CollisionHooks.LiquidDrownCollisionCheck;
+			IL_Player.CheckDrowning += PlayerHooks.CanPlayerEmitDrowningBubbles;
 
 			MapHelper.Initialize();
 		}
@@ -125,7 +127,8 @@ namespace ModLiquidLib
 			IL_Player.PlaceThing_Tiles_CheckLavaBlocking -= PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability -= PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update -= PlayerHooks.PlayerLiquidCollision;
-			
+			IL_Collision.DrownCollision -= CollisionHooks.LiquidDrownCollisionCheck;
+			IL_Player.CheckDrowning -= PlayerHooks.CanPlayerEmitDrowningBubbles;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />

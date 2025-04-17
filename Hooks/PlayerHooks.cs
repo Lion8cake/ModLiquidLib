@@ -1,9 +1,11 @@
 ﻿using AsmResolver.DotNet.Cloning;
 using Microsoft.Xna.Framework;
 using ModLiquidLib.ID;
+using ModLiquidLib.IO;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
+using rail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -137,6 +139,155 @@ namespace ModLiquidLib.Hooks
 				return LiquidLoader.BlocksTilePlacement(self, num2, num + 1, Main.tile[num2, num + 1].LiquidType);
 			});
 		}
+
+		internal static void CanPlayerEmitDrowningBubbles(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_03f2 = null;
+			int flag_var0 = -1;
+
+			c.GotoNext(MoveType.After, i => i.MatchStloc(out flag_var0), i => i.MatchLdsfld<Main>("myPlayer"), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("whoAmI"));
+			c.EmitLdarg(0);
+			c.EmitLdloca(flag_var0);
+			c.EmitDelegate((bool myPlayerCheck, Player self, ref bool flag) =>
+			{
+				int? liquid = LiquidIDofLiquidWet(self);
+				if (liquid != null)
+				{
+					LiquidLoader.CanPlayerDrown((int)liquid, self, ref flag);
+				}
+				return myPlayerCheck;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("lavaWet"));
+			c.EmitDelegate((bool isLavaWet) =>
+			{
+				bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Lava);
+				if (flag == null)
+				{
+					return isLavaWet;
+				}
+				else
+				{
+					return !(bool)flag;
+				}
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
+			c.EmitDelegate((bool isHoneyWet) =>
+			{
+				bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Honey);
+				if (flag == null)
+				{
+					return isHoneyWet;
+				}
+				else
+				{
+					return !(bool)flag;
+				}
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchBrtrue(out IL_03f2));
+			c.EmitLdarg(0);
+			c.EmitDelegate((Player self) =>
+			{
+				for (int i = LiquidLoader.LiquidCount - 1; i >= 0; i--)
+				{
+					if (i == LiquidID.Lava || i == LiquidID.Honey)
+					{
+						continue;
+					}
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(i);
+					if (flag != null)
+					{
+						if (!(bool)flag)
+						{
+							if (i >= LiquidID.Count)
+							{
+								if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
+								{
+									return true;
+								}
+							}
+							else if (i == LiquidID.Shimmer)
+							{
+								if (self.shimmerWet)
+								{
+									return true;
+								}
+							}
+							else if (i == LiquidID.Water)
+							{
+								if (self.wet && !self.lavaWet && !self.honeyWet && !self.shimmerWet && !self.GetModPlayer<ModLiquidPlayer>().moddedWet.Contains(true))
+								{
+									return true;
+								}
+							}
+						}
+					}
+
+					if (i >= LiquidID.Count)
+					{
+						ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+						if (modLiquid != null)
+						{
+							if (!modLiquid.PlayersEmitBreathBubbles)
+							{
+								if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
+								{
+									return true;
+								}
+							}
+						}
+					}
+				}
+				return false;
+			});
+			c.EmitBrtrue(IL_03f2);
+		}
+
+		private static int? LiquidIDofLiquidWet(Player self)
+		{
+			for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+			{
+				if (i == LiquidID.Water)
+				{
+					if (self.wet && !self.lavaWet && !self.honeyWet && !self.shimmerWet && !self.GetModPlayer<ModLiquidPlayer>().moddedWet.Contains(true))
+					{
+						return LiquidID.Water;
+					}
+				}
+				else if (i == LiquidID.Lava)
+				{
+					if (self.lavaWet)
+					{
+						return LiquidID.Lava;
+					}
+				}
+				else if (i == LiquidID.Honey)
+				{
+					if (self.honeyWet)
+					{
+						return LiquidID.Honey;
+					}
+				}
+				else if (i == LiquidID.Shimmer)
+				{
+					if (self.shimmerWet)
+					{
+						return LiquidID.Shimmer;
+					}
+				}
+				else if (i >= LiquidID.Count)
+				{
+					if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
+					{
+						return i;
+					}
+				}
+			}
+			return null;
+		} 
 
 		internal static void PlayerLiquidCollision(ILContext il)
 		{

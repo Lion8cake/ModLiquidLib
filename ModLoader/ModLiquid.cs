@@ -61,9 +61,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		/// <summary>
-		/// Liquids can only have a maximum fall delay of 10 (which is the same as the fall of Honey), this is due to the delay being reset to 10 when in quickfall mode.
-		/// </summary>
+		/// <summary> Liquids can only have a maximum fall delay of 10 (which is the same as the fall of Honey), this is due to the delay being reset to 10 when in quickfall mode. </summary>
 		public int FallDelay { get; set; } = 0;
 
 		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
@@ -71,6 +69,12 @@ namespace ModLiquidLib.ModLoader
 
 		/// <summary> An array of the IDs of liquids that this tile can be considered as when looking for available liquids. </summary>
 		public int[] AdjLiquids { get; set; } = new int[0];
+
+		/// <summary> The check in Collision that checks if a coord will be drowning in water.</summary>
+		public bool ChecksForDrowning { get; set; } = true;
+
+		/// <summary> Whether or not, when drowning, the player will emit dusts from their mouth. </summary>
+		public bool PlayersEmitBreathBubbles { get; set; } = true;
 
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
@@ -374,6 +378,19 @@ namespace ModLiquidLib.ModLoader
 		public virtual bool PlayerCollision(Player player, bool fallThrough, bool ignorePlats)
 		{
 			return true;
+		}
+
+		/// <summary>
+		/// Allows you to give conditions for when the game attempts to check to see if the player is drowning. <br/>
+		/// Set isDrowning to either true or false depending on whether the player should or should not be drowning. <br/>
+		/// This is used by items such as the Breething Reed to make the player be submerged deeper underwater. <br/>
+		/// Please see <see cref="P:Terraria.Player.CheckDrowning" /> for how vanilla uses the isDrowning boolean flag. <br/>
+		/// ChecksForDrowning must be set to true for this to run. Not to be confused with ChecksForDrowning.
+		/// </summary>
+		/// <param name="player">The player instance thats being effected by the liquid.</param>
+		/// <param name="isDrowning">The boolean flag for whether or not the player is drowning.</param>
+		public virtual void CanPlayerDrown(Player player, ref bool isDrowning)
+		{
 		}
 	}
 }
