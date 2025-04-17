@@ -97,5 +97,15 @@ namespace ModLiquidLib.Utils
 		{
 			return player.GetModPlayer<ModLiquidPlayer>().adjLiquid[Liquid];
 		}
+
+		public static bool[] GetModdedWetArray(this Player player)
+		{
+			return player.GetModPlayer<ModLiquidPlayer>().moddedWet;
+		}
+
+		public static void TryFloatingInFluid(this Player player)
+		{
+			player.TryFloatingInFluid();
+		} 
 	}
 }

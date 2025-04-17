@@ -80,6 +80,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<Player, int, bool, bool>[] HookOnPlayerSplash;
 
+		private static Func<Player, int, bool, bool, bool>[] HookPlayerCollision;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -136,6 +138,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int[]>>(ref HookAdjLiquids, globalLiquids, (GlobalLiquid g) => g.AdjLiquids);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, int, int, bool?>>(ref HookBlocksTilePlacement, globalLiquids, (GlobalLiquid g) => g.BlocksTilePlacement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool>>(ref HookOnPlayerSplash, globalLiquids, (GlobalLiquid g) => g.OnPlayerSplash);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerCollision);
 			if (!unloading)
 			{
 				loaded = true;
@@ -385,6 +388,19 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return true;
+		}
+
+		public static bool PlayerCollision(int type, Player player, bool fallThrough, bool ignorePlats)
+		{
+			Func<Player, int, bool, bool, bool>[] hookPlayerCollision = HookPlayerCollision;
+			for (int k = 0; k < hookPlayerCollision.Length; k++)
+			{
+				if (!hookPlayerCollision[k](player, type, fallThrough, ignorePlats))
+				{
+					return false;
+				}
+			}
+			return GetLiquid(type)?.PlayerCollision(player, fallThrough, ignorePlats) ?? true;
 		}
 	}
 }

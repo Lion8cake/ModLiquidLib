@@ -251,7 +251,7 @@ namespace ModLiquidLib.ModLoader
 		/// <summary>
 		/// Allows you to draw things in front of the liquid at the given coordinates. This can also be used to do things such as rendering glowmasks.<para />
 		/// This hook is not called if <see cref="P:ModLiquidLib.ModLoader.ModLiquid.PreSlopeDraw" /> returns false.<para />
-		/// Only called for liquid slopes. If you want to postdraw the liquid itself, see <see cref="P:ModLiquidLib.ModLoader.ModLiquid.POstDraw" /> or <see cref="P:ModLiquidLib.ModLoader.ModLiquid.PostRetroDraw" />
+		/// Only called for liquid slopes. If you want to postdraw the liquid itself, see <see cref="P:ModLiquidLib.ModLoader.ModLiquid.PostDraw" /> or <see cref="P:ModLiquidLib.ModLoader.ModLiquid.PostRetroDraw" />
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
@@ -352,8 +352,28 @@ namespace ModLiquidLib.ModLoader
 			return false;
 		}
 
+		/// <summary>
+		/// Allows you to decide what happens when the player enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a player enters and leaves. <br/>
+		/// Players now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it.
+		/// </summary>
+		/// <param name="player">The player instance thats entering or exiting the liquid.</param>
+		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		public virtual void OnPlayerSplash(Player player, bool isEnter)
 		{
+		}
+
+		/// <summary>
+		/// Allows the user to specify how the liquid interacts with player movement speed. <br/>
+		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
+		/// Return true for the liquid to use the water/lava collision. Returns true by default.
+		/// </summary>
+		/// <param name="player">The player instance thats being effected by the liquid.</param>
+		/// <param name="fallThrough">Whether or not the player is falling through the liquid.</param>
+		/// <param name="ignorePlats">Whether or not the player ignores platforms when falling.</param>
+		/// <returns></returns>
+		public virtual bool PlayerCollision(Player player, bool fallThrough, bool ignorePlats)
+		{
+			return true;
 		}
 	}
 }

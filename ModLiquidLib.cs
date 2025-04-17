@@ -125,6 +125,7 @@ namespace ModLiquidLib
 			IL_Player.PlaceThing_Tiles_CheckLavaBlocking -= PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability -= PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update -= PlayerHooks.PlayerLiquidCollision;
+			
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
@@ -143,7 +144,8 @@ namespace ModLiquidLib
 
 		public static Condition NearLiquid(int liquidID)
 		{
-			LocalizedText text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]));
+			string liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
+			LocalizedText text;
 			if (liquidID == LiquidID.Water)
 				text = Language.GetText("Conditions.NearWater");
 			else if (liquidID == LiquidID.Lava)
@@ -152,6 +154,8 @@ namespace ModLiquidLib
 				text = Language.GetText("Conditions.NearHoney");
 			else if (liquidID == LiquidID.Shimmer)
 				text = Language.GetText("Conditions.NearShimmer");
+			else
+				text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(liquidMapName == "" ? LiquidLoader.GetLiquid(liquidID).Name : liquidMapName);
 
 			return new Condition(text, () => Main.LocalPlayer.GetAdjLiquids(liquidID));
 		}

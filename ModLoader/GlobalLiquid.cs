@@ -271,11 +271,29 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Allows you to determine what dust a liquid produces when splashed in
+		/// Allows you to decide what happens when the player enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a player enters and leaves. <br/>
+		/// Players now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return true to allow the liquids to call their normal splash code. Returns true by default.
 		/// </summary>
+		/// <param name="player">The player instance thats entering or exiting the liquid.</param>
 		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		public virtual bool OnPlayerSplash(Player player, int type, bool isEnter)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Allows the user to specify how liquids interacts with player movement speed. <br/>
+		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
+		/// Return true for the liquid to use it's collision. Returns true by default.
+		/// </summary>
+		/// <param name="player">The player instance thats being effected by the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="fallThrough">Whether or not the player is falling through the liquid.</param>
+		/// <param name="ignorePlats">Whether or not the player ignores platforms when falling.</param>
+		/// <returns></returns>
+		public virtual bool PlayerCollision(Player player, int type, bool fallThrough, bool ignorePlats)
 		{
 			return true;
 		}

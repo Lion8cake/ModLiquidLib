@@ -143,6 +143,8 @@ namespace ModLiquidLib.Hooks
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];
 			int shimmer_var9 = -1;
+			int fallThrough_var14 = -1;
+			int ignorePlats_var13 = -1;
 
 			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Collision>("shimmer"), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);
@@ -305,6 +307,81 @@ namespace ModLiquidLib.Hooks
 					self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count] = false;
 				}
 			});
+
+			//Custom Liquid Player Movement
+			c.GotoNext(MoveType.Before, i => i.MatchBrtrue(out _), i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"), i => i.MatchBrfalse(out _), i => i.MatchLdarg(0), i => i.MatchLdloc(out fallThrough_var14), i => i.MatchLdloc(out ignorePlats_var13));
+			c.EmitLdarg(0);
+			c.EmitLdloc(fallThrough_var14);
+			c.EmitLdloc(ignorePlats_var13);
+			c.EmitDelegate((bool isShimmerWet, Player self, bool fallThrough, bool ignorePlats) =>
+			{
+				if (LiquidLoader.PlayerCollision(LiquidID.Shimmer, self, fallThrough, ignorePlats))
+				{
+					return isShimmerWet;
+				}
+				return false;
+			});
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
+			c.EmitLdarg(0);
+			c.EmitLdloc(fallThrough_var14);
+			c.EmitLdloc(ignorePlats_var13);
+			c.EmitDelegate((bool isHoneyWet, Player self, bool fallThrough, bool ignorePlats) =>
+			{
+				if (LiquidLoader.PlayerCollision(LiquidID.Honey, self, fallThrough, ignorePlats))
+				{
+					return isHoneyWet;
+				}
+				return false;
+			});
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("wet"));
+			c.EmitLdarg(0);
+			c.EmitLdloc(fallThrough_var14);
+			c.EmitLdloc(ignorePlats_var13);
+			c.EmitDelegate((bool isWet, Player self, bool fallThrough, bool ignorePlats) =>
+			{
+				if (self.lavaWet)
+				{
+					if (LiquidLoader.PlayerCollision(LiquidID.Lava, self, fallThrough, ignorePlats))
+					{
+						return isWet;
+					}
+				}
+				else
+				{
+					if (isModdedWet(self, out int modLiquidID))
+					{
+						if (modLiquidID != 0)
+						{
+							if (LiquidLoader.PlayerCollision(modLiquidID, self, fallThrough, ignorePlats))
+							{
+								return isWet;
+							}
+						}
+					}
+					else
+					{
+						if (LiquidLoader.PlayerCollision(LiquidID.Water, self, fallThrough, ignorePlats))
+						{
+							return isWet;
+						}
+					}
+				}
+				return false;
+			});
+		}
+
+		private static bool isModdedWet(Player self, out int modLiquidID)
+		{
+			modLiquidID = 0;
+			for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
+			{
+				if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
+				{
+					modLiquidID = i;
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }
