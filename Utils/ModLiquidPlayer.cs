@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace ModLiquidLib.Utils
 {
-	internal class ModLiquidPlayer : ModPlayer
+	public class ModLiquidPlayer : ModPlayer
 	{
 		private bool[] _adjLiquid = new bool[LiquidLoader.LiquidCount];
 
 		private bool[] _oldAdjLiquid = new bool[LiquidLoader.LiquidCount];
 
-		public bool[] moddedWet = new bool[LiquidLoader.LiquidCount];
+		public bool[] moddedWet = new bool[LiquidLoader.LiquidCount - LiquidID.Count];
 
 		public bool[] adjLiquid
 		{

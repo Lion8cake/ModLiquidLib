@@ -66,22 +66,6 @@ namespace ModLiquidLib.ModLoader
 		/// </summary>
 		public int FallDelay { get; set; } = 0;
 
-		/// <summary>
-		/// The default style of sound made when this liquid is splashed in.<br />
-		/// Defaults to SoundID.Splash, which is the sound used for liquids such as water.
-		/// </summary>
-		public SoundStyle? SplashEnterSound { get; set; } = SoundID.Splash;
-
-		/// <summary>
-		/// The default style of sound made when this liquid is splashed out.<br />
-		/// Defaults to SoundID.Splash, which is the sound used for liquids such as water.
-		/// </summary>
-		public SoundStyle? SplashExitSound { get; set; } = SoundID.Splash;
-
-		/// <summary> The default type of dust made when this liquid is splashed in.
-		/// <para /> Defaults to -1, which prevent spawning any splash dust. </summary>
-		public int SplashDustType { get; set; } = -1;
-
 		/// <summary> The vanilla ID of what should replace the instance when a user unloads and subsequently deletes data from your mod in their save file. Defaults to 0. </summary>
 		public ushort VanillaFallbackOnModDeletion { get; set; }
 
@@ -366,6 +350,10 @@ namespace ModLiquidLib.ModLoader
 		public virtual bool BlocksTilePlacement(Player player, int i, int j)
 		{
 			return false;
+		}
+
+		public virtual void OnPlayerSplash(Player player, bool isEnter)
+		{
 		}
 	}
 }

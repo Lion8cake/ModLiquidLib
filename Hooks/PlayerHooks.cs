@@ -141,20 +141,7 @@ namespace ModLiquidLib.Hooks
 		internal static void PlayerLiquidCollision(ILContext il)
 		{
 			ILCursor c = new(il);
-			ILLabel[] IL_0000 = new ILLabel[16];
-			ILLabel[] IL_0000_2 = new ILLabel[2];
-			for (int i = 0; i < IL_0000.Length; i++)
-			{
-				IL_0000[i] = c.DefineLabel();
-			}
-			for (int j = 0; j < IL_0000_2.Length; j++)
-			{
-				IL_0000_2[j] = c.DefineLabel();
-			}
-			int shimmerLoop_var = -1;
-			int honeyLoop_var = -1;
-			int waterLoop_var = -1;
-			int lavaLoop_var = -1;
+			ILLabel[] IL_0000 = new ILLabel[8];
 			int shimmer_var9 = -1;
 
 			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Collision>("shimmer"), i => i.MatchStloc(out _));
@@ -162,321 +149,136 @@ namespace ModLiquidLib.Hooks
 			c.EmitDelegate((Player self) =>
 			{
 				LiquidCollision.WetCollision(self.position, self.width, self.height, out bool[] liquidIn);
-				self.GetModPlayer<ModLiquidPlayer>().moddedWet = liquidIn;
+				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
+				{
+					if (liquidIn[i])
+					{
+						self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count] = true;
+					}
+				}
 			});
-			for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 2; j++)
 			{
 				#region Shimmer Splash Edit 
 				//Shimmer
-				c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrfalse(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out shimmerLoop_var), i => i.MatchBr(out _), i => i.MatchLdarg(0));
-				if (i == 0)
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						return BlockDustsIfNegitive(LiquidID.Shimmer, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						return BlockDustsIfNegitive(LiquidID.Shimmer, false);
-					});
-				}
-				c.EmitBrfalse(IL_0000[0 + (i * 8)]);
+				c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrfalse(out IL_0000[0 + (j * 4)]), i => i.MatchLdcI4(0), i => i.MatchStloc(out _));
 				c.EmitLdarg(0);
-
-				c.GotoNext(MoveType.After, i => i.MatchAdd(), i => i.MatchLdcI4(24), i => i.MatchLdcI4(308));
-				if (i == 0)
-				{
-					c.EmitDelegate((int defaultDustType) =>
-					{
-						return EditChangeBubbleDust(LiquidID.Honey, defaultDustType, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((int defaultDustType) =>
-					{
-						return EditChangeBubbleDust(LiquidID.Honey, defaultDustType, false);
-					});
-				}
-
-				c.GotoNext(MoveType.Before, i => i.MatchLdloc(shimmerLoop_var), i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(shimmerLoop_var));
-				c.MarkLabel(IL_0000[0 + (i * 8)]);
-
-				//Sound
-				c.GotoNext(MoveType.Before, i => i.MatchLdcI4(19), i => i.MatchLdarg(0), i => i.MatchLdflda<Entity>("position"));
-				c.EmitBr(IL_0000[4 + (i * 8)]);
-				c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.Audio.SoundEngine", "PlaySound"), i => i.MatchPop());
-				c.MarkLabel(IL_0000[4 + (i * 8)]);
-				c.EmitLdarg(0);
-				if (i == 0)
+				if (j == 0)
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						PlaySplashSoundUpdated(LiquidID.Shimmer, self, SoundID.Shimmer1, true);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Shimmer, self, true);
 					});
 				}
 				else
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						PlaySplashSoundUpdated(LiquidID.Shimmer, self, SoundID.Shimmer2, false);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Shimmer, self, false);
 					});
 				}
+				c.EmitBrfalse(IL_0000[0 + (j * 4)]);
 				#endregion
 
 				#region Honey Splash Edit 
 				//Honey 
-				c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>("honeyWet"), i => i.MatchBrfalse(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out honeyLoop_var), i => i.MatchBr(out _), i => i.MatchLdarg(0));
-				if (i == 0)
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						return BlockDustsIfNegitive(LiquidID.Honey, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						return BlockDustsIfNegitive(LiquidID.Honey, false);
-					});
-				}
-				c.EmitBrfalse(IL_0000[1 + (i * 8)]);
+				c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>("honeyWet"), i => i.MatchBrfalse(out IL_0000[1 + (j * 4)]), i => i.MatchLdcI4(0), i => i.MatchStloc(out _));
 				c.EmitLdarg(0);
-
-				c.GotoNext(MoveType.After, i => i.MatchAdd(), i => i.MatchLdcI4(24), i => i.MatchLdcI4(152));
-				if (i == 0)
-				{
-					c.EmitDelegate((int defaultDustType) =>
-					{
-						return EditChangeBubbleDust(LiquidID.Honey, defaultDustType, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((int defaultDustType) =>
-					{
-						return EditChangeBubbleDust(LiquidID.Honey, defaultDustType, false);
-					});
-				}
-
-				c.GotoNext(MoveType.Before, i => i.MatchLdloc(honeyLoop_var), i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(honeyLoop_var));
-				c.MarkLabel(IL_0000[1 + (i * 8)]);
-
-				//Sound
-				c.GotoNext(MoveType.Before, i => i.MatchLdcI4(19), i => i.MatchLdarg(0), i => i.MatchLdflda<Entity>("position"));
-				c.EmitBr(IL_0000[5 + (i * 8)]);
-				c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.Audio.SoundEngine", "PlaySound"), i => i.MatchPop());
-				c.MarkLabel(IL_0000[5 + (i * 8)]);
-				c.EmitLdarg(0);
-				if (i == 0)
+				if (j == 0)
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						PlaySplashSoundUpdated(LiquidID.Honey, self, SoundID.SplashWeak, true);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Honey, self, true);
 					});
 				}
 				else
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						PlaySplashSoundUpdated(LiquidID.Honey, self, SoundID.SplashWeak, false);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Honey, self, false);
 					});
 				}
+				c.EmitBrfalse(IL_0000[1 + (j * 4)]);
 				#endregion
 
-				#region Water Splash Edit 
+				#region Water and Modded Liquid Splash Edit 
 				//Water
-				c.GotoNext(MoveType.After, i => i.MatchBr(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out waterLoop_var), i => i.MatchBr(out _), i => i.MatchLdarg(0));
-				if (i == 0)
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						return BlockDustsIfNegitive(LiquidID.Water, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						return BlockDustsIfNegitive(LiquidID.Water, false);
-					});
-				}
-				c.EmitBrfalse(IL_0000[2 + (i * 8)]);
+				c.GotoNext(MoveType.After, i => i.MatchPop(), i => i.MatchBr(out IL_0000[2 + (j * 4)]), i => i.MatchLdcI4(0), i => i.MatchStloc(out _));
 				c.EmitLdarg(0);
-
-				c.GotoNext(MoveType.After, i => i.MatchAdd(), i => i.MatchLdcI4(24), i => i.MatchCall<Dust>("dustWater"));
-				if (i == 0)
+				if (j == 0)
 				{
-					c.EmitDelegate((int defaultDustType) =>
+					c.EmitDelegate((Player self) =>
 					{
-						return EditChangeBubbleDust(LiquidID.Water, defaultDustType, true);
+						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
+						{
+							if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
+							{
+								if (LiquidLoader.OnPlayerSplash(i, self, true))
+								{
+									LiquidLoader.GetLiquid(i).OnPlayerSplash(self, true);
+								}
+								return true;
+							}
+						}
+						return false;
 					});
 				}
 				else
 				{
-					c.EmitDelegate((int defaultDustType) =>
+					c.EmitDelegate((Player self) =>
 					{
-						return EditChangeBubbleDust(LiquidID.Water, defaultDustType, false);
+						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
+						{
+							if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
+							{
+								if (LiquidLoader.OnPlayerSplash(i, self, false))
+								{
+									LiquidLoader.GetLiquid(i).OnPlayerSplash(self, false);
+								}
+								return true;
+							}
+						}
+						return false;
 					});
 				}
-
-				c.GotoNext(MoveType.Before, i => i.MatchLdloc(waterLoop_var), i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(waterLoop_var));
-				c.MarkLabel(IL_0000[2 + (i * 8)]);
-
-				//Sound
-				c.GotoNext(MoveType.Before, i => i.MatchLdcI4(19), i => i.MatchLdarg(0), i => i.MatchLdflda<Entity>("position"));
-				c.EmitBr(IL_0000[6 + (i * 8)]);
-				c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.Audio.SoundEngine", "PlaySound"), i => i.MatchPop());
-				c.MarkLabel(IL_0000[6 + (i * 8)]);
-				c.MarkLabel(IL_0000_2[i]);
+				c.EmitBrtrue(IL_0000[2 + (j * 4)]);
 				c.EmitLdarg(0);
-				if (i == 0)
+				if (j == 0)
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						PlaySplashSoundUpdated(LiquidID.Water, self, SoundID.Splash, true);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Water, self, true);
 					});
 				}
 				else
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						PlaySplashSoundUpdated(LiquidID.Water, self, SoundID.Splash, false);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Water, self, false);
 					});
 				}
+				c.EmitBrfalse(IL_0000[2 + (j * 4)]);
 				#endregion
 
 				#region Lava Splash Edit
 				//Lava
-				c.GotoNext(MoveType.After, i => i.MatchBr(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out lavaLoop_var), i => i.MatchBr(out _), i => i.MatchLdarg(0));
-				if (i == 0)
+				c.GotoNext(MoveType.After, i => i.MatchBr(out IL_0000[3 + (j * 4)]), i => i.MatchLdcI4(0), i => i.MatchStloc(out _));
+				c.EmitLdarg(0);
+				if (j == 0)
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						return BlockDustsIfNegitive(LiquidID.Lava, true);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Lava, self, true);
 					});
 				}
 				else
 				{
 					c.EmitDelegate((Player self) =>
 					{
-						return BlockDustsIfNegitive(LiquidID.Lava, false);
+						return LiquidLoader.OnPlayerSplash(LiquidID.Lava, self, false);
 					});
 				}
-				c.EmitBrfalse(IL_0000[3 + (i * 8)]);
-				c.EmitLdarg(0);
-
-				c.GotoNext(MoveType.After, i => i.MatchAdd(), i => i.MatchLdcI4(24), i => i.MatchLdcI4(35));
-				if (i == 0)
-				{
-					c.EmitDelegate((int defaultDustType) =>
-					{
-						return EditChangeBubbleDust(LiquidID.Lava, defaultDustType, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((int defaultDustType) =>
-					{
-						return EditChangeBubbleDust(LiquidID.Lava, defaultDustType, false);
-					});
-				}
-
-				c.GotoNext(MoveType.Before, i => i.MatchLdloc(lavaLoop_var), i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(lavaLoop_var));
-				c.MarkLabel(IL_0000[3 + (i * 8)]);
-
-				//Sound
-				c.GotoNext(MoveType.Before, i => i.MatchLdcI4(19), i => i.MatchLdarg(0), i => i.MatchLdflda<Entity>("position"));
-				c.EmitBr(IL_0000[7 + (i * 8)]);
-				c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.Audio.SoundEngine", "PlaySound"), i => i.MatchPop());
-				c.MarkLabel(IL_0000[7 + (i * 8)]);
-				c.EmitLdarg(0);
-				if (i == 0)
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						PlaySplashSoundUpdated(LiquidID.Lava, self, SoundID.SplashWeak, true);
-					});
-				}
-				else
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						PlaySplashSoundUpdated(LiquidID.Lava, self, SoundID.SplashWeak, false);
-					});
-				}
-				#endregion
-
-				#region ModLiquid Splash Additions
-				c.GotoPrev(MoveType.Before, i => i.MatchStloc(waterLoop_var), i => i.MatchBr(out _));
-				c.EmitLdarg(0);
-				c.EmitDelegate((int unused, Player self) =>
-				{
-					for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
-					{
-						if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i])
-						{
-							return true;
-						}
-					}
-					return false;
-				});
-				c.EmitBrtrue(IL_0000_2[i]);
-				c.EmitLdcI4(0);
-				c.GotoLabel(IL_0000_2[i]);
-				c.EmitLdarg(0);
-				if (i == 0)
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
-						{
-							if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i])
-							{
-								ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
-								for (int num105 = 0; num105 < 50; num105++)
-								{
-									int num106 = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (float)(self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
-									Main.dust[num106].velocity.Y -= 3f;
-									Main.dust[num106].velocity.X *= 2.5f;
-									Main.dust[num106].scale = 0.8f;
-									Main.dust[num106].alpha = 100;
-									Main.dust[num106].noGravity = true;
-								}
-								SoundEngine.PlaySound(modLiquid.SplashEnterSound, (int)self.position.X, (int)self.position.Y);
-								break;
-							}
-						}
-					});
-				}
-				else
-				{
-					c.EmitDelegate((Player self) =>
-					{
-						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
-						{
-							if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i])
-							{
-								ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
-								for (int num13 = 0; num13 < 50; num13++)
-								{
-									int num14 = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (float)(self.height / 2)), self.width + 12, 24, modLiquid.SplashDustType);
-									Main.dust[num14].velocity.Y -= 4f;
-									Main.dust[num14].velocity.X *= 2.5f;
-									Main.dust[num14].scale = 0.8f;
-									Main.dust[num14].alpha = 100;
-									Main.dust[num14].noGravity = true;
-								}
-								SoundEngine.PlaySound(modLiquid.SplashExitSound, (int)self.position.X, (int)self.position.Y);
-								break;
-							}
-						}
-					});
-				}
+				c.EmitBrfalse(IL_0000[3 + (j * 4)]);
 				#endregion
 			}
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("honeyWet"), i => i.MatchLdloc(out shimmer_var9));
@@ -484,11 +286,11 @@ namespace ModLiquidLib.Hooks
 			c.EmitDelegate((int unused, Player self) =>
 			{
 				LiquidCollision.WetCollision(self.position, self.width, self.height, out bool[] liquidIn);
-				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (!liquidIn[i])
 					{
-						self.GetModPlayer<ModLiquidPlayer>().moddedWet[i] = false;
+						self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count] = false;
 					}
 				}
 			});
@@ -498,39 +300,11 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
-				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
-					self.GetModPlayer<ModLiquidPlayer>().moddedWet[i] = false;
+					self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count] = false;
 				}
 			});
-		}
-
-		private static bool BlockDustsIfNegitive(int liquidID, bool isEnter)
-		{
-			SoundStyle? nullSound = null;
-			if (LiquidLoader.SplashDustType(liquidID, ref nullSound, isEnter) == -1)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		private static int EditChangeBubbleDust(int liquidID, int defaultDustType, bool isEnter)
-		{
-			SoundStyle? nullSound = null;
-			int? dustType = LiquidLoader.SplashDustType(liquidID, ref nullSound, isEnter);
-			if (dustType != null)
-			{
-				return (int)dustType;
-			}
-			return defaultDustType;
-		}
-
-		private static void PlaySplashSoundUpdated(int liquidID, Player self, SoundStyle? splashSound, bool isEnter)
-		{
-			LiquidLoader.SplashDustType(liquidID, ref splashSound, isEnter);
-			if (splashSound != null)
-				SoundEngine.PlaySound(splashSound, (int)self.position.X, (int)self.position.Y);
 		}
 	}
 }

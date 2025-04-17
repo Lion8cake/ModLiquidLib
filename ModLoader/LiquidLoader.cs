@@ -34,8 +34,6 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate int? DelegateLiquidMergeTilesType(int i, int j, int type, int otherLiquid, ref SoundStyle? changeSound);
 
-		private delegate int? DelegateSplashDustType(int type, ref SoundStyle? changeSound, bool isEnter);
-
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -80,7 +78,7 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<Player, int, int, int, bool?>[] HookBlocksTilePlacement;
 
-		private static DelegateSplashDustType[] HookSplashDustType;
+		private static Func<Player, int, bool, bool>[] HookOnPlayerSplash;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -137,7 +135,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int?>>(ref HookLiquidFallDelay, globalLiquids, (GlobalLiquid g) => g.LiquidFallDelay);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int[]>>(ref HookAdjLiquids, globalLiquids, (GlobalLiquid g) => g.AdjLiquids);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, int, int, bool?>>(ref HookBlocksTilePlacement, globalLiquids, (GlobalLiquid g) => g.BlocksTilePlacement);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateSplashDustType>(ref HookSplashDustType, globalLiquids, (GlobalLiquid g) => g.SplashDustType);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool>>(ref HookOnPlayerSplash, globalLiquids, (GlobalLiquid g) => g.OnPlayerSplash);
 			if (!unloading)
 			{
 				loaded = true;
@@ -376,14 +374,17 @@ namespace ModLiquidLib.ModLoader
 			return GetLiquid(type)?.BlocksTilePlacement(player, i, j) ?? false;
 		}
 
-		public static int? SplashDustType(int type, ref SoundStyle? splashSound, bool isEnter)
+		public static bool OnPlayerSplash(int type, Player player, bool isEnter)
 		{
-			DelegateSplashDustType[] hookSplashDustType = HookSplashDustType;
-			for (int k = 0; k < hookSplashDustType.Length; k++)
+			Func<Player, int, bool, bool>[] hookOnPlayerSplash = HookOnPlayerSplash;
+			for (int k = 0; k < hookOnPlayerSplash.Length; k++)
 			{
-				return hookSplashDustType[k](type, ref splashSound, isEnter);
+				if (!hookOnPlayerSplash[k](player, type, isEnter))
+				{
+					return false;
+				}
 			}
-			return null;
+			return true;
 		}
 	}
 }

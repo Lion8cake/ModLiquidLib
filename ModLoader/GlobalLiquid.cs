@@ -275,9 +275,9 @@ namespace ModLiquidLib.ModLoader
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public virtual int? SplashDustType(int type, ref SoundStyle? splashSound, bool isEnter)
+		public virtual bool OnPlayerSplash(Player player, int type, bool isEnter)
 		{
-			return null;
+			return true;
 		}
 	}
 }
