@@ -151,7 +151,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloca(flag_var0);
 			c.EmitDelegate((bool myPlayerCheck, Player self, ref bool flag) =>
 			{
-				int? liquid = LiquidIDofLiquidWet(self);
+				int? liquid = LiquidIDOfLiquidWet(self);
 				if (liquid != null)
 				{
 					LiquidLoader.CanPlayerDrown((int)liquid, self, ref flag);
@@ -246,7 +246,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitBrtrue(IL_03f2);
 		}
 
-		private static int? LiquidIDofLiquidWet(Player self)
+		private static int? LiquidIDOfLiquidWet(Player self)
 		{
 			for (int i = 0; i < LiquidLoader.LiquidCount; i++)
 			{
@@ -293,9 +293,29 @@ namespace ModLiquidLib.Hooks
 		{
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];
+			ILLabel IL_01fa = null;
 			int shimmer_var9 = -1;
 			int fallThrough_var14 = -1;
 			int ignorePlats_var13 = -1;
+
+			/*c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _), i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"));
+			c.GotoNext(MoveType.After, i => i.MatchStfld<Player>("maxFallSpeed"), i => i.MatchBr(out IL_01fa), i => i.MatchLdarg(0));
+			c.EmitDelegate((Player self) =>
+			{
+				Main.NewText("shimmer jump");
+				return false;//LiquidLoader.UpdatePlayerLiquidMovement(LiquidID.Shimmer, self);
+			});
+			c.EmitBrfalse(IL_01fa);
+			c.EmitLdarg(0);*/
+
+			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_01fa), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"), i => i.MatchBrfalse(out _), i => i.MatchLdarg(0));
+			c.EmitDelegate((Player self) =>
+			{
+				return false;
+			});
+			c.EmitBrfalse(IL_01fa);
+			c.EmitLdarg(0);
+
 
 			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Collision>("shimmer"), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);

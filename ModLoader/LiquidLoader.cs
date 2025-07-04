@@ -90,6 +90,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static DelegateCanPlayerDrown[] HookCanPlayerDrown;
 
+		private static Func<Player, int, bool?>[] HookUpdatePlayerLiquidMovement;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -150,6 +152,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool?>>(ref HookUpdatePlayerLiquidMovement, globalLiquids, (GlobalLiquid g) => g.UpdatePlayerLiquidMovement);
 			if (!unloading)
 			{
 				loaded = true;
@@ -442,6 +445,16 @@ namespace ModLiquidLib.ModLoader
 			{
 				hookCanPlayerDrown[k](player, type, ref isDrowning);
 			}
+		}
+
+		public static bool? UpdatePlayerLiquidMovement(int type, Player player)
+		{
+			Func<Player, int, bool?>[] hookUpdatePlayerLiquidMovement = HookUpdatePlayerLiquidMovement;
+			for (int k = 0; k < hookUpdatePlayerLiquidMovement.Length; k++)
+			{
+				return hookUpdatePlayerLiquidMovement[k](player, type);
+			}
+			return null;
 		}
 	}
 }

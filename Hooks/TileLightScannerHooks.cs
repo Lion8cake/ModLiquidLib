@@ -16,7 +16,7 @@ namespace ModLiquidLib.Hooks
 	{
 		internal static void ApplyModliquidLight(On_TileLightScanner.orig_ApplyLiquidLight orig, TileLightScanner self, Tile tile, ref Vector3 lightColor)
 		{
-			if (tile.LiquidAmount <= 0)
+			if (tile.LiquidType <= 0)
 			{
 				return;
 			}
