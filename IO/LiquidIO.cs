@@ -67,11 +67,6 @@ namespace ModLiquidLib.IO
 							entry.type = (entry.loadedLiquid = Liquid.Type);
 							continue;
 						}
-						if (TileIO.canPurgeOldData)
-						{
-							entry.type = (entry.loadedLiquid = entry.vanillaReplacementType);
-							continue;
-						}
 						entry.type = (ushort)Entries.Count;
 						entry.loadedLiquid = (ModContent.TryFind<TLiquid>(entry.unloadedType, out var unloadedLiquid) ? unloadedLiquid : entry.DefaultUnloadedPlaceholder).Type;
 						Entries.Add(entry);
