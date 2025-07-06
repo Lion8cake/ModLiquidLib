@@ -61,6 +61,10 @@ namespace ModLiquidLib
 			IL_Player.Update += PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision += CollisionHooks.LiquidDrownCollisionCheck;
 			IL_Player.CheckDrowning += PlayerHooks.CanPlayerEmitDrowningBubbles;
+			IL_Item.MoveInWorld += ItemHooks.UpdateItemSplash;
+			IL_NPC.UpdateCollision += NPCHooks.UnwetNPCs;
+			IL_NPC.Collision_WaterCollision += NPCHooks.UpdateNPCSplash;
+			IL_Projectile.Update += ProjectileHooks.UpdateProjectileSplash;
 
 			MapHelper.Initialize();
 		}
@@ -129,6 +133,10 @@ namespace ModLiquidLib
 			IL_Player.Update -= PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision -= CollisionHooks.LiquidDrownCollisionCheck;
 			IL_Player.CheckDrowning -= PlayerHooks.CanPlayerEmitDrowningBubbles;
+			IL_Item.MoveInWorld -= ItemHooks.UpdateItemSplash;
+			IL_NPC.UpdateCollision -= NPCHooks.UnwetNPCs;
+			IL_NPC.Collision_WaterCollision -= NPCHooks.UpdateNPCSplash;
+			IL_Projectile.Update -= ProjectileHooks.UpdateProjectileSplash;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />

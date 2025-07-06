@@ -11,6 +11,7 @@ using Terraria.Audio;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
 namespace ModLiquidLib.ModLoader
@@ -79,6 +80,12 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<Player, int, bool, bool>[] HookOnPlayerSplash;
 
+		private static Func<NPC, int, bool, bool>[] HookOnNPCSplash;
+
+		private static Func<Projectile, int, bool, bool>[] HookOnProjectileSplash;
+
+		private static Func<Item, int, bool, bool>[] HookOnItemSplash;
+
 		private static Func<Player, int, bool, bool, bool>[] HookPlayerCollision;
 
 		private static Func<int, bool?>[] HookChecksForDrowning;
@@ -145,6 +152,9 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int[]>>(ref HookAdjLiquids, globalLiquids, (GlobalLiquid g) => g.AdjLiquids);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, int, int, bool?>>(ref HookBlocksTilePlacement, globalLiquids, (GlobalLiquid g) => g.BlocksTilePlacement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool>>(ref HookOnPlayerSplash, globalLiquids, (GlobalLiquid g) => g.OnPlayerSplash);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<NPC, int, bool, bool>>(ref HookOnNPCSplash, globalLiquids, (GlobalLiquid g) => g.OnNPCSplash);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool, bool>>(ref HookOnProjectileSplash, globalLiquids, (GlobalLiquid g) => g.OnProjectileSplash);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
@@ -434,6 +444,45 @@ namespace ModLiquidLib.ModLoader
 			for (int k = 0; k < hookOnPlayerSplash.Length; k++)
 			{
 				if (!hookOnPlayerSplash[k](player, type, isEnter))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public static bool OnNPCSplash(int type, NPC npc, bool isEnter)
+		{
+			Func<NPC, int, bool, bool>[] hookOnPlayerSplash = HookOnNPCSplash;
+			for (int k = 0; k < hookOnPlayerSplash.Length; k++)
+			{
+				if (!hookOnPlayerSplash[k](npc, type, isEnter))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public static bool OnProjectileSplash(int type, Projectile projectile, bool isEnter)
+		{
+			Func<Projectile, int, bool, bool>[] hookOnPlayerSplash = HookOnProjectileSplash;
+			for (int k = 0; k < hookOnPlayerSplash.Length; k++)
+			{
+				if (!hookOnPlayerSplash[k](projectile, type, isEnter))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public static bool OnItemSplash(int type, Item item, bool isEnter)
+		{
+			Func<Item, int, bool, bool>[] hookOnPlayerSplash = HookOnItemSplash;
+			for (int k = 0; k < hookOnPlayerSplash.Length; k++)
+			{
+				if (!hookOnPlayerSplash[k](item, type, isEnter))
 				{
 					return false;
 				}

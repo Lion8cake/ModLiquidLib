@@ -302,6 +302,21 @@ namespace ModLiquidLib.ModLoader
 			return true;
 		}
 
+		public virtual bool OnNPCSplash(NPC npc, int type, bool isEnter)
+		{
+			return true;
+		}
+
+		public virtual bool OnProjectileSplash(Projectile proj, int type, bool isEnter)
+		{
+			return true;
+		}
+
+		public virtual bool OnItemSplash(Item item, int type, bool isEnter)
+		{
+			return true;
+		}
+
 		/// <summary>
 		/// Allows the user to specify how liquids interacts with player movement speed. <br/>
 		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
