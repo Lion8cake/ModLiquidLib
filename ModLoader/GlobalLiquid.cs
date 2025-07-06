@@ -221,15 +221,34 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Allows you to change how liquids move when loading or creating a world. Returns true by default.
+		/// Allows you to change what tile is created between two liquids.
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public virtual int? LiquidMerge(int i, int j, int type, int otherLiquid, ref SoundStyle? collisionSound)
+		public virtual int? LiquidMerge(int i, int j, int type, int otherLiquid)
 		{
 			return null;
+		}
+
+		public virtual void LiquidMergeSound(int i, int j, int type, int otherLiquid, ref SoundStyle? collisionSound)
+		{
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="liquidX"></param>
+		/// <param name="liquidY"></param>
+		/// <param name="tileX"></param>
+		/// <param name="tileY"></param>
+		/// <param name="type"></param>
+		/// <param name="otherLiquid"></param>
+		/// <returns></returns>
+		public virtual bool PreLiquidMerge(int liquidX, int liquidY, int tileX, int tileY, int type, int otherLiquid)
+		{
+			return true;
 		}
 
 		/// <summary>

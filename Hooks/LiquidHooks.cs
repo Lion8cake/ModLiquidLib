@@ -2,18 +2,12 @@
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
-using MonoMod.Core.Platforms;
-using rail;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Physics;
 
 namespace ModLiquidLib.Hooks
 {
@@ -161,11 +155,14 @@ namespace ModLiquidLib.Hooks
 		{
 			ILCursor c = new ILCursor(il);
 			ILLabel IL_0000 = c.DefineLabel();
+			ILLabel IL_0000_2 = c.DefineLabel();
+			ILLabel IL_0000_3 = c.DefineLabel();
 			int tile_var0 = -1;
 			int tile2_var1 = -1;
 			int tile3_var2 = -1;
 			int tile4_var3 = -1;
 			int tile5_var4 = -1;
+			int num_var5 = -1;
 			int liquidMergeTileType_var6 = -1;
 			int liquidMergeType_var7 = -1;
 			int liquidMergeTileType2_var14 = -1;
@@ -183,8 +180,6 @@ namespace ModLiquidLib.Hooks
 
 			c.Index = 0;
 
-			int num_var5 = -1;
-
 			c.GotoNext(MoveType.After, i => i.MatchBeq(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out num_var5));
 			c.EmitLdcI4(56);
 			c.EmitStloc(liquidMergeTileType_var6);
@@ -199,27 +194,52 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(tile_var0);
 			c.EmitLdloc(tile2_var1);
 			c.EmitLdloc(tile3_var2);
-			c.EmitDelegate((int x, int y, int thisLiquidType, ref int liquidMergeTileType, ref int liquidMergeType, Tile tile, Tile tile2, Tile tile3) =>
+			c.EmitLdloc(tile5_var4);
+			c.EmitDelegate((int x, int y, int thisLiquidType, ref int liquidMergeTileType, ref int liquidMergeType, Tile tile, Tile tile2, Tile tile3, Tile tile5) =>
 			{
-				bool[] liquidNearby = new bool[LiquidLoader.LiquidCount]; //collect data on which liquids are nearby the main liquid
-
-				if (tile.LiquidAmount > 0)
+				if (tile5.HasTile && Main.tileObsidianKill[tile5.type])
 				{
-					liquidNearby[tile.LiquidType] = true;
+					WorldGen.KillTile(x, y);
+					if (Main.netMode == 2)
+					{
+						NetMessage.SendData(17, -1, -1, null, 0, x, y);
+					}
 				}
-
-				if (tile2.LiquidAmount > 0)
+				if (!tile5.HasTile)
 				{
-					liquidNearby[tile2.LiquidType] = true;
-				}
+					bool[] liquidNearby = new bool[LiquidLoader.LiquidCount]; //collect data on which liquids are nearby the main liquid
 
-				if (tile3.LiquidAmount > 0)
+					if (tile.LiquidAmount > 0)
+					{
+						liquidNearby[tile.LiquidType] = true;
+					}
+
+					if (tile2.LiquidAmount > 0)
+					{
+						liquidNearby[tile2.LiquidType] = true;
+					}
+
+					if (tile3.LiquidAmount > 0)
+					{
+						liquidNearby[tile3.LiquidType] = true;
+					}
+
+					GetLiquidMergeTypes(x, y, thisLiquidType, out liquidMergeTileType, out liquidMergeType, liquidNearby); //call updated GetLiquidMergeTypes
+
+					if (!LiquidLoader.PreLiquidMerge(x, y, x, y, thisLiquidType, liquidMergeType))
+					{
+						return false;
+					}
+				}
+				else
 				{
-					liquidNearby[tile3.LiquidType] = true;
+					return false;
 				}
-
-				GetLiquidMergeTypes(x, y, thisLiquidType, out liquidMergeTileType, out liquidMergeType, liquidNearby); //call updated GetLiquidMergeTypes
+				return true;
 			});
+			c.EmitBrtrue(IL_0000_2);
+			c.EmitRet();
+			c.MarkLabel(IL_0000_2);
 
 			c.GotoNext(MoveType.Before, i => i.MatchStloc(liquidMergeTileType_var6), i => i.MatchLdcI4(0), i => i.MatchStloc(liquidMergeType_var7));
 			c.EmitDelegate((int fiftySix) => { });
@@ -228,28 +248,44 @@ namespace ModLiquidLib.Hooks
 			c.GotoNext(MoveType.Before, i => i.MatchLdloc(num_var5), i => i.MatchLdcI4(24), i => i.MatchBlt(out _));
 			c.MarkLabel(IL_0000);
 
-			c.GotoNext(MoveType.Before, i => i.MatchStloc(out _), i => i.MatchVolatile());
+			c.GotoNext(MoveType.Before, i => i.MatchVolatile(), i => i.MatchLdsfld<WorldGen>("gen"), i => i.MatchBrtrue(out _));
 			c.EmitLdloc(tile5_var4);
 			c.EmitLdarg(2);
 			c.EmitLdloc(liquidMergeType_var7);
-			c.EmitDelegate((TileChangeType betweenChangetype, Tile tile5, int thisLiquidType, int liquidMergeType) =>
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((Tile tile5, int thisLiquidType, int liquidMergeType, int x, int y) =>
 			{
-				tile5.LiquidType = 0; //update liquid type 
 				if (!WorldGen.gen)
 				{
-					PlayLiquidChangeSound(tile5.X(), tile5.Y(), thisLiquidType, liquidMergeType);
+					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType);
 				}
 				if (Main.netMode == NetmodeID.Server)
 				{
 					ModPacket packet = ModContent.GetInstance<ModLiquidLib>().GetPacket();
 					packet.Write((byte)ModLiquidLib.MessageType.SyncCollisionSounds);
-					packet.Write(tile5.X());
-					packet.Write(tile5.Y());
+					packet.Write(x);
+					packet.Write(y);
 					packet.Write(thisLiquidType);
 					packet.Write(liquidMergeType);
 					packet.Send();
 				}
-				return betweenChangetype;
+			});
+
+			//Force-fully places a tile if its not frame important. This is due to some non-frame important tiles not placing correctly.
+			c.GotoNext(MoveType.After, i => i.MatchCall<WorldGen>("PlaceTile"));
+			c.EmitLdloc(liquidMergeTileType_var6);
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((bool resultOfPlaceTile, int liquidMergeTileType, int x, int y) =>
+			{
+				if (!Main.tileFrameImportant[liquidMergeTileType])
+				{
+					Tile placedTile = Main.tile[x, y];
+					placedTile.TileType = (ushort)liquidMergeTileType;
+					placedTile.HasTile = true;
+				}
+				return resultOfPlaceTile;
 			});
 
 			c.GotoNext(MoveType.Before, i => i.MatchLdcI4(0), i => i.MatchStindI1(), i => i.MatchLdarg(2), i => i.MatchLdcI4(1), i => i.MatchSub());
@@ -268,32 +304,54 @@ namespace ModLiquidLib.Hooks
 				{
 					liquidNearby[tile4.LiquidType] = true;
 				}
-
 				GetLiquidMergeTypes(x, y, thisLiquidType, out liquidMergeTileType2, out liquidMergeType2, liquidNearby);
+				if (!LiquidLoader.PreLiquidMerge(x, y, x, y + 1, thisLiquidType, liquidMergeType2))
+				{
+					return false;
+				}
+				return true;
 			});
+			c.EmitBrtrue(IL_0000_3);
+			c.EmitRet();
+			c.MarkLabel(IL_0000_3);
 
-			c.GotoNext(MoveType.Before, i => i.MatchStloc(out _), i => i.MatchLdsfld<Main>("gameMenu"));
+			c.GotoNext(MoveType.Before, i => i.MatchLdsfld<Main>("gameMenu"), i => i.MatchBrtrue(out _));
 			c.EmitLdloc(tile5_var4);
 			c.EmitLdarg(2);
 			c.EmitLdloc(liquidMergeType2_var15);
-			c.EmitDelegate((TileChangeType betweenChangetype, Tile tile5, int thisLiquidType, int liquidMergeType2) =>
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((Tile tile5, int thisLiquidType, int liquidMergeType2, int x, int y) =>
 			{
-				tile5.LiquidType = 0; //reset the liquidtype
 				if (!WorldGen.gen)
 				{
-					PlayLiquidChangeSound(tile5.X(), tile5.Y(), thisLiquidType, liquidMergeType2);
+					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType2);
 				}
 				if (Main.netMode == NetmodeID.Server)
 				{
 					ModPacket packet = ModContent.GetInstance<ModLiquidLib>().GetPacket();
 					packet.Write((byte)ModLiquidLib.MessageType.SyncCollisionSounds);
-					packet.Write(tile5.X());
-					packet.Write(tile5.Y());
+					packet.Write(x);
+					packet.Write(y);
 					packet.Write(thisLiquidType);
 					packet.Write(liquidMergeType2);
 					packet.Send();
 				}
-				return betweenChangetype;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchCall<WorldGen>("PlaceTile"));
+			c.EmitLdloc(liquidMergeTileType2_var14);
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((bool resultOfPlaceTile, int liquidMergeTileType2, int x, int y) =>
+			{
+				if (!Main.tileFrameImportant[liquidMergeTileType2])
+				{
+					Tile placedTile = Main.tile[x, y + 1];
+					placedTile.TileType = (ushort)liquidMergeTileType2;
+					placedTile.HasTile = true;
+				}
+				return resultOfPlaceTile;
 			});
 		}
 
@@ -310,8 +368,7 @@ namespace ModLiquidLib.Hooks
 			else if ((type == LiquidID.Shimmer || otherLiquid == LiquidID.Shimmer) && type < LiquidID.Count && otherLiquid < LiquidID.Count)
 				collisionSound = SoundID.ShimmerWeak1;
 
-			LiquidLoader.LiquidMergeTilesType(x, y, otherLiquid, type, ref collisionSound); //called twice to make sure that other way around operations still populate the sound, this way modders aren't forced to change the sound twice
-			LiquidLoader.LiquidMergeTilesType(x, y, type, otherLiquid, ref collisionSound);
+			LiquidLoader.LiquidMergeSounds(x, y, type, otherLiquid, ref collisionSound);
 
 			if (collisionSound == null)
 			{
@@ -339,7 +396,7 @@ namespace ModLiquidLib.Hooks
 		{
 			liquidMergeTileType = TileID.Obsidian;
 			liquidMergeType = thisLiquidType;
-			SoundStyle? nullSound = null;
+			int? modLiquidTileType = null;
 			if (thisLiquidType != LiquidID.Water && liquidsNearby[LiquidID.Water])
 			{
 				switch (thisLiquidType)
@@ -354,11 +411,7 @@ namespace ModLiquidLib.Hooks
 						liquidMergeTileType = TileID.ShimmerBlock;
 						break;
 				}
-				if (LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 0, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 0, ref nullSound);
-				if (LiquidLoader.LiquidMergeTilesType(x, y, 0, thisLiquidType, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, 0, thisLiquidType, ref nullSound);
-				liquidMergeType = 0;
+				liquidMergeType = LiquidID.Water;
 			}
 			if (thisLiquidType != LiquidID.Lava && liquidsNearby[LiquidID.Lava])
 			{
@@ -374,11 +427,7 @@ namespace ModLiquidLib.Hooks
 						liquidMergeTileType = TileID.ShimmerBlock;
 						break;
 				}
-				if (LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 1, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 1, ref nullSound);
-				if (LiquidLoader.LiquidMergeTilesType(x, y, 1, thisLiquidType, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, 1, thisLiquidType, ref nullSound);
-				liquidMergeType = 1;
+				liquidMergeType = LiquidID.Lava;
 			}
 			if (thisLiquidType != LiquidID.Honey && liquidsNearby[LiquidID.Honey])
 			{
@@ -394,11 +443,7 @@ namespace ModLiquidLib.Hooks
 						liquidMergeTileType = TileID.ShimmerBlock;
 						break;
 				}
-				if (LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 2, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 2, ref nullSound);
-				if (LiquidLoader.LiquidMergeTilesType(x, y, 2, thisLiquidType, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, 2, thisLiquidType, ref nullSound);
-				liquidMergeType = 2;
+				liquidMergeType = LiquidID.Honey;
 			}
 			if (thisLiquidType != LiquidID.Shimmer && liquidsNearby[LiquidID.Shimmer])
 			{
@@ -414,33 +459,17 @@ namespace ModLiquidLib.Hooks
 						liquidMergeTileType = TileID.ShimmerBlock;
 						break;
 				}
-				if (LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 3, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, 3, ref nullSound);
-				if (LiquidLoader.LiquidMergeTilesType(x, y, 3, thisLiquidType, ref nullSound) != null)
-					liquidMergeTileType = (int)LiquidLoader.LiquidMergeTilesType(x, y, 3, thisLiquidType, ref nullSound);
-				liquidMergeType = 3;
+				liquidMergeType = LiquidID.Shimmer;
 			}
 
 			for (int i = 0; i < LiquidLoader.LiquidCount; i++)
 			{
-				int? moddedLiquidMerge = LiquidLoader.LiquidMergeTilesType(x, y, thisLiquidType, i, ref nullSound);
-				int? moddedLiquidMerge2 = LiquidLoader.LiquidMergeTilesType(x, y, i, thisLiquidType, ref nullSound);
+				modLiquidTileType = LiquidLoader.LiquidMergeTilesType(x, y, i, thisLiquidType);
 				if (thisLiquidType != i && liquidsNearby[i])
 				{
-					if (moddedLiquidMerge != null)
+					if (modLiquidTileType != null)
 					{
-						liquidMergeTileType = (int)moddedLiquidMerge;
-					}
-					else if (LiquidLoader.GetLiquid(i) != null)
-					{
-						if (moddedLiquidMerge2 != null)
-						{
-							liquidMergeTileType = (int)moddedLiquidMerge2;
-						}
-						else
-						{
-							liquidMergeTileType = TileID.Stone;
-						}
+						liquidMergeTileType = (int)modLiquidTileType;
 					}
 					liquidMergeType = i;
 					break;

@@ -1,24 +1,17 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.IO;
+using ModLiquidLib.Utils;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.GameContent;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
-using ModLiquidLib.Utils;
-using Terraria.GameContent.Liquid;
 using System.Runtime.CompilerServices;
-using Terraria.DataStructures;
-using ReLogic.Content;
-using System.Reflection;
-using Microsoft.Xna.Framework;
-using Terraria.Graphics;
-using static log4net.Appender.ColoredConsoleAppender;
+using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Liquid;
+using Terraria.Graphics;
+using Terraria.ID;
+using Terraria.ModLoader.Core;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -32,7 +25,7 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegateRetroDrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref RetroLiquidDrawInfo drawData, float liquidAmountModified, int liquidGFXQuality);
 
-		private delegate int? DelegateLiquidMergeTilesType(int i, int j, int type, int otherLiquid, ref SoundStyle? changeSound);
+		private delegate void DelegateLiquidMergeTilesSound(int i, int j, int type, int otherLiquid, ref SoundStyle? collisionSound);
 
 		private delegate void DelegateCanPlayerDrown(Player player, int type, ref bool isDrowning);
 
@@ -72,7 +65,11 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<int, int, int, bool>[] HookSettleLiquidMovement;
 
-		private static DelegateLiquidMergeTilesType[] HookMergeTiles;
+		private static Func<int, int, int, int, int?>[] HookMergeTiles;
+
+		private static DelegateLiquidMergeTilesSound[] HookMergeTilesSounds;
+
+		private static Func<int, int, int, int, int, int, bool>[] HookPreLiquidMerge;
 
 		private static Func<int, int?>[] HookLiquidFallDelay;
 
@@ -141,7 +138,9 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, Liquid, bool>>(ref HookUpdate, globalLiquids, (GlobalLiquid g) => g.UpdateLiquid);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool?>>(ref HookEvaporation, globalLiquids, (GlobalLiquid g) => g.EvaporatesInHell);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, bool>>(ref HookSettleLiquidMovement, globalLiquids, (GlobalLiquid g) => g.SettleLiquidMovement);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMergeTilesType>(ref HookMergeTiles, globalLiquids, (GlobalLiquid g) => g.LiquidMerge);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int, int?>>(ref HookMergeTiles, globalLiquids, (GlobalLiquid g) => g.LiquidMerge);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMergeTilesSound>(ref HookMergeTilesSounds, globalLiquids, (GlobalLiquid g) => g.LiquidMergeSound);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int, int, int, bool>>(ref HookPreLiquidMerge, globalLiquids, (GlobalLiquid g) => g.PreLiquidMerge);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int?>>(ref HookLiquidFallDelay, globalLiquids, (GlobalLiquid g) => g.LiquidFallDelay);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int[]>>(ref HookAdjLiquids, globalLiquids, (GlobalLiquid g) => g.AdjLiquids);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, int, int, bool?>>(ref HookBlocksTilePlacement, globalLiquids, (GlobalLiquid g) => g.BlocksTilePlacement);
@@ -332,15 +331,56 @@ namespace ModLiquidLib.ModLoader
 			return GetLiquid(type)?.SettleLiquidMovement(i, j) ?? true;
 		}
 
-		public static int? LiquidMergeTilesType(int i, int j, int type, int otherLiquid, ref SoundStyle? changeSound)
+		public static int? LiquidMergeTilesType(int i, int j, int type, int otherLiquid)
 		{
-			DelegateLiquidMergeTilesType[] hookMergeTiles = HookMergeTiles;
+			Func<int, int, int, int, int?>[] hookMergeTiles = HookMergeTiles;
 			for (int k = 0; k < hookMergeTiles.Length; k++)
 			{
-				if (hookMergeTiles[k](i, j, type, otherLiquid, ref changeSound) != null)
-					return hookMergeTiles[k](i, j, type, otherLiquid, ref changeSound);
+				if (hookMergeTiles[k](i, j, type, otherLiquid) != null)
+					return hookMergeTiles[k](i, j, type, otherLiquid);
 			}
-			return GetLiquid(type)?.LiquidMerge(i, j, otherLiquid, ref changeSound) ?? null;
+			ModLiquid modLiquid = GetLiquid(type);
+			ModLiquid otherModLiquid = GetLiquid(otherLiquid);
+			if (modLiquid == null && otherModLiquid != null)
+			{
+				return otherModLiquid?.LiquidMerge(i, j, type) ?? null;
+			}
+			return modLiquid?.LiquidMerge(i, j, otherLiquid) ?? null;
+		}
+
+		public static void LiquidMergeSounds(int i, int j, int type, int otherLiquid, ref SoundStyle? collisionSound)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			ModLiquid otherModLiquid = GetLiquid(otherLiquid);
+			if (modLiquid == null && otherModLiquid != null)
+				otherModLiquid?.LiquidMergeSound(i, j, type, ref collisionSound);
+			else
+				modLiquid?.LiquidMergeSound(i, j, otherLiquid, ref collisionSound);
+
+			DelegateLiquidMergeTilesSound[] hookMergeTilesSounds = HookMergeTilesSounds;
+			for (int k = 0; k < hookMergeTilesSounds.Length; k++)
+			{
+				hookMergeTilesSounds[k](i, j, type, otherLiquid, ref collisionSound);
+			}
+		}
+
+		public static bool PreLiquidMerge(int liquidX, int liquidY, int tileX, int tileY, int type, int otherLiquid)
+		{
+			Func<int, int, int, int, int, int, bool>[] hookPreLiquidMerge = HookPreLiquidMerge;
+			for (int k = 0; k < hookPreLiquidMerge.Length; k++)
+			{
+				if (!hookPreLiquidMerge[k](liquidX, liquidY, tileX, tileY, type, otherLiquid))
+				{
+					return false;
+				}
+			}
+			ModLiquid modLiquid = GetLiquid(type);
+			ModLiquid otherModLiquid = GetLiquid(otherLiquid);
+			if (modLiquid == null && otherModLiquid != null)
+			{
+				return otherModLiquid?.PreLiquidMerge(liquidX, liquidY, tileX, tileY, type) ?? true;
+			}
+			return modLiquid?.PreLiquidMerge(liquidX, liquidY, tileX, tileY, otherLiquid) ?? true;
 		}
 
 		public static int? LiquidEditingFallDelay(int type)

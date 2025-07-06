@@ -8,7 +8,6 @@ using Terraria.GameContent.Liquid;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Graphics;
-using Terraria.DataStructures;
 using Terraria;
 using Terraria.ID;
 using Terraria.Audio;
@@ -327,19 +326,56 @@ namespace ModLiquidLib.ModLoader
 
 		/// <summary>
 		/// Used to change what tile the liquid generates upon coming in contact with another liquid. Use the otherLiquid param to check what liquid this liquid is interacting with. <br/>
-		/// This hook is called multiple times to flip the statement to make sure that modders don't have to put the same statement twice for liquids to correctly generate tiles. It is sugested that only the liquid merge result and sound modifications are only put in this method.<br/>
-		/// Use collisionSound to modify what sound the liquid's make when colliding with each other. <br/>
+		/// This method is called even if a tile isn't generated. It is recommended that modders use a non-frame important tile as the result, otherwise the tile may fail to generate<br/>
+		/// It is recomended that developers use PreLiquidMerge for handling custom collisions and effects as that method is only called once. <br/>
+		/// This hook is still called, even if PreLiquidMerge is returned false. <br/>
 		/// NOTE: it is encouraged to set a default tile that this liquid results in, otherwise it will default to stone. <br/>
 		/// Returns 1 by default.
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
 		/// <param name="otherLiquid">The liquid ID of the liquid colliding with this one.</param>
-		/// <param name="collisionSound">The sound the liquids make when coming incontact with each other.</param>
 		/// <returns></returns>
-		public virtual int LiquidMerge(int i, int j, int otherLiquid, ref SoundStyle? collisionSound)
+		public virtual int LiquidMerge(int i, int j, int otherLiquid)
 		{
 			return TileID.Stone;
+		}
+
+		/// <summary>
+		/// Used to modify the sound thats played when two liquids merge with each other. <br/>
+		/// Called every time liquids collide and only on clients. <br/>
+		/// Is not called if PreLiquidMerge returns false.
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="otherLiquid"></param>
+		/// <param name="collisionSound"></param>
+		public virtual void LiquidMergeSound(int i, int j, int otherLiquid, ref SoundStyle? collisionSound)
+		{
+
+		}
+
+		/// <summary>
+		/// Used to do do extra effects and special merges when two liquids collide with each other. Use the otherLiquid param to check which liquid is colliding with this liquid. <br/>
+		/// NOTE: this method is called ONLY on servers when in multiplayer, make sure you send a packet if you want to do extra visual effects. To learn more about handling custom packets, please see Mod.HandlePacket. <br/>
+		/// Return false to prevent the normal liquid merging logic. <br/>
+		/// Retruns true by default.
+		/// </summary>
+		/// <param name="liquidX">The x position of the target liquid in tile coordinates<br/>
+		/// NOTE: This may not always mean the x position of THIS liquid, as it may mean the x position of the other liquid.</param>
+		/// <param name="liquidY">The y position of the target liquid in tile coordinates<br/>
+		/// NOTE: This may not always mean the y position of THIS liquid, as it may mean the y position of the other liquid.</param>
+		/// <param name="tileX">The x position of where the tile is sechedualed to generate at in tile coordninates.<br/>
+		/// NOTE: most of the time this x position is the same as liquid's x position, this means that the tile is being generated over the liquid.<br/>
+		/// Useful for when trying to do something else other than generating a tile.</param>
+		/// <param name="tileY">The y position of where the tile is sechedualed to generate at in tile coordninates.<br/>
+		/// NOTE: most of the time this y position is the same as liquid's y position, this means that the tile is being generated over the liquid.<br/>
+		/// Useful for when trying to do something else other than generating a tile.</param>
+		/// <param name="otherLiquid">The Liquid ID of the liquid colliding with this liquid</param>
+		/// <returns></returns>
+		public virtual bool PreLiquidMerge(int liquidX, int liquidY, int tileX, int tileY, int otherLiquid)
+		{
+			return true;
 		}
 
 		/// <summary>
