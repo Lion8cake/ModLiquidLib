@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -11,7 +6,7 @@ namespace ModLiquidLib.ModLoader
 {
 	public static class LiquidFallLoader
 	{
-		public static bool PreDraw(int currentWaterfallData, int i, int j, int type, SpriteBatch spriteBatch)
+		public static bool PreDraw(WaterfallManager.WaterfallData currentWaterfallData, int i, int j, int type, SpriteBatch spriteBatch)
 		{
 			bool flag = true;
 			if (LoaderManager.Get<WaterFallStylesLoader>().Get(type) is ModLiquidFall)
@@ -25,7 +20,7 @@ namespace ModLiquidLib.ModLoader
 			return flag;
 		}
 
-		public static void PostDraw(int currentWaterfallData, int i, int j, int type, SpriteBatch spriteBatch)
+		public static void PostDraw(WaterfallManager.WaterfallData currentWaterfallData, int i, int j, int type, SpriteBatch spriteBatch)
 		{
 			if (LoaderManager.Get<WaterFallStylesLoader>().Get(type) is ModLiquidFall)
 			{

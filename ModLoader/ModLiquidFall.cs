@@ -184,12 +184,12 @@ namespace ModLiquidLib.ModLoader
 		/// <summary>
 		/// Allows you to draw things behind the waterfall at the given coordinates. Return false to stop the game from drawing the waterfall normally. Returns true by default.
 		/// </summary>
-		/// <param name="currentWaterfallData">The current waterfall data, this is used inside of the waterfalls WaterfallData array.</param>
+		/// <param name="currentWaterfallData">The current waterfall data.</param>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The Y position in tile coordinates.</param>
 		/// <param name="spriteBatch"></param>
 		/// <returns></returns>
-		public virtual bool PreDraw(int currentWaterfallData, int i, int j, SpriteBatch spriteBatch)
+		public virtual bool PreDraw(WaterfallData currentWaterfallData, int i, int j, SpriteBatch spriteBatch)
 		{
 			return true;
 		}
@@ -202,7 +202,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="j">The Y position in tile coordinates.</param>
 		/// <param name="spriteBatch"></param>
 		/// <returns></returns>
-		public virtual void PostDraw(int currentWaterfallData, int i, int j, SpriteBatch spriteBatch)
+		public virtual void PostDraw(WaterfallData currentWaterfallData, int i, int j, SpriteBatch spriteBatch)
 		{
 		}
 

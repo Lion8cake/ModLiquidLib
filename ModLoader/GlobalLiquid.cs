@@ -221,30 +221,55 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Allows you to change what tile is created between two liquids.
+		/// Used to change what tile the liquid generates upon coming in contact with another liquid. Use the otherLiquid param to check what liquid this liquid is interacting with.<br/>
+		/// This method is called even if a tile isn't generated. It is recommended that modders use a non-frame important tile as the result, otherwise the tile may fail to generate.<br/>
+		/// It is recomended that developers use PreLiquidMerge for handling custom collisions and effects as that method is only called when a tile is requested to generate.<br/>
+		/// This hook is still called, even if PreLiquidMerge is returned false. <br/>
+		/// NOTE: it is encouraged to set a default tile that this liquid results in, otherwise it will default to stone. <br/>
+		/// Returns 1 by default.
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
 		/// <param name="j">The y position in tile coordinates.</param>
 		/// <param name="type"></param>
+		/// <param name="otherLiquid">The liquid ID of the liquid colliding with this one.</param>
 		/// <returns></returns>
 		public virtual int? LiquidMerge(int i, int j, int type, int otherLiquid)
 		{
 			return null;
 		}
 
+		/// <summary>
+		/// Used to modify the sound thats played when two liquids merge with each other. <br/>
+		/// Called every time liquids collide and only on clients. <br/>
+		/// Is not called if PreLiquidMerge returns false.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="type"></param>
+		/// <param name="otherLiquid">The liquid ID of the liquid colliding with this one.</param>
+		/// <param name="collisionSound">The sound to be played, set this to a sound if you don't want the default merge sound to play.</param>
 		public virtual void LiquidMergeSound(int i, int j, int type, int otherLiquid, ref SoundStyle? collisionSound)
 		{
 		}
 
 		/// <summary>
-		/// 
+		/// Used to do do extra effects and special merges when two liquids collide with each other. Use the otherLiquid param to check which liquid is colliding with this liquid. <br/>
+		/// NOTE: this method is called ONLY on servers when in multiplayer. Make sure you send a packet if you want to do extra visual effects. To learn more about handling custom packets, please see <see cref="Mod.HandlePacket" />. <br/>
+		/// Return false to prevent the normal liquid merging logic. <br/>
+		/// Retruns true by default.
 		/// </summary>
-		/// <param name="liquidX"></param>
-		/// <param name="liquidY"></param>
-		/// <param name="tileX"></param>
-		/// <param name="tileY"></param>
+		/// <param name="liquidX">The x position of the target liquid in tile coordinates<br/>
+		/// NOTE: This may not always mean the x position of THIS liquid, as it may mean the x position of the other liquid.</param>
+		/// <param name="liquidY">The y position of the target liquid in tile coordinates<br/>
+		/// NOTE: This may not always mean the y position of THIS liquid, as it may mean the y position of the other liquid.</param>
+		/// <param name="tileX">The x position of where the tile is sechedualed to generate at in tile coordninates.<br/>
+		/// NOTE: most of the time this x position is the same as liquid's x position, this means that the tile is being generated over the liquid.<br/>
+		/// Useful for when trying to do something else other than generating a tile.</param>
+		/// <param name="tileY">The y position of where the tile is sechedualed to generate at in tile coordninates.<br/>
+		/// NOTE: most of the time this y position is the same as liquid's y position, this means that the tile is being generated over the liquid.<br/>
+		/// Useful for when trying to do something else other than generating a tile.</param>
 		/// <param name="type"></param>
-		/// <param name="otherLiquid"></param>
+		/// <param name="otherLiquid">The Liquid ID of the liquid colliding with this liquid</param>
 		/// <returns></returns>
 		public virtual bool PreLiquidMerge(int liquidX, int liquidY, int tileX, int tileY, int type, int otherLiquid)
 		{
@@ -302,16 +327,40 @@ namespace ModLiquidLib.ModLoader
 			return true;
 		}
 
+		/// <summary>
+		/// Allows you to decide what happens when a NPC enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a NPC enters and leaves. <br/>
+		/// NPCs now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return true to allow the liquids to call their normal splash code. Returns true by default.
+		/// </summary>
+		/// <param name="npc">The NPC instance thats entering or exiting the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		public virtual bool OnNPCSplash(NPC npc, int type, bool isEnter)
 		{
 			return true;
 		}
 
+		/// <summary>
+		/// Allows you to decide what happens when a projectile enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a projectile enters and leaves. <br/>
+		/// Projectiles now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return true to allow the liquids to call their normal splash code. Returns true by default.
+		/// </summary>
+		/// <param name="proj">The projectile instance thats entering or exiting the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		public virtual bool OnProjectileSplash(Projectile proj, int type, bool isEnter)
 		{
 			return true;
 		}
 
+		/// <summary>
+		/// Allows you to decide what happens when an item enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when an item enters and leaves. <br/>
+		/// Items now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return true to allow the liquids to call their normal splash code. Returns true by default.
+		/// </summary>
+		/// <param name="item">The item instance thats entering or exiting the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		public virtual bool OnItemSplash(Item item, int type, bool isEnter)
 		{
 			return true;

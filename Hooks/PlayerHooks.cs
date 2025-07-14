@@ -1,21 +1,10 @@
-﻿using AsmResolver.DotNet.Cloning;
-using Microsoft.Xna.Framework;
-using ModLiquidLib.ID;
-using ModLiquidLib.IO;
-using ModLiquidLib.ModLoader;
+﻿using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
-using rail;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {

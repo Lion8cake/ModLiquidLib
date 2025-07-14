@@ -3,9 +3,6 @@ using ModLiquidLib.ModLoader;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
@@ -17,9 +14,11 @@ namespace ModLiquidLib.Hooks
 		internal static void AddLiquidToFinishSetup(ILContext il)
 		{
 			ILCursor c = new(il);
-			c.GotoNext(MoveType.After, i => i.MatchNewobj<List<LocalizedText>>(".ctor"), i => i.MatchStloc(1));
-			c.EmitLdloca(0);
-			c.EmitLdloca(1);
+			int colorArr_numVar = -1;
+			int nameArr_numVar = -1;
+			c.GotoNext(MoveType.After, i => i.MatchStloc(out colorArr_numVar), i => i.MatchNewobj<List<LocalizedText>>(".ctor"), i => i.MatchStloc(out nameArr_numVar));
+			c.EmitLdloca(colorArr_numVar);
+			c.EmitLdloca(nameArr_numVar);
 			c.EmitDelegate((ref IList<Color> colors, ref IList<LocalizedText> names) =>
 			{
 				Array.Resize(ref MapLiquidLoader.liquidLookup, LiquidLoader.LiquidCount);

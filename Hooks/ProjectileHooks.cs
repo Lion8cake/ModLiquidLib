@@ -1,7 +1,6 @@
 ﻿using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
-using System;
 using Terraria;
 using Terraria.ID;
 

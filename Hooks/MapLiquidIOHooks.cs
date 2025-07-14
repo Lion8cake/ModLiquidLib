@@ -21,9 +21,11 @@ namespace ModLiquidLib.Hooks
 		internal static void InitaliseTLMap(ILContext il)
 		{
 			ILCursor c = new(il);
-			c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.ModLoader.IO.MapIO", "ReadModFile"));
-			c.EmitLdloc(1);
-			c.EmitLdloc(0);
+			int text_varNum = -1;
+			int cloudSave_varNum = -1;
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out text_varNum), i => i.MatchLdloc(out cloudSave_varNum), i => i.MatchCall("Terraria.ModLoader.IO.MapIO", "ReadModFile"));
+			c.EmitLdloc(text_varNum);
+			c.EmitLdloc(cloudSave_varNum);
 			c.EmitDelegate((string text, bool isCloudSave) =>
 			{
 				MapLiquidIO.ReadModFile(text, isCloudSave);
@@ -33,9 +35,11 @@ namespace ModLiquidLib.Hooks
 		internal static void SaveTLMap(ILContext il)
 		{
 			ILCursor c = new(il);
-			c.GotoNext(MoveType.After, i => i.MatchCall("Terraria.ModLoader.IO.MapIO", "WriteModFile"));
-			c.EmitLdloc(1);
-			c.EmitLdloc(0);
+			int text_varNum = -1;
+			int cloudSave_varNum = -1;
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out text_varNum), i => i.MatchLdloc(out cloudSave_varNum), i => i.MatchCall("Terraria.ModLoader.IO.MapIO", "WriteModFile"));
+			c.EmitLdloc(text_varNum);
+			c.EmitLdloc(cloudSave_varNum);
 			c.EmitDelegate((string text, bool isCloudSave) =>
 			{
 				MapLiquidIO.WriteModFile(text, isCloudSave);

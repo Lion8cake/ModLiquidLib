@@ -139,7 +139,7 @@ namespace ModLiquidLib.Hooks
 		{
 			ILCursor c = new(il);
 			ILLabel IL_0000 = c.DefineLabel();
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchStloc(1));
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
 			c.EmitDelegate((int x, int y) =>

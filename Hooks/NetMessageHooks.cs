@@ -53,7 +53,6 @@ namespace ModLiquidLib.Hooks
 			{
 				array[num16] = (byte)tile2.LiquidType;
 				num16++;
-				ModContent.GetInstance<ModLiquidLib>().Logger.Debug(array.Length);
 			});
 		}
 	}
