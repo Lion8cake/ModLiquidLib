@@ -357,7 +357,7 @@ namespace ModLiquidLib.Hooks
 
 		public static void PlayLiquidChangeSound(int x, int y, int type, int otherLiquid)
 		{
-			SoundStyle? collisionSound = null;
+			SoundStyle? collisionSound = SoundID.LiquidsHoneyWater;
 
 			if ((type == LiquidID.Water && otherLiquid == LiquidID.Lava) || (type == LiquidID.Lava && otherLiquid == LiquidID.Water))
 				collisionSound = SoundID.LiquidsWaterLava;
@@ -370,12 +370,10 @@ namespace ModLiquidLib.Hooks
 
 			LiquidLoader.LiquidMergeSounds(x, y, type, otherLiquid, ref collisionSound);
 
-			if (collisionSound == null)
+			if (collisionSound != null)
 			{
-				collisionSound = SoundID.LiquidsHoneyWater;
+				SoundEngine.PlaySound(collisionSound, x * 16, y * 16);
 			}
-
-			SoundEngine.PlaySound(collisionSound, x * 16, y * 16);
 		}
 
 		internal static void PreventSoundOverloadFromExecuting(On_WorldGen.orig_PlayLiquidChangeSound orig, TileChangeType eventType, int x, int y, int count)
