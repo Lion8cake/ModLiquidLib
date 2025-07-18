@@ -11,6 +11,8 @@ using Terraria.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.Audio;
+using Terraria.Graphics.Light;
+using Terraria.GameContent;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -82,6 +84,9 @@ namespace ModLiquidLib.ModLoader
 
 		/// <summary> The multiplier used to change how many tiles are needed to fish in a pool of liquid. Honey uses a 1.5x multiplier for its pool size. </summary>
 		public float FishingPoolSizeMultiplier { get; set; } = 1f;
+
+		/// <summary> The opacity that this liquid slope renders at. Lava and Honey use this to look thicker. Defaults to 0.5f. </summary>
+		public float SlopeOpacity { get; set; } = 0.5f;
 
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
@@ -473,6 +478,18 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="isDrowning">The boolean flag for whether or not the player is drowning.</param>
 		public virtual void CanPlayerDrown(Player player, ref bool isDrowning)
 		{
+		}
+
+		/// <summary>
+		/// Allows you to change the Light Mask Mode for this liquid. The Light Mask Mode is the mask for lighting to determine how light interacts with this liquid. <br/>
+		/// Vanilla has options for Water (slight blue fade) and Honey (dark black) while lava uses the None option. <br/>
+		/// Defaults to LightMaskMode.None.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		public virtual LightMaskMode LiquidLightMaskMode(int i, int j)
+		{
+			return LightMaskMode.None;
 		}
 	}
 }

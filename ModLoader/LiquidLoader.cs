@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
+using Terraria.Graphics.Light;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -31,6 +32,10 @@ namespace ModLiquidLib.ModLoader
 		private delegate void DelegateCanPlayerDrown(Player player, int type, ref bool isDrowning);
 
 		private delegate void DelegatePoolSizeMultiplier(int type, ref float multiplier);
+
+		private delegate void DelegateSlopeOpacity(int type, ref float slopeOpacity);
+
+		private delegate void DelegateLiquidMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode);
 
 		private static int nextLiquid = LiquidID.Count;
 
@@ -102,6 +107,10 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<bool>[] HookAllowFishingInShimmer;
 
+		private static DelegateSlopeOpacity[] HookLiquidSlopeOpacity;
+
+		private static DelegateLiquidMaskMode[] HookLiquidLightMaskMode;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -170,6 +179,8 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePoolSizeMultiplier>(ref HookPoolSizeMultiplier, globalLiquids, (GlobalLiquid g) => g.LiquidFishingPoolSizeMulitplier);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<bool>>(ref HookAllowFishingInShimmer, globalLiquids, (GlobalLiquid g) => g.AllowFishingInShimmer);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateSlopeOpacity>(ref HookLiquidSlopeOpacity, globalLiquids, (GlobalLiquid g) => g.LiquidSlopeOpacity);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMaskMode>(ref HookLiquidLightMaskMode, globalLiquids, (GlobalLiquid g) => g.LiquidLightMaskMode);
 			if (!unloading)
 			{
 				loaded = true;
@@ -587,6 +598,34 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return false;
+		}
+
+		public static void LiquidSlopeOpacity(int type, ref float slopeOpacity)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				slopeOpacity = (float)modLiquid.SlopeOpacity;
+			}
+			DelegateSlopeOpacity[] hookLiquidSlopeOpacity = HookLiquidSlopeOpacity;
+			for (int k = 0; k < hookLiquidSlopeOpacity.Length; k++)
+			{
+				hookLiquidSlopeOpacity[k](type, ref slopeOpacity);
+			}
+		}
+
+		public static void LiquidLightMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				liquidMaskMode = modLiquid.LiquidLightMaskMode(i, j);
+			}
+			DelegateLiquidMaskMode[] hookLiquidLightMaskMode = HookLiquidLightMaskMode;
+			for (int k = 0; k < hookLiquidLightMaskMode.Length; k++)
+			{
+				hookLiquidLightMaskMode[k](i, j, type, ref liquidMaskMode);
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ using ModLiquidLib.Utils;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;
+using Terraria.Graphics.Light;
 using Terraria.ModLoader;
 
 namespace ModLiquidLib.ModLoader
@@ -446,6 +447,30 @@ namespace ModLiquidLib.ModLoader
 		public virtual bool AllowFishingInShimmer()
 		{
 			return false;
+		}
+
+		/// <summary>
+		/// The opacity liquid slopes render at. Lava uses this to render at 1f opacity, and honey does the following calculation for it's opacity: <br/>
+		/// Math.Max(0.5f * 1.7f, 1f) <br/>
+		/// The game does additional calulations after this hook to get the final opacity. Use this method to edit liquid slope's default opacity to render at. <br/>
+		/// slopeOpacity defaults at 0.5f.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="slopeOpacity">The opacity already given to a liquid. Edit this to change the default liquid slope opacity.</param>
+		public virtual void LiquidSlopeOpacity(int type, ref float slopeOpacity)
+		{
+		}
+
+		/// <summary>
+		/// Allows you to change the Light Mask Mode for any liquid. The Light Mask Mode is the mask for lighting to determine how light interacts with a liquid. <br/>
+		/// Vanilla has options for Water (slight blue fade) and Honey (dark black) while lava uses the None option. <br/>
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		/// <param name="type"></param>
+		/// <param name="liquidMaskMode">Edit this param to change the Light Mask Mode of the liquid.</param>
+		public virtual void LiquidLightMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode)
+		{
 		}
 	}
 }

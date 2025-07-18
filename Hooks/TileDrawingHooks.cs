@@ -4,12 +4,13 @@ using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System;
+using System.CodeDom;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics;
 using Terraria.ID;
-using Terraria.Utilities;
 
 namespace ModLiquidLib.Hooks
 {
@@ -36,6 +37,7 @@ namespace ModLiquidLib.Hooks
 			int vertecies_varNum = -1;//14
 			int liquidSize_varNum = -1;//16
 			int position_varNum = -1;//17
+			int liquidAlpha_varNum = -1; //18
 			int colors_varNum = -1;//20
 			c.GotoNext(i => i.MatchAdd(), i => i.MatchLdarg(7), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile_varNum));
 			c.GotoNext(i => i.MatchSub(), i => i.MatchLdarg(7), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile2_varNum));
@@ -106,6 +108,31 @@ namespace ModLiquidLib.Hooks
 			{
 				num = i; //put local var into another local var
 			});
+
+			//Alpha editing
+			//float num7 = 0.5f;
+			//switch (num2)
+			//{
+			//	case 1:
+			//		num7 = 1f;
+			//		break;
+			//	case 11:
+			//		num7 = Math.Max(num7 * 1.7f, 1f);
+			//		break;
+			//}
+			//    <- Inject right here
+			//if ((double)tileY <= Main.worldSurface || num7 > 1f)
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out liquidAlpha_varNum), i => i.MatchLdcR4(1.7f), i => i.MatchMul(), i => i.MatchLdcR4(1), i => i.MatchCall("System.Math", "Max"), 
+				i => i.MatchStloc(liquidAlpha_varNum), i => i.MatchLdarg(7));
+			c.EmitLdloca(liquidAlpha_varNum);
+			c.Emit(OpCodes.Ldloc, liquidType_varDef);
+			c.EmitDelegate((int tileY, ref float num7, int i) =>
+			{
+				LiquidLoader.LiquidSlopeOpacity(i, ref num7);
+			});
+			c.EmitLdarg(7);
+
+			//Ok, back to slope rendering stuff
 			c.GotoNext(MoveType.After, i => i.MatchLdloca(vertecies_varNum), i => i.MatchCall<TileDrawing>("DrawPartialLiquid"));
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);

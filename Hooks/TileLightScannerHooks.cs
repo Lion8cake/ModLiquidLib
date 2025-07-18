@@ -1,8 +1,10 @@
-﻿using Terraria.Graphics.Light;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
+using System;
+using Terraria;
+using Terraria.Graphics.Light;
+using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
 {
@@ -35,5 +37,22 @@ namespace ModLiquidLib.Hooks
 				lightColor.Z = B;
 			}
 		}
-	}
+		internal static LightMaskMode EditLiquidMaskdMode(On_TileLightScanner.orig_GetTileMask orig, TileLightScanner self, Tile tile)
+		{
+			LightMaskMode maskMode = orig.Invoke(self, tile);
+			if (self.LightIsBlocked(tile) && tile.TileType != 131 && !tile.IsActuated && tile.Slope == 0)
+			{
+				return maskMode;
+			}
+			if (tile.LiquidAmount > 128)
+			{
+				if (tile.LiquidType >= LiquidID.Count)
+				{
+					maskMode = LightMaskMode.None;
+				}
+				LiquidLoader.LiquidLightMaskMode(tile.X(), tile.Y(), tile.LiquidType, ref maskMode);
+			}
+			return maskMode;
+		}
+	}	
 }

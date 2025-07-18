@@ -69,6 +69,7 @@ namespace ModLiquidLib
 			IL_Projectile.AI_061_FishingBobber += ProjectileHooks.StopShimmerShimmeringThePlayer;
 			On_Projectile.AI_061_FishingBobber_DoASplash += ProjectileHooks.BlockOtherWaterSplashes;
 			IL_WorldGen.PlaceLiquid += WorldGenHooks.FixPlaceLiquidMerging;
+			On_TileLightScanner.GetTileMask += TileLightScannerHooks.EditLiquidMaskdMode;
 
 			MapHelper.Initialize();
 		}
@@ -145,6 +146,7 @@ namespace ModLiquidLib
 			IL_Projectile.AI_061_FishingBobber -= ProjectileHooks.StopShimmerShimmeringThePlayer;
 			On_Projectile.AI_061_FishingBobber_DoASplash -= ProjectileHooks.BlockOtherWaterSplashes;
 			IL_WorldGen.PlaceLiquid -= WorldGenHooks.FixPlaceLiquidMerging;
+			On_TileLightScanner.GetTileMask -= TileLightScannerHooks.EditLiquidMaskdMode;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
