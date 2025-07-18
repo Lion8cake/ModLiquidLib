@@ -80,6 +80,9 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> Whether or not, when drowning, the player will emit dusts from their mouth. </summary>
 		public bool PlayersEmitBreathBubbles { get; set; } = true;
 
+		/// <summary> The multiplier used to change how many tiles are needed to fish in a pool of liquid. Honey uses a 1.5x multiplier for its pool size. </summary>
+		public float FishingPoolSizeMultiplier { get; set; } = 1f;
+
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
 		/// </summary>
@@ -424,6 +427,14 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="proj">The projectile instance thats entering or exiting the liquid.</param>
 		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		public virtual void OnProjectileSplash(Projectile proj, bool isEnter)
+		{
+		}
+
+		/// <summary>
+		/// Allows you to decide what happens when a fishing bobber catches a fish. Water uses this to create extra water bubbles and to make a splash sound.		/// </summary>
+		/// <param name="proj">The projectile instance thats fishing in the liquid.</param>
+		/// <returns></returns>
+		public virtual void OnFishingBobberSplash(Projectile proj)
 		{
 		}
 

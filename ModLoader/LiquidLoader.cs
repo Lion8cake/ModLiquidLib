@@ -30,6 +30,8 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegateCanPlayerDrown(Player player, int type, ref bool isDrowning);
 
+		private delegate void DelegatePoolSizeMultiplier(int type, ref float multiplier);
+
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -84,6 +86,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Func<Projectile, int, bool, bool>[] HookOnProjectileSplash;
 
+		private static Func<Projectile, int, bool>[] HookOnFishingBobberSplash;
+
 		private static Func<Item, int, bool, bool>[] HookOnItemSplash;
 
 		private static Func<Player, int, bool, bool, bool>[] HookPlayerCollision;
@@ -93,6 +97,10 @@ namespace ModLiquidLib.ModLoader
 		private static Func<int, bool?>[] HookPlayersEmitBreathBubbles;
 
 		private static DelegateCanPlayerDrown[] HookCanPlayerDrown;
+
+		private static DelegatePoolSizeMultiplier[] HookPoolSizeMultiplier;
+
+		private static Func<bool>[] HookAllowFishingInShimmer;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -154,11 +162,14 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool>>(ref HookOnPlayerSplash, globalLiquids, (GlobalLiquid g) => g.OnPlayerSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<NPC, int, bool, bool>>(ref HookOnNPCSplash, globalLiquids, (GlobalLiquid g) => g.OnNPCSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool, bool>>(ref HookOnProjectileSplash, globalLiquids, (GlobalLiquid g) => g.OnProjectileSplash);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool>>(ref HookOnFishingBobberSplash, globalLiquids, (GlobalLiquid g) => g.OnFishingBobberSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePoolSizeMultiplier>(ref HookPoolSizeMultiplier, globalLiquids, (GlobalLiquid g) => g.LiquidFishingPoolSizeMulitplier);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<bool>>(ref HookAllowFishingInShimmer, globalLiquids, (GlobalLiquid g) => g.AllowFishingInShimmer);
 			if (!unloading)
 			{
 				loaded = true;
@@ -477,6 +488,24 @@ namespace ModLiquidLib.ModLoader
 			return true;
 		}
 
+		public static bool OnFishingBobberSplash(int type, Projectile projectile)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				modLiquid.OnFishingBobberSplash(projectile);
+			}
+			Func<Projectile, int, bool>[] hookOnPlayerSplash = HookOnFishingBobberSplash;
+			for (int k = 0; k < hookOnPlayerSplash.Length; k++)
+			{
+				if (!hookOnPlayerSplash[k](projectile, type))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public static bool OnItemSplash(int type, Item item, bool isEnter)
 		{
 			Func<Item, int, bool, bool>[] hookOnPlayerSplash = HookOnItemSplash;
@@ -531,6 +560,33 @@ namespace ModLiquidLib.ModLoader
 			{
 				hookCanPlayerDrown[k](player, type, ref isDrowning);
 			}
+		}
+
+		public static void LiquidFishingPoolSizeMulitplier(int type, ref float multiplier)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				multiplier = (float)modLiquid.FishingPoolSizeMultiplier;
+			}
+			DelegatePoolSizeMultiplier[] hookPoolSizeMultiplier = HookPoolSizeMultiplier;
+			for (int k = 0; k < hookPoolSizeMultiplier.Length; k++)
+			{
+				hookPoolSizeMultiplier[k](type, ref multiplier);
+			}
+		}
+
+		public static bool AllowFishingInShimmer()
+		{
+			Func<bool>[] hookAllowFishingInShimmer = HookAllowFishingInShimmer;
+			for (int k = 0; k < hookAllowFishingInShimmer.Length; k++)
+			{
+				if (hookAllowFishingInShimmer[k]())
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

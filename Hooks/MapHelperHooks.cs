@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using ModLiquidLib.IO;
 using ModLiquidLib.ModLoader;
 using MonoMod.Cil;
 using Terraria.ID;
@@ -7,6 +8,20 @@ namespace ModLiquidLib.Hooks
 {
 	internal class MapHelperHooks
 	{
+		internal static void SaveTLMap(ILContext il)
+		{
+			ILCursor c = new(il);
+			int text_varNum = -1;
+			int cloudSave_varNum = -1;
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out text_varNum), i => i.MatchLdloc(out cloudSave_varNum), i => i.MatchCall("Terraria.ModLoader.IO.MapIO", "WriteModFile"));
+			c.EmitLdloc(text_varNum);
+			c.EmitLdloc(cloudSave_varNum);
+			c.EmitDelegate((string text, bool isCloudSave) =>
+			{
+				MapLiquidIO.WriteModFile(text, isCloudSave);
+			});
+		}
+
 		internal static void AddLiquidMapEntrys(ILContext il)
 		{
 			ILCursor c = new(il);

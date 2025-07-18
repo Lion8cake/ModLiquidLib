@@ -351,6 +351,18 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
+		/// Allows you to decide what happens when a fishing bobber catches a fish. Water uses this to create extra water bubbles and to make a splash sound. <br/>
+		/// Return false to disable the water splashing fishing bobbers create.
+		/// </summary>
+		/// <param name="proj">The projectile instance thats fishing in the liquid.</param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public virtual bool OnFishingBobberSplash(Projectile proj, int type)
+		{
+			return true;
+		}
+
+		/// <summary>
 		/// Allows you to decide what happens when an item enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when an item enters and leaves. <br/>
 		/// Items now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
 		/// Return true to allow the liquids to call their normal splash code. Returns true by default.
@@ -414,6 +426,26 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="isDrowning">The boolean flag for whether or not the player is drowning.</param>
 		public virtual void CanPlayerDrown(Player player, int type, ref bool isDrowning)
 		{
+		}
+
+		/// <summary>
+		/// The multiper responsable for the poolsize of liquid being fished in. <br/>
+		/// Honey uses this to multiply its pool size by 1.5x, this means that honey only needs a minimum of 50 tiles rather than 75 tiles of liquid.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="multiplier">The multiplier used, for most liquids this will be 1, but for honey it's 1.5.</param>
+		public virtual void LiquidFishingPoolSizeMulitplier(int type, ref float multiplier)
+		{
+		}
+
+		/// <summary>
+		/// Allows bobbers to ignore the application of the shimmer effect when being wet by shimmer. <br/>
+		/// This allows modders to easily enable fishing in shimmer. Do keep in mind, the fishing loot normally is water.
+		/// </summary>
+		/// <returns></returns>
+		public virtual bool AllowFishingInShimmer()
+		{
+			return false;
 		}
 	}
 }

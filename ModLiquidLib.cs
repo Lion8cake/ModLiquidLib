@@ -37,9 +37,9 @@ namespace ModLiquidLib
 			IL_MapHelper.CreateMapTile += MapHelperHooks.AddLiquidMapEntrys;
 			IL_MapLoader.FinishSetup += MapLoaderHooks.AddLiquidToFinishSetup;
 			IL_MapHelper.Initialize += MapHelperHooks.IncrimentLiquidMapEntries;
-			IL_PlayerFileData.MapBelongsToPath += MapLiquidIOHooks.AddLiquidMapFile;
-			IL_WorldMap.Load += MapLiquidIOHooks.InitaliseTLMap;
-			IL_MapHelper.InternalSaveMap += MapLiquidIOHooks.SaveTLMap;
+			IL_PlayerFileData.MapBelongsToPath += PlayerFileDataHooks.AddLiquidMapFile;
+			IL_WorldMap.Load += WorldMapHooks.InitaliseTLMap;
+			IL_MapHelper.InternalSaveMap += MapHelperHooks.SaveTLMap;
 			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
 			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
@@ -51,7 +51,7 @@ namespace ModLiquidLib
 			On_UIModItem.OnInitialize += UIModItemHooks.AddLiquidCount;
 			IL_Liquid.LiquidCheck += LiquidHooks.EditLiquidMergeTiles;
 			On_Liquid.GetLiquidMergeTypes += LiquidHooks.PreventMergeOverloadFromExecuting;
-			On_WorldGen.PlayLiquidChangeSound += LiquidHooks.PreventSoundOverloadFromExecuting;
+			On_WorldGen.PlayLiquidChangeSound += WorldGenHooks.PreventSoundOverloadFromExecuting;
 			IL_NetMessage.CompressTileBlock_Inner += NetMessageHooks.SendLiquidTypes;
 			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles += PlayerHooks.AddLiquidCraftingConditions;
@@ -65,6 +65,10 @@ namespace ModLiquidLib
 			IL_NPC.UpdateCollision += NPCHooks.UnwetNPCs;
 			IL_NPC.Collision_WaterCollision += NPCHooks.UpdateNPCSplash;
 			IL_Projectile.Update += ProjectileHooks.UpdateProjectileSplash;
+			IL_Projectile.GetFishingPondState += ProjectileHooks.FishingPondLiquidEdits;
+			IL_Projectile.AI_061_FishingBobber += ProjectileHooks.StopShimmerShimmeringThePlayer;
+			On_Projectile.AI_061_FishingBobber_DoASplash += ProjectileHooks.BlockOtherWaterSplashes;
+			IL_WorldGen.PlaceLiquid += WorldGenHooks.FixPlaceLiquidMerging;
 
 			MapHelper.Initialize();
 		}
@@ -82,11 +86,11 @@ namespace ModLiquidLib
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsLavaSource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsHoneySource[i];
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsLavaSource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsHoneySource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsLavaSource[i];
+				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsHoneySource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsShimmerSource.Length; i++)
 			{
@@ -108,9 +112,9 @@ namespace ModLiquidLib
 			IL_MapHelper.CreateMapTile -= MapHelperHooks.AddLiquidMapEntrys;
 			IL_MapLoader.FinishSetup -= MapLoaderHooks.AddLiquidToFinishSetup;
 			IL_MapHelper.Initialize -= MapHelperHooks.IncrimentLiquidMapEntries;
-			IL_PlayerFileData.MapBelongsToPath -= MapLiquidIOHooks.AddLiquidMapFile;
-			IL_WorldMap.Load -= MapLiquidIOHooks.InitaliseTLMap;
-			IL_MapHelper.InternalSaveMap -= MapLiquidIOHooks.SaveTLMap;
+			IL_PlayerFileData.MapBelongsToPath -= PlayerFileDataHooks.AddLiquidMapFile;
+			IL_WorldMap.Load -= WorldMapHooks.InitaliseTLMap;
+			IL_MapHelper.InternalSaveMap -= MapHelperHooks.SaveTLMap;
 			IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering;
 			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
@@ -123,7 +127,7 @@ namespace ModLiquidLib
 			On_UIModItem.OnInitialize -= UIModItemHooks.AddLiquidCount;
 			IL_Liquid.LiquidCheck -= LiquidHooks.EditLiquidMergeTiles;
 			On_Liquid.GetLiquidMergeTypes -= LiquidHooks.PreventMergeOverloadFromExecuting;
-			On_WorldGen.PlayLiquidChangeSound -= LiquidHooks.PreventSoundOverloadFromExecuting;
+			On_WorldGen.PlayLiquidChangeSound -= WorldGenHooks.PreventSoundOverloadFromExecuting;
 			IL_NetMessage.CompressTileBlock_Inner -= NetMessageHooks.SendLiquidTypes;
 			IL_NetMessage.DecompressTileBlock_Inner -= NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles -= PlayerHooks.AddLiquidCraftingConditions;
@@ -137,6 +141,10 @@ namespace ModLiquidLib
 			IL_NPC.UpdateCollision -= NPCHooks.UnwetNPCs;
 			IL_NPC.Collision_WaterCollision -= NPCHooks.UpdateNPCSplash;
 			IL_Projectile.Update -= ProjectileHooks.UpdateProjectileSplash;
+			IL_Projectile.GetFishingPondState -= ProjectileHooks.FishingPondLiquidEdits;
+			IL_Projectile.AI_061_FishingBobber -= ProjectileHooks.StopShimmerShimmeringThePlayer;
+			On_Projectile.AI_061_FishingBobber_DoASplash -= ProjectileHooks.BlockOtherWaterSplashes;
+			IL_WorldGen.PlaceLiquid -= WorldGenHooks.FixPlaceLiquidMerging;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />

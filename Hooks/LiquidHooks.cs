@@ -376,12 +376,6 @@ namespace ModLiquidLib.Hooks
 			}
 		}
 
-		internal static void PreventSoundOverloadFromExecuting(On_WorldGen.orig_PlayLiquidChangeSound orig, TileChangeType eventType, int x, int y, int count)
-		{
-			return;
-			orig.Invoke(eventType, x, y, count);
-		}
-
 		internal static void PreventMergeOverloadFromExecuting(On_Liquid.orig_GetLiquidMergeTypes orig, int thisLiquidType, out int liquidMergeTileType, out int liquidMergeType, bool waterNearby, bool lavaNearby, bool honeyNearby, bool shimmerNearby)
 		{
 			liquidMergeType = 0;
@@ -462,9 +456,9 @@ namespace ModLiquidLib.Hooks
 
 			for (int i = 0; i < LiquidLoader.LiquidCount; i++)
 			{
-				modLiquidTileType = LiquidLoader.LiquidMergeTilesType(x, y, i, thisLiquidType);
 				if (thisLiquidType != i && liquidsNearby[i])
 				{
+					modLiquidTileType = LiquidLoader.LiquidMergeTilesType(x, y, i, thisLiquidType);
 					if (modLiquidTileType != null)
 					{
 						liquidMergeTileType = (int)modLiquidTileType;
