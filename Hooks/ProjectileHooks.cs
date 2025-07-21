@@ -185,6 +185,24 @@ namespace ModLiquidLib.Hooks
 			c.EmitBr(IL_0801);
 		}
 
+		internal static void ShimmerFishingItemFix(On_Projectile.orig_FishingCheck_RollItemDrop orig, Projectile self, ref Terraria.DataStructures.FishingAttempt fisher)
+		{
+			if (Main.tile[fisher.X, fisher.Y].LiquidType == LiquidID.Shimmer)
+			{
+				return;
+			}
+			orig.Invoke(self, ref fisher);
+		}
+
+		internal static void ShimmerFishingFix(On_Projectile.orig_FishingCheck_RollEnemySpawns orig, Projectile self, ref Terraria.DataStructures.FishingAttempt fisher)
+		{
+			if (Main.tile[fisher.X, fisher.Y].LiquidType == LiquidID.Shimmer)
+			{
+				return;
+			}
+			orig.Invoke(self, ref fisher);
+		}
+
 		internal static void UpdateProjectileSplash(ILContext il)
 		{
 			ILCursor c = new(il);
