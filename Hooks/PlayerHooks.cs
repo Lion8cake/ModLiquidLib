@@ -1,4 +1,5 @@
-﻿using ModLiquidLib.ModLoader;
+﻿using ModLiquidLib.ID;
+using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
 using System;
@@ -10,6 +11,38 @@ namespace ModLiquidLib.Hooks
 {
 	internal class PlayerHooks
 	{
+		internal static void BucketSupport(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_0414 = null;
+			c.GotoNext(MoveType.After, i => i.MatchCall<Tile>("shimmer"));
+			c.EmitDelegate((bool isShimmer) =>
+			{
+				return LiquidID_TLmod.Sets.CreateLiquidBucketItem[Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidType] == -1;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchBeq(out IL_0414), 
+				i => i.MatchLdsflda<Main>("tile"), i => i.MatchLdsfld<Player>("tileTargetX"), i => i.MatchLdsfld<Player>("tileTargetY"),
+				i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(0));
+
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((Player self, Item sItem) =>
+			{
+				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+
+				if (LiquidID_TLmod.Sets.CreateLiquidBucketItem[tile.LiquidType] != -1)
+				{
+					sItem.stack--;
+					self.PutItemInInventoryFromItemUsage(LiquidID_TLmod.Sets.CreateLiquidBucketItem[tile.LiquidType], self.selectedItem);
+					return true;
+				}
+				return false;
+			});
+			c.EmitBrtrue(IL_0414);
+			c.EmitRet();
+		}
+
 		internal static void AddLiquidCraftingConditions(ILContext il)
 		{
 			ILCursor c = new(il);

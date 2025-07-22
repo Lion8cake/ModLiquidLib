@@ -1,27 +1,17 @@
-using Microsoft.Xna.Framework;
 using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
-using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
-using Terraria.GameContent.UI.States;
 using Terraria.Graphics.Light;
-using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace ModLiquidLib
 {
@@ -72,6 +62,7 @@ namespace ModLiquidLib
 			On_TileLightScanner.GetTileMask += TileLightScannerHooks.EditLiquidMaskdMode;
 			On_Projectile.FishingCheck_RollEnemySpawns += ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop += ProjectileHooks.ShimmerFishingItemFix;
+			IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport;
 
 			MapHelper.Initialize();
 		}
@@ -85,19 +76,19 @@ namespace ModLiquidLib
 
 			for (int i = 0; i < TileID.Sets.CountsAsWaterSource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][0] = TileID.Sets.CountsAsWaterSource[i];
+				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][0] = TileID.Sets.CountsAsWaterSource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsLavaSource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsLavaSource[i];
+				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsLavaSource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsHoneySource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsHoneySource[i];
+				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsHoneySource[i];
 			}
 			for (int i = 0; i < TileID.Sets.CountsAsShimmerSource.Length; i++)
 			{
-				TileLiquidIDSets.Sets.CountsAsLiquidSource[i][3] = TileID.Sets.CountsAsShimmerSource[i];
+				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][3] = TileID.Sets.CountsAsShimmerSource[i];
 			}
 		}
 
@@ -151,6 +142,7 @@ namespace ModLiquidLib
 			On_TileLightScanner.GetTileMask -= TileLightScannerHooks.EditLiquidMaskdMode;
 			On_Projectile.FishingCheck_RollEnemySpawns -= ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop -= ProjectileHooks.ShimmerFishingItemFix;
+			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
 		}
 
 		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
