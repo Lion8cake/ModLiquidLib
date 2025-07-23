@@ -12,6 +12,7 @@ using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ID;
+using Microsoft.VisualBasic;
 
 namespace ModLiquidLib
 {
@@ -21,7 +22,7 @@ namespace ModLiquidLib
 		{
 			TModLoaderUtils.Load();
 
-			On_ModContent.ResizeArrays += ModContentHooks.ResizeArrayTest;
+			On_ModContent.ResizeArrays += ModContentHooks.ResizeArraysLiquid;
 			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray; //stuff to be done BEFORE resizing arrays
 			On_TileLightScanner.ApplyLiquidLight += TileLightScannerHooks.ApplyModliquidLight;
 			IL_MapHelper.CreateMapTile += MapHelperHooks.AddLiquidMapEntrys;
@@ -74,27 +75,22 @@ namespace ModLiquidLib
 
 			MapLiquidLoader.FinishSetup();
 
-			for (int i = 0; i < TileID.Sets.CountsAsWaterSource.Length; i++)
+			for (int i = 0; i < TileLoader.TileCount; i++)
 			{
-				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][0] = TileID.Sets.CountsAsWaterSource[i];
-			}
-			for (int i = 0; i < TileID.Sets.CountsAsLavaSource.Length; i++)
-			{
-				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][2] = TileID.Sets.CountsAsLavaSource[i];
-			}
-			for (int i = 0; i < TileID.Sets.CountsAsHoneySource.Length; i++)
-			{
-				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][1] = TileID.Sets.CountsAsHoneySource[i];
-			}
-			for (int i = 0; i < TileID.Sets.CountsAsShimmerSource.Length; i++)
-			{
-				LiquidID_TLmod.Sets.CountsAsLiquidSource[i][3] = TileID.Sets.CountsAsShimmerSource[i];
+				if (TileID.Sets.CountsAsWaterSource[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Water] = TileID.Sets.CountsAsWaterSource[i];
+				if (TileID.Sets.CountsAsLavaSource[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Lava] = TileID.Sets.CountsAsLavaSource[i];
+				if (TileID.Sets.CountsAsHoneySource[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Honey] = TileID.Sets.CountsAsHoneySource[i];
+				if (TileID.Sets.CountsAsShimmerSource[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Shimmer] = TileID.Sets.CountsAsShimmerSource[i];
 			}
 		}
 
 		public override void Unload()
 		{
-			On_ModContent.ResizeArrays -= ModContentHooks.ResizeArrayTest;
+			On_ModContent.ResizeArrays -= ModContentHooks.ResizeArraysLiquid;
 			TModLoaderUtils.Unload();
 			LiquidLoader.ResizeArrays(true);
 			LiquidLoader.Unload();

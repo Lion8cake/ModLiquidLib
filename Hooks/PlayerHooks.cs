@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
@@ -73,10 +74,16 @@ namespace ModLiquidLib.Hooks
 				{
 					self.GetModPlayer<ModLiquidPlayer>().adjLiquid[Main.tile[j, k].LiquidType] = true;
 				}
-				//if (TileLiquidIDSets.Sets.CountsAsLiquidSource[Main.tile[j, k].TileType].Contains(true))
-				//{
-				//	self.GetModPlayer<ModLiquidPlayer>().adjLiquid = TileLiquidIDSets.Sets.CountsAsLiquidSource[Main.tile[j, k].TileType]; //TODO: Add Tile support for liquid adjustments
-				//}
+				else
+				{
+					for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+					{
+						if (LiquidID_TLmod.Sets.CountsAsLiquidSource[Main.tile[j, k].TileType][i])
+						{
+							self.GetModPlayer<ModLiquidPlayer>().adjLiquid[i] = true;
+						}
+					}
+				}
 				LiquidLoader.AdjLiquids(self, Main.tile[j, k].LiquidType);
 			});
 
