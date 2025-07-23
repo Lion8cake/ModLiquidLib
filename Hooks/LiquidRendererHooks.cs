@@ -36,7 +36,7 @@ namespace ModLiquidLib.Hooks
 						i, 
 						j, 
 						Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type, 
-						Unsafe.As<LiquidDrawCache, Utils.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
+						Unsafe.As<LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
 						drawOffset, 
 						isBackgroundDraw);
 				});
@@ -62,7 +62,7 @@ namespace ModLiquidLib.Hooks
 						i, 
 						j, 
 						Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type, 
-						Unsafe.As<LiquidDrawCache, Utils.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
+						Unsafe.As<LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
 						drawOffset, 
 						isBackgroundDraw);
 				});
@@ -104,7 +104,7 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdloc(pointer2_varNum);
 				c.EmitDelegate((byte liquidID, int x, int y, IntPtr ptr2) =>
 				{
-					return LiquidLoader.EmitEffects(x, y, liquidID, Unsafe.As<LiquidCache, Utils.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr2)));
+					return LiquidLoader.EmitEffects(x, y, liquidID, Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr2)));
 				});
 				c.EmitBrfalse(IL_13a0);
 				c.EmitLdloc(pointer2_varNum);

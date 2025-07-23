@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.Structs
 {
 	public struct LiquidDrawCache
 	{

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.LiquidContent
 {
 	public class ModLiquidPlayer : ModPlayer
 	{

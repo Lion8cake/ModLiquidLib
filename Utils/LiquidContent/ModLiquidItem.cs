@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.LiquidContent
 {
 	public class ModLiquidItem : GlobalItem
 	{

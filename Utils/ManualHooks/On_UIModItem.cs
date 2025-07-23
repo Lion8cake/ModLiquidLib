@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Terraria.ModLoader.UI;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.ManualHooks
 {
 	public static class On_UIModItem
 	{

@@ -8,11 +8,10 @@ using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics.Light;
 using Terraria.IO;
-using Terraria.Localization;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ID;
-using Microsoft.VisualBasic;
+using ModLiquidLib.Utils.ManualHooks;
 
 namespace ModLiquidLib
 {
@@ -139,38 +138,6 @@ namespace ModLiquidLib
 			On_Projectile.FishingCheck_RollEnemySpawns -= ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop -= ProjectileHooks.ShimmerFishingItemFix;
 			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
-		}
-
-		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
-		public static ModLiquid GetModLiquid(int type)
-		{
-			return LiquidLoader.GetLiquid(type);
-		}
-
-		/// <summary>
-		/// Get the id (type) of a ModLiquid by class. Assumes one instance per class.
-		/// </summary>
-		public static int LiquidType<T>() where T : ModLiquid
-		{
-			return ModContent.GetInstance<T>()?.Type ?? 0;
-		}
-
-		public static Condition NearLiquid(int liquidID)
-		{
-			string liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
-			LocalizedText text;
-			if (liquidID == LiquidID.Water)
-				text = Language.GetText("Conditions.NearWater");
-			else if (liquidID == LiquidID.Lava)
-				text = Language.GetText("Conditions.NearLava");
-			else if (liquidID == LiquidID.Honey)
-				text = Language.GetText("Conditions.NearHoney");
-			else if (liquidID == LiquidID.Shimmer)
-				text = Language.GetText("Conditions.NearShimmer");
-			else
-				text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(liquidMapName == "" ? LiquidLoader.GetLiquid(liquidID).Name : liquidMapName);
-
-			return new Condition(text, () => Main.LocalPlayer.GetAdjLiquids(liquidID));
 		}
 
 		internal enum MessageType : byte

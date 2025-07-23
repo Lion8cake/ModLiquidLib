@@ -1,6 +1,6 @@
 ﻿using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.ManualHooks;
 using Terraria.ID;
 using Terraria.ModLoader;
 

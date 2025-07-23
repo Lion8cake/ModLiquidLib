@@ -1,6 +1,6 @@
 ﻿using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
 using System;
 using System.Linq;

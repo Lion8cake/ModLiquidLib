@@ -2,14 +2,14 @@
 using ModLiquidLib.ModLoader;
 using Terraria;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.LiquidContent
 {
 	public class LiquidCollision
 	{
 		public static bool WetCollision(Vector2 Position, int Width, int Height, out bool[] liquidsIn)
 		{
 			liquidsIn = new bool[LiquidLoader.LiquidCount];
-			Vector2 vector = new(Position.X + (float)(Width / 2), Position.Y + (float)(Height / 2));
+			Vector2 vector = new(Position.X + Width / 2, Position.Y + Height / 2);
 			int num = 10;
 			int num2 = Height / 2;
 			if (num > Width)
@@ -20,16 +20,16 @@ namespace ModLiquidLib.Utils
 			{
 				num2 = Height;
 			}
-			vector = new(vector.X - (float)(num / 2), vector.Y - (float)(num2 / 2));
+			vector = new(vector.X - num / 2, vector.Y - num2 / 2);
 			int value5 = (int)(Position.X / 16f) - 1;
-			int value2 = (int)((Position.X + (float)Width) / 16f) + 2;
+			int value2 = (int)((Position.X + Width) / 16f) + 2;
 			int value3 = (int)(Position.Y / 16f) - 1;
-			int value4 = (int)((Position.Y + (float)Height) / 16f) + 2;
+			int value4 = (int)((Position.Y + Height) / 16f) + 2;
 			int num6 = Terraria.Utils.Clamp(value5, 0, Main.maxTilesX - 1);
 			value2 = Terraria.Utils.Clamp(value2, 0, Main.maxTilesX - 1);
 			value3 = Terraria.Utils.Clamp(value3, 0, Main.maxTilesY - 1);
 			value4 = Terraria.Utils.Clamp(value4, 0, Main.maxTilesY - 1);
-			Vector2 vector2 = default(Vector2);
+			Vector2 vector2 = default;
 			for (int i = num6; i < value2; i++)
 			{
 				for (int j = value3; j < value4; j++)
@@ -43,7 +43,7 @@ namespace ModLiquidLib.Utils
 						num4 /= 32f;
 						vector2.Y += num4 * 2f;
 						num3 -= (int)(num4 * 2f);
-						if (vector.X + (float)num > vector2.X && vector.X < vector2.X + 16f && vector.Y + (float)num2 > vector2.Y && vector.Y < vector2.Y + (float)num3)
+						if (vector.X + num > vector2.X && vector.X < vector2.X + 16f && vector.Y + num2 > vector2.Y && vector.Y < vector2.Y + num3)
 						{
 							liquidsIn[Main.tile[i, j].LiquidType] = true;
 							return true;
@@ -58,7 +58,7 @@ namespace ModLiquidLib.Utils
 						vector2.X = i * 16;
 						vector2.Y = j * 16;
 						int num5 = 16;
-						if (vector.X + (float)num > vector2.X && vector.X < vector2.X + 16f && vector.Y + (float)num2 > vector2.Y && vector.Y < vector2.Y + (float)num5)
+						if (vector.X + num > vector2.X && vector.X < vector2.X + 16f && vector.Y + num2 > vector2.Y && vector.Y < vector2.Y + num5)
 						{
 							liquidsIn[Main.tile[i, j].LiquidType] = true;
 							return true;

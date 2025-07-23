@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.IO;
 using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
+using ModLiquidLib.Utils.Structs;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.Graphics.Light;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -136,6 +139,38 @@ namespace ModLiquidLib.ModLoader
 				return null;
 			}
 			return liquids[type - LiquidID.Count];
+		}
+
+		/// <inheritdoc cref="M:ModLiquidLib.ModLoader.LiquidLoader.GetLiquid(System.Int32)" />
+		public static ModLiquid GetModLiquid(int type)
+		{
+			return GetLiquid(type);
+		}
+
+		/// <summary>
+		/// Get the id (type) of a ModLiquid by class. Assumes one instance per class.
+		/// </summary>
+		public static int LiquidType<T>() where T : ModLiquid
+		{
+			return ModContent.GetInstance<T>()?.Type ?? 0;
+		}
+
+		public static Condition NearLiquid(int liquidID)
+		{
+			string liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
+			LocalizedText text;
+			if (liquidID == LiquidID.Water)
+				text = Language.GetText("Conditions.NearWater");
+			else if (liquidID == LiquidID.Lava)
+				text = Language.GetText("Conditions.NearLava");
+			else if (liquidID == LiquidID.Honey)
+				text = Language.GetText("Conditions.NearHoney");
+			else if (liquidID == LiquidID.Shimmer)
+				text = Language.GetText("Conditions.NearShimmer");
+			else
+				text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(liquidMapName == "" ? LiquidLoader.GetLiquid(liquidID).Name : liquidMapName);
+
+			return new Condition(text, () => Main.LocalPlayer.GetAdjLiquids(liquidID));
 		}
 
 		internal static void ResizeArrays(bool unloading = false)

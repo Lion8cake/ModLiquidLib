@@ -167,7 +167,7 @@ namespace ModLiquidLib.Hooks
 			orig.Invoke(self, behindBlocks, tileCache, ref position, ref liquidSize, liquidType, ref colors);
 		}
 
-		private static void DrawPartialLiquid(TileDrawing self, bool behindBlocks, Tile tileCache, ref Vector2 position, ref Rectangle liquidSize, int watersType, int liquidType, ref VertexColors colors)
+		public static void DrawPartialLiquid(TileDrawing self, bool behindBlocks, Tile tileCache, ref Vector2 position, ref Rectangle liquidSize, int watersType, int liquidType, ref VertexColors colors)
 		{
 			int x = tileCache.X();
 			int y = tileCache.Y();

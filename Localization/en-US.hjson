@@ -1,0 +1,6 @@
+Mods: {
+	ModLiquidLib: {
+		ModsXLiquids: "{0} {^0:liquid;liquids}"
+		Conditions.NearLiquid: Near {0}
+	}
+}

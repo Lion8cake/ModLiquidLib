@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
-using System;
 using Terraria;
 using Terraria.Graphics.Light;
 using Terraria.ID;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.Structs;
 using MonoMod.Cil;
 using ReLogic.Content;
 using System;

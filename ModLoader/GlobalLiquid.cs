@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.Structs;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;

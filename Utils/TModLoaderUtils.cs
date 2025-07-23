@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using ModLiquidLib.ModLoader;
+using ModLiquidLib.Utils.LiquidContent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,6 +102,21 @@ namespace ModLiquidLib.Utils
 		public static bool[] GetModdedWetArray(this Player player)
 		{
 			return player.GetModPlayer<ModLiquidPlayer>().moddedWet;
+		}
+
+		public static bool[] GetModdedWetArray(this NPC npc)
+		{
+			return npc.GetGlobalNPC<ModLiquidNPC>().moddedWet;
+		}
+
+		public static bool[] GetModdedWetArray(this Projectile proj)
+		{
+			return proj.GetGlobalProjectile<ModLiquidProjectile>().moddedWet;
+		}
+
+		public static bool[] GetModdedWetArray(this Item item)
+		{
+			return item.GetGlobalItem<ModLiquidItem>().moddedWet;
 		}
 
 		public static void TryFloatingInFluid(this Player player)

@@ -1,14 +1,14 @@
 ﻿using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
 {
-	public class NPCHooks
+	internal class NPCHooks
 	{
-		public static void UnwetNPCs(ILContext il)
+		internal static void UnwetNPCs(ILContext il)
 		{
 			ILCursor c = new(il);
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("honeyWet"), i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("shimmerWet"));
@@ -22,7 +22,7 @@ namespace ModLiquidLib.Hooks
 			});
 		}
 
-		public static void UpdateNPCSplash(ILContext il)
+		internal static void UpdateNPCSplash(ILContext il)
 		{
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];

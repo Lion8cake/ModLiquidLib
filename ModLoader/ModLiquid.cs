@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ModLiquidLib.Utils;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System;
@@ -13,6 +12,7 @@ using Terraria.ID;
 using Terraria.Audio;
 using Terraria.Graphics.Light;
 using Terraria.GameContent;
+using ModLiquidLib.Utils.Structs;
 
 namespace ModLiquidLib.ModLoader
 {

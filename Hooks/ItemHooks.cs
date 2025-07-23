@@ -1,5 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
 using System;
 using Terraria;
@@ -9,7 +9,7 @@ namespace ModLiquidLib.Hooks
 {
 	internal class ItemHooks
 	{
-		public static void UpdateItemSplash(ILContext il)
+		internal static void UpdateItemSplash(ILContext il)
 		{
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];

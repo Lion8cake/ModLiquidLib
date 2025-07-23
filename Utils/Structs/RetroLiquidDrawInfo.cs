@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.Structs
 {
 	public class RetroLiquidDrawInfo
 	{

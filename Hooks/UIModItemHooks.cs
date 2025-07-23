@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +9,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
+using ModLiquidLib.Utils.ManualHooks;
 
 namespace ModLiquidLib.Hooks
 {

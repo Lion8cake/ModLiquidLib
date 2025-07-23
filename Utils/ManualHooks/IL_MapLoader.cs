@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Terraria.Map;
 using Terraria.ModLoader;
 
-namespace ModLiquidLib.Utils
+namespace ModLiquidLib.Utils.ManualHooks
 {
 	public static class IL_MapLoader
 	{

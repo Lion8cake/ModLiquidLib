@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using ModLiquidLib.ModLoader;
-using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;

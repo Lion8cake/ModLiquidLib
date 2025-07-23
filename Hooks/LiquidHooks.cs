@@ -1,13 +1,10 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ModLiquidLib.ModLoader;
+﻿using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Physics;
 
 namespace ModLiquidLib.Hooks
 {
