@@ -1,1 +1,35 @@
-A mod used for the creation of Modded liquids for other mods
+Welcome to ModLiquid Library!
+
+Have you ever wanted to create a modded liquid, but realised that tmodloader lacks support for custom liquids?
+This mod is for you!
+
+This mod is a library to be used by mods and developers to allow for the creation of modded liquids. This mod adds no additional content.
+This mod handles implementation of liquids in the same way how tmodloader handles modded tiles and walls. 
+This mod also handles and provides a very wide range of hooks and fields for developers to do whatever they desire with liquids ingame, whether than be adding or editing a liquid to the game.
+
+This mod adds tools for developers to allow them to do the following:
+* Create custom liquids
+* Edit existing or other modded liquids
+* Do more with Waterfalls
+
+Github Page:
+https://github.com/Lion8cake/ModLiquidLib
+
+Mod's Wiki
+https://github.com/Lion8cake/ModLiquidLib/wiki
+
+Please report issues here:
+https://github.com/Lion8cake/ModLiquidLib/issues
+
+QnA:
+
+What about the 4 liquid, liquid limit?
+That has been expanded to 255, allowing modders a whole 250 new liquids to work with.
+
+What is the .TLMap file in player folders?
+This file is handled just for map data for liquids, standing as Tmodloader Liquid Map file. When moving players, please move this file as well to keep liquid map data.
+
+How compatable is this with oher mods?
+Be careful and aware of other mods that edit or add liquids, as this mod heavily edits everything liquid related in Terraria.
+Most mods will work with this library but for mods that don't, please report on the github linked above.
+For mods incompatable, do not harrass developers to fix incompatabilities, only ask once and ask politely.
