@@ -7,6 +7,7 @@ using ModLiquidLib.Utils.Structs;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
@@ -17,6 +18,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
+using static Terraria.ModLoader.InfoDisplay;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -443,6 +445,10 @@ namespace ModLiquidLib.ModLoader
 			}
 			ModLiquid modLiquid = GetLiquid(type);
 			ModLiquid otherModLiquid = GetLiquid(otherLiquid);
+			if (LoaderUtils.HasOverride(otherModLiquid, (Expression<Func<ModLiquid, Func<int, int, int, int, int, bool>>>)((ModLiquid t) => t.PreLiquidMerge)))
+			{
+				return otherModLiquid?.PreLiquidMerge(liquidX, liquidY, tileX, tileY, type) ?? true;
+			}
 			if (modLiquid == null && otherModLiquid != null)
 			{
 				return otherModLiquid?.PreLiquidMerge(liquidX, liquidY, tileX, tileY, type) ?? true;
