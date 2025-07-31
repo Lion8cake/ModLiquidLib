@@ -140,7 +140,7 @@ namespace ModLiquidLib
 			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
 		}
 
-		internal enum MessageType : byte
+		public enum MessageType : byte
 		{
 			SyncCollisionSounds
 		}

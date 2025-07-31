@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
-	internal class LiquidHooks
+	public class LiquidHooks
 	{
 		internal static void EditLiquidUpdates(ILContext il)
 		{
