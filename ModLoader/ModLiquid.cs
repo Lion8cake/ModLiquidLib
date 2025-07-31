@@ -67,6 +67,12 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
+		/// <summary> The default sound that plays when an entity enters and exits this liquid. Overriding any OnSplash hooks/methods will prevent this from being used. </summary>
+		public SoundStyle? SplashSound { get; set; }
+
+		/// <summary> The default dust ID thats used when an entity enters and exists this liquid. Overriding any OnSplash hooks/methods will prevent this from being used. </summary>
+		public int SplashDustType { get; set; } = -1;
+
 		/// <summary> Liquids can only have a maximum fall delay of 10 (which is the same as the fall of Honey), this is due to the delay being reset to 10 when in quickfall mode. </summary>
 		public int FallDelay { get; set; } = 0;
 
@@ -407,32 +413,58 @@ namespace ModLiquidLib.ModLoader
 
 		/// <summary>
 		/// Allows you to decide what happens when the player enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a player enters and leaves. <br/>
-		/// Players now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it.
+		/// Players now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return false for the liquid to not execute the default modded liquid splash code. <br/>
+		/// Returns true by default.
 		/// </summary>
 		/// <param name="player">The player instance thats entering or exiting the liquid.</param>
 		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
-		public virtual void OnPlayerSplash(Player player, bool isEnter)
+		/// <returns></returns>
+		public virtual bool OnPlayerSplash(Player player, bool isEnter)
 		{
+			return true;
 		}
 
 		/// <summary>
 		/// Allows you to decide what happens when a NPC enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a NPC enters and leaves. <br/>
-		/// NPCs now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it.
+		/// NPCs now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return false for the liquid to not execute the default modded liquid splash code. <br/>
+		/// Returns true by default.
 		/// </summary>
 		/// <param name="npc">The NPC instance thats entering or exiting the liquid.</param>
 		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
-		public virtual void OnNPCSplash(NPC npc, bool isEnter)
+		/// <returns></returns>
+		public virtual bool OnNPCSplash(NPC npc, bool isEnter)
 		{
+			return true;
 		}
 
 		/// <summary>
 		/// Allows you to decide what happens when a projectile enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when a projectile enters and leaves. <br/>
-		/// Projectiles now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it.
+		/// Projectiles now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return false for the liquid to not execute the default modded liquid splash code. <br/>
+		/// Returns true by default.
 		/// </summary>
 		/// <param name="proj">The projectile instance thats entering or exiting the liquid.</param>
 		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
-		public virtual void OnProjectileSplash(Projectile proj, bool isEnter)
+		/// <returns></returns>
+		public virtual bool OnProjectileSplash(Projectile proj, bool isEnter)
 		{
+			return true;
+		}
+
+		/// <summary>
+		/// Allows you to decide what happens when an item enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when an item enters and leaves. <br/>
+		/// Items now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
+		/// Return false for the liquid to not execute the default modded liquid splash code. <br/>
+		/// Returns true by default.
+		/// </summary>
+		/// <param name="item">The item instance thats entering or exiting the liquid.</param>
+		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
+		/// <returns></returns>
+		public virtual bool OnItemSplash(Item item, bool isEnter)
+		{
+			return true;
 		}
 
 		/// <summary>
@@ -443,15 +475,6 @@ namespace ModLiquidLib.ModLoader
 		{
 		}
 
-		/// <summary>
-		/// Allows you to decide what happens when an item enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when an item enters and leaves. <br/>
-		/// Items now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it.
-		/// </summary>
-		/// <param name="item">The item instance thats entering or exiting the liquid.</param>
-		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
-		public virtual void OnItemSplash(Item item, bool isEnter)
-		{
-		}
 
 		/// <summary>
 		/// Allows the user to specify how the liquid interacts with player movement speed. <br/>

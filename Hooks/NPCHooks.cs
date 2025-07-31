@@ -1,7 +1,9 @@
-﻿using ModLiquidLib.ModLoader;
+﻿using Microsoft.Xna.Framework;
+using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
@@ -99,7 +101,30 @@ namespace ModLiquidLib.Hooks
 							{
 								if (LiquidLoader.OnNPCSplash(i, self, true))
 								{
-									LiquidLoader.GetLiquid(i).OnNPCSplash(self, true);
+									ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+									if (modLiquid.OnNPCSplash(self, true))
+									{
+										if (modLiquid.SplashDustType >= 0)
+										{
+											for (int j = 0; j < 10; j++)
+											{
+												int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
+												Main.dust[dust].velocity.Y -= 2f;
+												Main.dust[dust].velocity.X *= 2.5f;
+												Main.dust[dust].scale = 1.3f;
+												Main.dust[dust].alpha = 100;
+												Main.dust[dust].noGravity = true;
+											}
+										}
+										if (self.aiStyle != NPCAIStyleID.Slime &&
+												self.type != NPCID.BlueSlime && self.type != NPCID.MotherSlime && self.type != NPCID.IceSlime && self.type != NPCID.LavaSlime &&
+												self.type != NPCID.Mouse &&
+												self.aiStyle != NPCAIStyleID.GiantTortoise &&
+												!self.noGravity)
+										{
+											SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
+										}
+									}
 								}
 								return true;
 							}
@@ -117,7 +142,30 @@ namespace ModLiquidLib.Hooks
 							{
 								if (LiquidLoader.OnNPCSplash(i, self, false))
 								{
-									LiquidLoader.GetLiquid(i).OnNPCSplash(self, false);
+									ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+									if (modLiquid.OnNPCSplash(self, false))
+									{
+										if (modLiquid.SplashDustType >= 0)
+										{
+											for (int j = 0; j < 10; j++)
+											{
+												int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
+												Main.dust[dust].velocity.Y -= 2f;
+												Main.dust[dust].velocity.X *= 2.5f;
+												Main.dust[dust].scale = 1.3f;
+												Main.dust[dust].alpha = 100;
+												Main.dust[dust].noGravity = true;
+											}
+										}
+										if (self.aiStyle != NPCAIStyleID.Slime &&
+												self.type != NPCID.BlueSlime && self.type != NPCID.MotherSlime && self.type != NPCID.IceSlime && self.type != NPCID.LavaSlime &&
+												self.type != NPCID.Mouse &&
+												self.aiStyle != NPCAIStyleID.GiantTortoise &&
+												!self.noGravity)
+										{
+											SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
+										}
+									}
 								}
 								return true;
 							}

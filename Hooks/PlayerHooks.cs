@@ -1,12 +1,13 @@
-﻿using ModLiquidLib.ID;
+﻿using Microsoft.Xna.Framework;
+using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
@@ -397,7 +398,23 @@ namespace ModLiquidLib.Hooks
 							{
 								if (LiquidLoader.OnPlayerSplash(i, self, true))
 								{
-									LiquidLoader.GetLiquid(i).OnPlayerSplash(self, true);
+									ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+									if (modLiquid.OnPlayerSplash(self, true))
+									{
+										if (modLiquid.SplashDustType >= 0)
+										{
+											for (int j = 0; j < 20; j++)
+											{
+												int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
+												Main.dust[dust].velocity.Y -= 2f;
+												Main.dust[dust].velocity.X *= 2.5f;
+												Main.dust[dust].scale = 1.3f;
+												Main.dust[dust].alpha = 100;
+												Main.dust[dust].noGravity = true;
+											}
+										}
+										SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
+									}
 								}
 								return true;
 							}
@@ -415,7 +432,23 @@ namespace ModLiquidLib.Hooks
 							{
 								if (LiquidLoader.OnPlayerSplash(i, self, false))
 								{
-									LiquidLoader.GetLiquid(i).OnPlayerSplash(self, false);
+									ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+									if (modLiquid.OnPlayerSplash(self, false))
+									{
+										if (modLiquid.SplashDustType >= 0)
+										{
+											for (int j = 0; j < 20; j++)
+											{
+												int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
+												Main.dust[dust].velocity.Y -= 2f;
+												Main.dust[dust].velocity.X *= 2.5f;
+												Main.dust[dust].scale = 1.3f;
+												Main.dust[dust].alpha = 100;
+												Main.dust[dust].noGravity = true;
+											}
+										}
+										SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
+									}
 								}
 								return true;
 							}
