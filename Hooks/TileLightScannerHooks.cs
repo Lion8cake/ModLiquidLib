@@ -36,6 +36,7 @@ namespace ModLiquidLib.Hooks
 				lightColor.Z = B;
 			}
 		}
+
 		internal static LightMaskMode EditLiquidMaskdMode(On_TileLightScanner.orig_GetTileMask orig, TileLightScanner self, Tile tile)
 		{
 			LightMaskMode maskMode = orig.Invoke(self, tile);

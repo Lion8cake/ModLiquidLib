@@ -72,6 +72,7 @@ namespace ModLiquidLib
 			On_Projectile.FishingCheck_RollItemDrop += ProjectileHooks.ShimmerFishingItemFix;
 			IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport;
 			IL_WaterShaderData.DrawWaves += WaterShaderDataHooks.EditWaveSize;
+			IL_LightMap.BlurLine += LightMapHooks.ModifyLiquidMaskMode;
 
 			MapHelper.Initialize();
 		}

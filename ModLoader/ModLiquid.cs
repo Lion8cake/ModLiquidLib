@@ -303,6 +303,31 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
+		/// Modifies the LightMaskMode used for this liquid. <br/>
+		/// Due to limitations in the lighting engine, tile coordinates and editing of vanilla lightmasks are unavaliable. <br/>
+		/// NOTE: set LiquidLightMaskMode to None for this hook/method to be called. Otherwise this liquid will use the other mask mode instead.
+		/// </summary>
+		/// <param name="index">The current LightMap index. Water uses this to randomise its colors slightly.</param>
+		/// <param name="r">The red component of light, usually a value between 0 and 1</param>
+		/// <param name="g">The green component of light, usually a value between 0 and 1</param>
+		/// <param name="b">The blue component of light, usually a value between 0 and 1</param>
+		public virtual void ModifyLightMaskMode(int index, ref float r, ref float g, ref float b)
+		{
+		}
+
+		/// <summary>
+		/// Allows you to change the Light Mask Mode for this liquid. The Light Mask Mode is the mask for lighting to determine how light interacts with this liquid. <br/>
+		/// Vanilla has options for Water (slight blue fade) and Honey (dark black) while lava uses the None option. <br/>
+		/// Defaults to LightMaskMode.None.
+		/// </summary>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
+		public virtual LightMaskMode LiquidLightMaskMode(int i, int j)
+		{
+			return LightMaskMode.None;
+		}
+
+		/// <summary>
 		/// The ID of the waterfall/liquidfall style the game should use when this liquid is near a half block
 		/// </summary>
 		/// <param name="i">The x position in tile coordinates.</param>
@@ -504,18 +529,6 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="isDrowning">The boolean flag for whether or not the player is drowning.</param>
 		public virtual void CanPlayerDrown(Player player, ref bool isDrowning)
 		{
-		}
-
-		/// <summary>
-		/// Allows you to change the Light Mask Mode for this liquid. The Light Mask Mode is the mask for lighting to determine how light interacts with this liquid. <br/>
-		/// Vanilla has options for Water (slight blue fade) and Honey (dark black) while lava uses the None option. <br/>
-		/// Defaults to LightMaskMode.None.
-		/// </summary>
-		/// <param name="i">The x position in tile coordinates.</param>
-		/// <param name="j">The y position in tile coordinates.</param>
-		public virtual LightMaskMode LiquidLightMaskMode(int i, int j)
-		{
-			return LightMaskMode.None;
 		}
 	}
 }

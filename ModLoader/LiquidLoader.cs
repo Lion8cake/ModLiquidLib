@@ -251,6 +251,27 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
+		public static void LiquidLightMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				liquidMaskMode = modLiquid.LiquidLightMaskMode(i, j);
+			}
+			DelegateLiquidMaskMode[] hookLiquidLightMaskMode = HookLiquidLightMaskMode;
+			for (int k = 0; k < hookLiquidLightMaskMode.Length; k++)
+			{
+				hookLiquidLightMaskMode[k](i, j, type, ref liquidMaskMode);
+			}
+			if (type >= LiquidID.Count) //sets the mask mode to the liquid ID for modifying
+			{
+				if (liquidMaskMode == 0)
+				{
+					liquidMaskMode = (LightMaskMode)(byte)type;
+				}
+			}
+		}
+
 		public static bool PreDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
 		{
 			Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>[] hookPreDraw = HookPreDraw;
@@ -657,20 +678,6 @@ namespace ModLiquidLib.ModLoader
 			for (int k = 0; k < hookLiquidSlopeOpacity.Length; k++)
 			{
 				hookLiquidSlopeOpacity[k](type, ref slopeOpacity);
-			}
-		}
-
-		public static void LiquidLightMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode)
-		{
-			ModLiquid modLiquid = GetLiquid(type);
-			if (modLiquid != null)
-			{
-				liquidMaskMode = modLiquid.LiquidLightMaskMode(i, j);
-			}
-			DelegateLiquidMaskMode[] hookLiquidLightMaskMode = HookLiquidLightMaskMode;
-			for (int k = 0; k < hookLiquidLightMaskMode.Length; k++)
-			{
-				hookLiquidLightMaskMode[k](i, j, type, ref liquidMaskMode);
 			}
 		}
 
