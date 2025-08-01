@@ -1,4 +1,4 @@
-Welcome to ModLiquid Library!
+Welcome to ModLiquid Library (Beta)!
 
 Have you ever wanted to create a modded liquid, but realised that tmodloader lacks support for custom liquids?
 This mod is for you!

@@ -79,9 +79,12 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(waterfallType_numVar);
 			c.EmitDelegate((int style) =>
 			{
-				ModLiquidFall modLiquidFall = (ModLiquidFall)(ModContent.GetModWaterfallStyle(style));
-				if (modLiquidFall != null)
-					return modLiquidFall.PlayWaterfallSounds();
+				if (ModContent.GetModWaterfallStyle(style) is ModLiquidFall)
+				{
+					ModLiquidFall modLiquidFall = (ModLiquidFall)(ModContent.GetModWaterfallStyle(style));
+					if (modLiquidFall != null)
+						return modLiquidFall.PlayWaterfallSounds();
+				}
 				return true;
 			});
 			c.EmitBrfalse(IL_0a27);

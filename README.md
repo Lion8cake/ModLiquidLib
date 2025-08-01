@@ -8,25 +8,34 @@ The library will include:
 * GlobalLiquid
 * ModLiquidFall (an updated and expanded upon ModWaterfallStyle, used for more than just water styles)
 
-When finished this mod will be uploaded to the Tmodloader workshop for mods to use alongside with. This mod currently is still in an early alpha release (github only) although most of the main methods for implementation are added (with only a handful left to be made).
+This mod is now on the workshop, download it here:
+https://steamcommunity.com/sharedfiles/filedetails/?id=3539368598
+
+This mod is in it's beta phase, with enough content for mod use, although with future plans and bugfixes still left to do before fully done.
+
+For developers looking to use this mod, please see this mod's example mod. It contains a few examples of what you can do with this library.
+Please see the example mod's github below:
+https://github.com/Lion8cake/ModLiquidExampleMod
 
 FaQ:
 
 ### When will it be released?
 
-When its ready!
+The mod is currently released to the workshop for the preview version of Tmodloader. Mods are able to use this library there.
+This mod is planned to release on the stable branch on the 1st of September (although this can change).
+...as usual, still will come when its ready!
+
 
 ### Am I able to download and use this mod?
 
-For a normal player I wouldn't recommend since this only adds modding tools for developers. 
-For developers and players using this mod for other experimental mods, definitely! 
-Although until full release expect a ton of issues, and if you do find bugs, please post it in the issues page to be fixed.
+This mod is now on the workshop, download and use this there for both players and developers alike.
 
 
 ### Is this mod too early in development to use?
+
 Nope! 
-Currently you are able to make a whole new liquid and do a lot with it. Fishing and official bucket support is not added yet but is planned to be worked on soon.
-Feel free to check out the mod now! The more people using it, the more issues and suggestions will be fixed and added before a steam workshop release, only making the mod better.
+Currently you are able to make a whole new liquid and do a lot with it.
+Feel free to check out the mod now! The more people using it, the more issues and suggestions will be fixed and added before it's full release, only making the mod better.
 
 
 ### I've found an issue, where do I report?
