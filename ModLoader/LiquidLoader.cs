@@ -38,6 +38,8 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegatePoolSizeMultiplier(int type, ref float multiplier);
 
+		private delegate void DelegateWaterRippleMultipler(int type, ref float multiplier);
+
 		private delegate void DelegateSlopeOpacity(int type, ref float slopeOpacity);
 
 		private delegate void DelegateLiquidMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode);
@@ -115,6 +117,8 @@ namespace ModLiquidLib.ModLoader
 		private static DelegateSlopeOpacity[] HookLiquidSlopeOpacity;
 
 		private static DelegateLiquidMaskMode[] HookLiquidLightMaskMode;
+
+		private static DelegateWaterRippleMultipler[] HookWaterRippleMultipler;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -218,6 +222,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<bool>>(ref HookAllowFishingInShimmer, globalLiquids, (GlobalLiquid g) => g.AllowFishingInShimmer);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateSlopeOpacity>(ref HookLiquidSlopeOpacity, globalLiquids, (GlobalLiquid g) => g.LiquidSlopeOpacity);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMaskMode>(ref HookLiquidLightMaskMode, globalLiquids, (GlobalLiquid g) => g.LiquidLightMaskMode);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateWaterRippleMultipler>(ref HookWaterRippleMultipler, globalLiquids, (GlobalLiquid g) => g.WaterRippleMultiplier);
 			if (!unloading)
 			{
 				loaded = true;
@@ -666,6 +671,15 @@ namespace ModLiquidLib.ModLoader
 			for (int k = 0; k < hookLiquidLightMaskMode.Length; k++)
 			{
 				hookLiquidLightMaskMode[k](i, j, type, ref liquidMaskMode);
+			}
+		}
+
+		public static void WaterRippleMultiplier(int type, ref float multiplier)
+		{
+			DelegateWaterRippleMultipler[] hookWaterRippleMultipler = HookWaterRippleMultipler;
+			for (int k = 0; k < hookWaterRippleMultipler.Length; k++)
+			{
+				hookWaterRippleMultipler[k](type, ref multiplier);
 			}
 		}
 	}

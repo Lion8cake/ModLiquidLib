@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using ModLiquidLib.ModLoader;
+﻿using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using System;
 using System.Collections.Generic;
@@ -9,8 +8,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -117,6 +114,27 @@ namespace ModLiquidLib.Utils
 		public static bool[] GetModdedWetArray(this Item item)
 		{
 			return item.GetGlobalItem<ModLiquidItem>().moddedWet;
+		}
+
+		public static bool[] GetModdedWetArray(this Entity entity)
+		{
+			if (entity is Player player)
+			{
+				return player.GetModPlayer<ModLiquidPlayer>().moddedWet;
+			}
+			if (entity is NPC npc)
+			{
+				return npc.GetGlobalNPC<ModLiquidNPC>().moddedWet;
+			}
+			if (entity is Projectile proj)
+			{
+				return proj.GetGlobalProjectile<ModLiquidProjectile>().moddedWet;
+			}
+			if (entity is Item item)
+			{
+				return item.GetGlobalItem<ModLiquidItem>().moddedWet;
+			}
+			return new bool[LiquidLoader.LiquidCount - LiquidID.Count];
 		}
 
 		public static void TryFloatingInFluid(this Player player)

@@ -472,5 +472,16 @@ namespace ModLiquidLib.ModLoader
 		public virtual void LiquidLightMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode)
 		{
 		}
+
+		/// <summary>
+		/// The multiplier used when the Waves qaulity setting is set to Medium. <br/>
+		/// Honey and Lava set this multiplier to be 0.3x. <br/>
+		/// This setting is to make waves go the same distance no matter the liquid. For some reason vanilla manually applies a multiplier rather than doing seperate math for the wave speed.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="multiplier">The multiplier used, for most liquids this will be 1f, but for honey and lava it's 0.3.</param>
+		public virtual void WaterRippleMultiplier(int type, ref float multiplier)
+		{
+		}
 	}
 }

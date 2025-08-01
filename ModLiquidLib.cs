@@ -1,17 +1,25 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
+using ModLiquidLib.Utils.ManualHooks;
+using System;
 using System.IO;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
+using Terraria.GameContent.Shaders;
+using Terraria.Graphics;
 using Terraria.Graphics.Light;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
-using Terraria.ID;
-using ModLiquidLib.Utils.ManualHooks;
 
 namespace ModLiquidLib
 {
@@ -63,9 +71,12 @@ namespace ModLiquidLib
 			On_Projectile.FishingCheck_RollEnemySpawns += ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop += ProjectileHooks.ShimmerFishingItemFix;
 			IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport;
+			IL_WaterShaderData.DrawWaves += WaterShaderDataHooks.EditWaveSize;
 
 			MapHelper.Initialize();
 		}
+
+		public event Action<TileBatch> OnWaveDraw;
 
 		public override void PostSetupContent()
 		{
@@ -138,6 +149,7 @@ namespace ModLiquidLib
 			On_Projectile.FishingCheck_RollEnemySpawns -= ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop -= ProjectileHooks.ShimmerFishingItemFix;
 			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
+			IL_WaterShaderData.DrawWaves -= WaterShaderDataHooks.EditWaveSize;
 		}
 
 		public enum MessageType : byte

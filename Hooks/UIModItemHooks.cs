@@ -15,6 +15,10 @@ namespace ModLiquidLib.Hooks
 {
 	internal class UIModItemHooks
 	{
+		//Code by HiKoNe and their Liquid library mod (2021)
+		//
+		//I cannot express how much of an inspiration LiquidLib was for ModLiquidLib and my modding journey as a whole.
+		//The code, even now, holds up really well even 4 years later and I cannot thank LiquidLib/HiKoNe enough. - Lion8cake
 		internal static void AddLiquidCount(On_UIModItem.orig_OnInitialize orig, UIModItem self)
 		{
 			orig.Invoke(self);

@@ -91,6 +91,9 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> The multiplier used to change how many tiles are needed to fish in a pool of liquid. Honey uses a 1.5x multiplier for its pool size. </summary>
 		public float FishingPoolSizeMultiplier { get; set; } = 1f;
 
+		/// <summary> The multiplier used only when Waves quality setting is set to Medium. Honey and Lava use this to set the modifier to 0.3x. </summary>
+		public float WaterRippleMultiplier { get; set; } = 1f;
+
 		/// <summary> The opacity that this liquid slope renders at. Lava and Honey use this to look thicker. Defaults to 0.5f. </summary>
 		public float SlopeOpacity { get; set; } = 0.5f;
 

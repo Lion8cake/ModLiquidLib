@@ -4,8 +4,6 @@ using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using System;
-using System.CodeDom;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
