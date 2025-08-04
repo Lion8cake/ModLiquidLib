@@ -80,7 +80,7 @@ namespace ModLiquidLib.ModLoader
 		public ushort VanillaFallbackOnModDeletion { get; set; }
 
 		/// <summary> An array of the IDs of liquids that this tile can be considered as when looking for available liquids. </summary>
-		public int[] AdjLiquids { get; set; } = new int[0];
+		public int[] AdjLiquids { get; set; } = Array.Empty<int>();
 
 		/// <summary> The check in Collision that checks if a coord will be drowning in water.</summary>
 		public bool ChecksForDrowning { get; set; } = true;

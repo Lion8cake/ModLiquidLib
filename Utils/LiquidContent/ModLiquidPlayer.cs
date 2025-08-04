@@ -19,7 +19,7 @@ namespace ModLiquidLib.Utils.LiquidContent
 		//use (id - LiquidID.Count) to get the correct modded liquid ID wet type
 		public bool[] moddedWet = new bool[LiquidLoader.LiquidCount - LiquidID.Count];
 
-		public bool[] adjLiquid
+		public bool[] AdjLiquid
 		{
 			get
 			{
@@ -35,7 +35,7 @@ namespace ModLiquidLib.Utils.LiquidContent
 			}
 		}
 
-		public bool[] oldAdjLiquid
+		public bool[] OldAdjLiquid
 		{
 			get
 			{
@@ -53,10 +53,10 @@ namespace ModLiquidLib.Utils.LiquidContent
 
 		public override void ModifyMaxStats(out StatModifier health, out StatModifier mana)
 		{
-			for (int n = 0; n < adjLiquid.Length; n++)
+			for (int n = 0; n < AdjLiquid.Length; n++)
 			{
-				adjLiquid[n] = false;
-				oldAdjLiquid[n] = false;
+				AdjLiquid[n] = false;
+				OldAdjLiquid[n] = false;
 			}
 			base.ModifyMaxStats(out health, out mana);
 		}
