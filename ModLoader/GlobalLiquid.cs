@@ -36,7 +36,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="liquidDrawCache">The LiquidDrawCache of the rendering</param>
 		/// <param name="drawOffset">The amount the liquid rendered is offset by</param>
 		/// <param name="isBackgroundDraw">Whether or not the liquid is in the background</param>
-		public virtual bool PreDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public virtual bool PreDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw, int waterStyle, float waterAlpha)
 		{
 			return true;
 		}
@@ -52,7 +52,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="liquidDrawCache">The LiquidDrawCache of the rendering</param>
 		/// <param name="drawOffset">The amount the liquid rendered is offset by</param>
 		/// <param name="isBackgroundDraw">Whether or not the liquid is in the background</param>
-		public virtual void PostDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public virtual void PostDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw, int waterStyle, float waterAlpha)
 		{
 		}
 

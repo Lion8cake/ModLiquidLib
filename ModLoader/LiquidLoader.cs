@@ -54,9 +54,9 @@ namespace ModLiquidLib.ModLoader
 
 		private static DelegateModifyLight[] HookModifyLight;
 
-		private static Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>[] HookPreDraw;
+		private static Func<int, int, int, LiquidDrawCache, Vector2, bool, int, float, bool>[] HookPreDraw;
 
-		private static Action<int, int, int, LiquidDrawCache, Vector2, bool>[] HookPostDraw;
+		private static Action<int, int, int, LiquidDrawCache, Vector2, bool, int, float>[] HookPostDraw;
 
 		private static Func<int, int, int, LiquidCache, bool>[] HookEmitEffects;
 
@@ -190,8 +190,8 @@ namespace ModLiquidLib.ModLoader
 			Array.Resize(ref Unsafe.AsRef(in LiquidRenderer.VISCOSITY_MASK), LiquidCount);
 			LoaderUtils.ResetStaticMembers(typeof(LiquidID));
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateModifyLight>(ref HookModifyLight, globalLiquids, (GlobalLiquid g) => g.ModifyLight);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>>(ref HookPreDraw, globalLiquids, (GlobalLiquid g) => g.PreDraw);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, LiquidDrawCache, Vector2, bool>>(ref HookPostDraw, globalLiquids, (GlobalLiquid g) => g.PostDraw); 
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidDrawCache, Vector2, bool, int, float, bool>>(ref HookPreDraw, globalLiquids, (GlobalLiquid g) => g.PreDraw);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, LiquidDrawCache, Vector2, bool, int, float>>(ref HookPostDraw, globalLiquids, (GlobalLiquid g) => g.PostDraw); 
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidCache, bool>>(ref HookEmitEffects, globalLiquids, (GlobalLiquid g) => g.EmitEffects);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, SpriteBatch, bool>>(ref HookPreRetroDraw, globalLiquids, (GlobalLiquid g) => g.PreRetroDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateRetroDrawEffects>(ref HookRetroDrawEffects, globalLiquids, (GlobalLiquid g) => g.RetroDrawEffects);
@@ -272,12 +272,12 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public static bool PreDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public static bool PreDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw, int waterStyle, float globalAlpha)
 		{
-			Func<int, int, int, LiquidDrawCache, Vector2, bool, bool>[] hookPreDraw = HookPreDraw;
+			Func<int, int, int, LiquidDrawCache, Vector2, bool, int, float, bool>[] hookPreDraw = HookPreDraw;
 			for (int k = 0; k < hookPreDraw.Length; k++)
 			{
-				if (!hookPreDraw[k](i, j, type, liquidDrawCache, drawOffset, isBackgroundDraw))
+				if (!hookPreDraw[k](i, j, type, liquidDrawCache, drawOffset, isBackgroundDraw, waterStyle, globalAlpha))
 				{
 					return false;
 				}
@@ -285,13 +285,13 @@ namespace ModLiquidLib.ModLoader
 			return GetLiquid(type)?.PreDraw(i, j, liquidDrawCache, drawOffset, isBackgroundDraw) ?? true;
 		}
 
-		public static void PostDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw)
+		public static void PostDraw(int i, int j, int type, LiquidDrawCache liquidDrawCache, Vector2 drawOffset, bool isBackgroundDraw, int waterStyle, float globalAlpha)
 		{
 			GetLiquid(type)?.PostDraw(i, j, liquidDrawCache, drawOffset, isBackgroundDraw);
-			Action<int, int, int, LiquidDrawCache, Vector2, bool>[] hookPostDraw = HookPostDraw;
+			Action<int, int, int, LiquidDrawCache, Vector2, bool, int, float>[] hookPostDraw = HookPostDraw;
 			for (int k = 0; k < hookPostDraw.Length; k++)
 			{
-				hookPostDraw[k](i, j, type, liquidDrawCache, drawOffset, isBackgroundDraw);
+				hookPostDraw[k](i, j, type, liquidDrawCache, drawOffset, isBackgroundDraw, waterStyle, globalAlpha);
 			}
 		}
 

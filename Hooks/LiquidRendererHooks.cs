@@ -29,8 +29,10 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdloc(y_varNum);
 				c.EmitLdloc(pointer2_varNum);
 				c.EmitLdarg(2);
+				c.EmitLdarg(3);
+				c.EmitLdarg(4);
 				c.EmitLdarg(5);
-				c.EmitDelegate((bool isVisibleCondition, int i, int j, IntPtr ptr2, Vector2 drawOffset, bool isBackgroundDraw) =>
+				c.EmitDelegate((bool isVisibleCondition, int i, int j, IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw) =>
 				{
 					return isVisibleCondition && LiquidLoader.PreDraw(
 						i, 
@@ -38,7 +40,9 @@ namespace ModLiquidLib.Hooks
 						Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type, 
 						Unsafe.As<LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
 						drawOffset, 
-						isBackgroundDraw);
+						isBackgroundDraw,
+						waterStyle,
+						globalAlpha);
 				});
 				c.GotoNext(MoveType.After,
 					i => i.MatchLdfld<LiquidRenderer>("_liquidTextures"),
@@ -55,8 +59,10 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdloc(y_varNum);
 				c.EmitLdloc(pointer2_varNum);
 				c.EmitLdarg(2);
+				c.EmitLdarg(3);
+				c.EmitLdarg(4);
 				c.EmitLdarg(5);
-				c.EmitDelegate((int i, int j, IntPtr ptr2, Vector2 drawOffset, bool isBackgroundDraw) =>
+				c.EmitDelegate((int i, int j, IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw) =>
 				{
 					LiquidLoader.PostDraw(
 						i, 
@@ -64,7 +70,9 @@ namespace ModLiquidLib.Hooks
 						Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type, 
 						Unsafe.As<LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
 						drawOffset, 
-						isBackgroundDraw);
+						isBackgroundDraw,
+						waterStyle,
+						globalAlpha);
 				});
 			}
 		}
