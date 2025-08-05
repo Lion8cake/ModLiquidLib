@@ -93,7 +93,7 @@ namespace ModLiquidLib.Utils
 
 		public static bool GetAdjLiquids(this Player player, int Liquid)
 		{
-			return player.GetModPlayer<ModLiquidPlayer>().adjLiquid[Liquid];
+			return player.GetModPlayer<ModLiquidPlayer>().AdjLiquid[Liquid];
 		}
 
 		public static bool[] GetModdedWetArray(this Player player)

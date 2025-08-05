@@ -56,10 +56,10 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
-				for (int i = 0; i < self.GetModPlayer<ModLiquidPlayer>().adjLiquid.Length; i++)
+				for (int i = 0; i < self.GetModPlayer<ModLiquidPlayer>().AdjLiquid.Length; i++)
 				{
-					self.GetModPlayer<ModLiquidPlayer>().oldAdjLiquid[i] = self.GetModPlayer<ModLiquidPlayer>().adjLiquid[i];
-					self.GetModPlayer<ModLiquidPlayer>().adjLiquid[i] = false;
+					self.GetModPlayer<ModLiquidPlayer>().OldAdjLiquid[i] = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i];
+					self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = false;
 				}
 			});
 
@@ -73,7 +73,7 @@ namespace ModLiquidLib.Hooks
 			{
 				if (Main.tile[j, k].LiquidAmount > 200)
 				{
-					self.GetModPlayer<ModLiquidPlayer>().adjLiquid[Main.tile[j, k].LiquidType] = true;
+					self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[Main.tile[j, k].LiquidType] = true;
 				}
 				else
 				{
@@ -81,7 +81,7 @@ namespace ModLiquidLib.Hooks
 					{
 						if (LiquidID_TLmod.Sets.CountsAsLiquidSource[Main.tile[j, k].TileType][i])
 						{
-							self.GetModPlayer<ModLiquidPlayer>().adjLiquid[i] = true;
+							self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = true;
 						}
 					}
 				}
@@ -93,13 +93,13 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloca(flag_var4);
 			c.EmitDelegate((Player self, ref bool flag) =>
 			{
-				self.adjWater = self.GetModPlayer<ModLiquidPlayer>().adjLiquid[0];
-				self.adjLava = self.GetModPlayer<ModLiquidPlayer>().adjLiquid[1];
-				self.adjHoney = self.GetModPlayer<ModLiquidPlayer>().adjLiquid[2];
-				self.adjShimmer = self.GetModPlayer<ModLiquidPlayer>().adjLiquid[3];
-				for (int l = 0; l < self.GetModPlayer<ModLiquidPlayer>().adjLiquid.Length; l++)
+				self.adjWater = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[0];
+				self.adjLava = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[1];
+				self.adjHoney = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[2];
+				self.adjShimmer = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[3];
+				for (int l = 0; l < self.GetModPlayer<ModLiquidPlayer>().AdjLiquid.Length; l++)
 				{
-					if (self.GetModPlayer<ModLiquidPlayer>().oldAdjLiquid[l] != self.GetModPlayer<ModLiquidPlayer>().adjLiquid[l])
+					if (self.GetModPlayer<ModLiquidPlayer>().OldAdjLiquid[l] != self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[l])
 					{
 						flag = true;
 						break;

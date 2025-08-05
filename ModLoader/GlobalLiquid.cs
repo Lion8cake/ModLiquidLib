@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.Utils.Structs;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;
@@ -294,7 +295,7 @@ namespace ModLiquidLib.ModLoader
 		/// <returns></returns>
 		public virtual int[] AdjLiquids(int type)
 		{
-			return new int[0];
+			return Array.Empty<int>();
 		}
 
 		/// <summary>

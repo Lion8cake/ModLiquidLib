@@ -500,7 +500,7 @@ namespace ModLiquidLib.ModLoader
 				int[] adjLiquids = modLiquid.AdjLiquids;
 				foreach (int j in adjLiquids)
 				{
-					player.GetModPlayer<ModLiquidPlayer>().adjLiquid[j] = true;
+					player.GetModPlayer<ModLiquidPlayer>().AdjLiquid[j] = true;
 				}
 			}
 			Func<int, int[]>[] hookAdjLiquids = HookAdjLiquids;
@@ -509,7 +509,7 @@ namespace ModLiquidLib.ModLoader
 				int[] adjLiquids = hookAdjLiquids[k](type);
 				foreach (int i in adjLiquids)
 				{
-					player.GetModPlayer<ModLiquidPlayer>().adjLiquid[i] = true;
+					player.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = true;
 				}
 			}
 		}

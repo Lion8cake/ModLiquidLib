@@ -13,7 +13,7 @@ namespace ModLiquidLib.ModLoader
 {
 	public abstract class ModLiquidFall : ModWaterfallStyle
 	{
-		public int wFallFrCounter 
+		public int WFallFrCounter 
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int regularFrame 
+		public int RegularFrame 
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int wFallFrCounter2 
+		public int WFallFrCounter2 
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int slowFrame 
+		public int SlowFrame 
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int rainFrameCounter 
+		public int RainFrameCounter 
 		{
 			get
 			{
@@ -73,7 +73,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int rainFrameForeground 
+		public int RainFrameForeground 
 		{
 			get
 			{
@@ -85,7 +85,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int rainFrameBackground 
+		public int RainFrameBackground 
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int snowFrameCounter 
+		public int SnowFrameCounter 
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int snowFrameForeground 
+		public int SnowFrameForeground 
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int findWaterfallCount 
+		public int FindWaterfallCount 
 		{
 			get
 			{
@@ -133,7 +133,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int waterfallDist 
+		public int WaterfallDist 
 		{
 			get
 			{
@@ -145,7 +145,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int qualityMax 
+		public int QualityMax 
 		{
 			get
 			{
@@ -157,7 +157,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public int currentMax 
+		public int CurrentMax 
 		{
 			get
 			{
@@ -169,7 +169,7 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public WaterfallData[] waterfalls
+		public WaterfallData[] Waterfalls
 		{
 			get
 			{
