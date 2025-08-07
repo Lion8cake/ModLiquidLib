@@ -3,6 +3,7 @@ using ModLiquidLib.Utils;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.WaterfallManager;
 
 namespace ModLiquidLib.Hooks
 {
@@ -32,6 +33,23 @@ namespace ModLiquidLib.Hooks
 					}
 				}
 			});
+			c.GotoNext(MoveType.Before, i => i.MatchLdcI4(1), i => i.MatchAdd(), i => i.MatchStloc(y_varNum));
+			c.EmitLdloc(x_varNum);
+			c.EmitLdarg(0);
+			c.EmitDelegate((int j, int i, WaterfallManager self) =>
+			{
+				if (TileLoader.GetTile(Main.tile[i, j].TileType) is ILiquidModTile liquidTile)
+				{
+					WaterfallData? data = liquidTile.CreateWaterfall(i, j);
+					Tile tile6 = Main.tile[i, j + 1];
+					if (data != null && self.currentMax < self.qualityMax)
+					{
+						self.waterfalls[self.currentMax] = (WaterfallData)data;
+						self.currentMax++;
+					}
+				}
+			});
+			c.EmitLdloc(y_varNum);
 		}
 
 		internal static void PreDrawWaterfallModifier(ILContext il)
@@ -75,7 +93,7 @@ namespace ModLiquidLib.Hooks
 			});																			 //		continue;
 			c.EmitBrtrue(IL_149d);														 //}
 
-			c.GotoNext(MoveType.After, i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(waterfallType_numVar), i => i.MatchBeq(out _), i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(22), i => i.MatchBeq(out IL_0a27));
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(12), i => i.MatchBeq(out _), i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(22), i => i.MatchBeq(out IL_0a27));
 			c.EmitLdloc(waterfallType_numVar);
 			c.EmitDelegate((int style) =>
 			{

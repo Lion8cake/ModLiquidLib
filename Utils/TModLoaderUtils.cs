@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria;
+using Terraria.GameContent.Liquid;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -141,5 +142,15 @@ namespace ModLiquidLib.Utils
 		{
 			player.TryFloatingInFluid();
 		} 
+
+		public static int GetAnimationFrame(this LiquidRenderer liquidDrawing)
+		{
+			return liquidDrawing._animationFrame;
+		}
+
+		public static void SetAnimationFrame(this LiquidRenderer liquidDrawing, int animationFrame)
+		{
+			liquidDrawing._animationFrame = animationFrame;
+		}
 	}
 }

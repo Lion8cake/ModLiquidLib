@@ -120,7 +120,7 @@ namespace ModLiquidLib.Hooks
 							Liquid.AddWater(self.x, self.y + 1);
 					}
 				}
-				return true;
+				return betweenCondition;
 			});
 			c.EmitBrtrue(IL_0000);
 			c.EmitRet();
@@ -141,7 +141,12 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(1);
 			c.EmitDelegate((int x, int y) =>
 			{
-				return !LiquidLoader.SettleLiquidMovement(x, y, Main.tile[x, y].LiquidType);
+				bool flag = LiquidLoader.SettleLiquidMovement(x, y, Main.tile[x, y].LiquidType);
+				if (!flag)
+				{
+					Liquid.tilesIgnoreWater(ignoreSolids: false);
+				}
+				return !flag;
 			});
 			c.EmitBrfalse(IL_0000);
 			c.EmitRet();

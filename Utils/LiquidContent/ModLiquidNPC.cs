@@ -13,6 +13,11 @@ namespace ModLiquidLib.Utils.LiquidContent
 		//use (id - LiquidID.Count) to get the correct modded liquid ID wet type
 		public bool[] moddedWet = new bool[LiquidLoader.LiquidCount - LiquidID.Count];
 
+		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+		{
+			return true;
+		}
+
 		public override void AI(NPC npc)
 		{
 			if (npc.aiStyle == 7)
