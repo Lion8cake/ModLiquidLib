@@ -530,5 +530,16 @@ namespace ModLiquidLib.ModLoader
 		public virtual void CanPlayerDrown(Player player, ref bool isDrowning)
 		{
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="liquidX"></param>
+		/// <param name="liquidY"></param>
+		public virtual void ModifyNearbyTiles(int i, int j, int liquidX, int liquidY)
+		{
+		}
 	}
 }

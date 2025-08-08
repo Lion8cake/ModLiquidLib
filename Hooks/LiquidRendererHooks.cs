@@ -58,7 +58,11 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdfld(typeof(LiquidDrawCache).GetField("Type"));
 			c.EmitDelegate((Texture2D old, LiquidRenderer self, int num2, byte Type) =>
 			{
-				return Type < LiquidID.Count ? self._liquidTextures[num2].Value : LiquidLoader.LiquidAssets[Type].Value;
+				if (Type < LiquidID.Count)
+				{
+					return self._liquidTextures[num2].Value;
+				}
+				return LiquidLoader.LiquidAssets[Type].Value;
 			});
 			c.GotoNext(MoveType.After, i => i.MatchCallvirt<TileBatch>("Draw"));
 			c.EmitLdloc(x_varNum);

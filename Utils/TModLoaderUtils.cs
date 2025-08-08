@@ -1,4 +1,6 @@
-﻿using ModLiquidLib.ModLoader;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using System;
 using System.Collections.Generic;
@@ -151,6 +153,31 @@ namespace ModLiquidLib.Utils
 		public static void SetAnimationFrame(this LiquidRenderer liquidDrawing, int animationFrame)
 		{
 			liquidDrawing._animationFrame = animationFrame;
+		}
+
+		public static void DrawWaterfall(this WaterfallManager self, int waterfallType, int x, int y, float opacity, Vector2 position, Rectangle sourceRect, Color color, SpriteEffects effects)
+		{
+			self.DrawWaterfall(waterfallType, x, y, opacity, position, sourceRect, color, effects);
+		}
+
+		public static Color StylizeColor(this WaterfallManager self, float alpha, int maxSteps, int waterfallType, int y, int s, Tile tileCache, Color aColor)
+		{
+			return WaterfallManager.StylizeColor(alpha, maxSteps, waterfallType, y, s, tileCache, aColor);
+		}
+
+		public static float GetAlpha(this WaterfallManager self, float Alpha, int maxSteps, int waterfallType, int y, int s, Tile tileCache)
+		{
+			return WaterfallManager.GetAlpha(Alpha, maxSteps, waterfallType, y, s, tileCache);
+		}
+
+		public static void TrySparkling(this WaterfallManager self, int x, int y, int direction, Color aColor2)
+		{
+			WaterfallManager.TrySparkling(x, y, direction, aColor2);
+		}
+
+		public static void AddLight(this WaterfallManager self, int waterfallType, int x, int y)
+		{
+			WaterfallManager.AddLight(waterfallType, x, y);
 		}
 	}
 }

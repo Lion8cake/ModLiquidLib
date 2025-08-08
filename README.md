@@ -7,6 +7,7 @@ The library will include:
 * ModLiquid
 * GlobalLiquid
 * ModLiquidFall (an updated and expanded upon ModWaterfallStyle, used for more than just water styles)
+* Extentions for ModTiles
 
 This mod is now on the workshop, download it here:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3539368598

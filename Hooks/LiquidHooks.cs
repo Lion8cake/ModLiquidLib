@@ -1,6 +1,7 @@
 ﻿using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,6 +11,77 @@ namespace ModLiquidLib.Hooks
 {
 	public class LiquidHooks
 	{
+		internal static void EditLiquidTileTransformations(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_049f = null;
+
+			int tile_varNum = -1;
+			int x_varNum = -1;
+			int y_varNum = -1;
+
+			c.GotoNext(MoveType.After, i => i.MatchStloc(out x_varNum), i => i.MatchLdsfld<Main>("liquid"), i => i.MatchLdarg(0), i => i.MatchLdelemRef(), i => i.MatchLdfld<Liquid>("y"), i => i.MatchStloc(out y_varNum));
+			c.GotoNext(MoveType.After, i => i.MatchLdloca(out tile_varNum), i => i.MatchLdcI4(0), i => i.MatchCall<Tile>("liquidType"), i => i.MatchBr(out IL_049f));
+			c.GotoNext(MoveType.Before, i => i.MatchCall<Tile>("lava"));
+			c.EmitLdloc(x_varNum);
+			c.EmitLdloc(y_varNum);
+			c.EmitDelegate((ref Tile tile4, int num, int num2) =>
+			{
+				if (tile4.LiquidType == LiquidID.Lava)
+				{
+					Liquid.LavaCheck(num, num2);
+				}
+				else if (tile4.LiquidType == LiquidID.Honey)
+				{
+					Liquid.HoneyCheck(num, num2);
+				}
+				else if (tile4.LiquidType == LiquidID.Shimmer)
+				{
+					Liquid.ShimmerCheck(num, num2);
+				}
+				DoLiquidTileEffects(num, num2, tile4);
+			});
+			c.EmitBr(IL_049f);
+			c.EmitLdloca(tile_varNum);
+		}
+
+		private static void DoLiquidTileEffects(int x, int y, Tile liquidTile)
+		{
+			for (int i = x - 1; i <= x + 1; i++)
+			{
+				for (int j = y - 1; j <= y + 1; j++)
+				{
+					Tile tile = Main.tile[i, j];
+					if (!tile.HasTile)
+					{
+						continue;
+					}
+					if (liquidTile.LiquidType == LiquidID.Lava)
+					{
+						if (tile.type == 2 || tile.type == 23 || tile.type == 109 || tile.type == 199 || tile.type == 477 || tile.type == 492)
+						{
+							tile.type = 0;
+							WorldGen.SquareTileFrame(i, j);
+							if (Main.netMode == 2)
+							{
+								NetMessage.SendTileSquare(-1, x, y, 3);
+							}
+						}
+						else if (tile.type == 60 || tile.type == 70 || tile.type == 661 || tile.type == 662)
+						{
+							tile.type = 59;
+							WorldGen.SquareTileFrame(i, j);
+							if (Main.netMode == 2)
+							{
+								NetMessage.SendTileSquare(-1, x, y, 3);
+							}
+						}
+					}
+					LiquidLoader.ModifyNearbyTiles(i, j, liquidTile.LiquidType, x, y);
+				}
+			}
+		}
+
 		internal static void EditLiquidUpdates(ILContext il)
 		{
 			ILCursor c = new(il);

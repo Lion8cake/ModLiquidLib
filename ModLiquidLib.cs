@@ -1,20 +1,27 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
 using ModLiquidLib.Utils.ManualHooks;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.GameContent.Shaders;
 using Terraria.Graphics;
 using Terraria.Graphics.Light;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
+using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib
 {
@@ -68,6 +75,8 @@ namespace ModLiquidLib
 			IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport;
 			IL_WaterShaderData.DrawWaves += WaterShaderDataHooks.EditWaveSize;
 			IL_LightMap.BlurLine += LightMapHooks.ModifyLiquidMaskMode;
+			On_Main.DrawTileInWater += MainHooks.RenderWaterTiles;
+			IL_Liquid.DelWater += LiquidHooks.EditLiquidTileTransformations;
 
 			MapHelper.Initialize();
 		}
@@ -146,6 +155,9 @@ namespace ModLiquidLib
 			On_Projectile.FishingCheck_RollItemDrop -= ProjectileHooks.ShimmerFishingItemFix;
 			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
 			IL_WaterShaderData.DrawWaves -= WaterShaderDataHooks.EditWaveSize;
+			IL_LightMap.BlurLine -= LightMapHooks.ModifyLiquidMaskMode;
+			On_Main.DrawTileInWater -= MainHooks.RenderWaterTiles;
+			IL_Liquid.DelWater -= LiquidHooks.EditLiquidTileTransformations;
 		}
 
 		public enum MessageType : byte

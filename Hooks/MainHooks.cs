@@ -4,15 +4,24 @@ using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.Structs;
 using MonoMod.Cil;
 using ReLogic.Content;
-using System;
-using System.Runtime.Intrinsics.X86;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
 	internal class MainHooks
 	{
+		internal static void RenderWaterTiles(On_Main.orig_DrawTileInWater orig, Vector2 drawOffset, int x, int y)
+		{
+			orig.Invoke(drawOffset, x, y);
+			if (Main.tile[x, y].HasTile && TileLoader.GetTile(Main.tile[x, y].TileType) is ILiquidModTile liquidTile)
+			{
+				Main.instance.LoadTiles(Main.tile[x, y].TileType);
+				liquidTile.DrawTileInWater(x, y, Main.spriteBatch);
+			}
+		}
+
 		internal static void EditOldLiquidRendering(ILContext il)
 		{
 			ILCursor c = new(il);

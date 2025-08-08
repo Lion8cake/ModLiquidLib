@@ -484,5 +484,17 @@ namespace ModLiquidLib.ModLoader
 		public virtual void WaterRippleMultiplier(int type, ref float multiplier)
 		{
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="type"></param>
+		/// <param name="liquidX"></param>
+		/// <param name="liquidY"></param>
+		public virtual void ModifyNearbyTiles(int i, int j, int type, int liquidX, int liquidY)
+		{
+		}
 	}
 }

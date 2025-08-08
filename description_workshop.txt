@@ -19,6 +19,7 @@ This mod adds tools for developers to allow them to do the following:
     [*]Create custom liquids
     [*]Edit existing or other modded liquids
     [*]Do more with Waterfalls
+    [*]Do more with Tiles
 [/list]
 
 [hr][/hr]

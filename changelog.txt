@@ -1,0 +1,19 @@
+Version 0.1.1.0
+
+Added ILiquidModTile to extend ModTile capabilities
+Added ModifyNearbyTiles hook for ModLiquid and GlobalLiquid
+Unprivatised a bunch more methods related to liquid and waterfall rendering
+All properties now use PascalCase
+ModLiquid and GlobalLiquid NearbyLiquid crafting array is now created empty rather than with an array with 0 slots
+Fixed liquids having a rendering limit of 12
+Attempted to fix Items and other entities being unable to initilise their modded wet array
+Settle Liquids hook nolonger requires modders to manually reset tile Ignore Water method when returning false
+GlobalLiquid PreDraw now contains parameters related to waterstyles for customisability of water styles as well
+
+Thank you to all who have reported issues and/or have given feedback
+And major appologies to any mod that has broken in this recent update, this is why we are on preview for this month.
+
+
+version 0.1.0.0
+
+Initial Upload

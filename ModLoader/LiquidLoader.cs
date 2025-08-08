@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ModLiquidLib.IO;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
 using ModLiquidLib.Utils.Structs;
@@ -18,7 +17,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
-using static Terraria.ModLoader.InfoDisplay;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -119,6 +117,8 @@ namespace ModLiquidLib.ModLoader
 		private static DelegateLiquidMaskMode[] HookLiquidLightMaskMode;
 
 		private static DelegateWaterRippleMultipler[] HookWaterRippleMultipler;
+
+		private static Action<int, int, int, int, int>[] HookModifyTilesNearby;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -223,6 +223,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateSlopeOpacity>(ref HookLiquidSlopeOpacity, globalLiquids, (GlobalLiquid g) => g.LiquidSlopeOpacity);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMaskMode>(ref HookLiquidLightMaskMode, globalLiquids, (GlobalLiquid g) => g.LiquidLightMaskMode);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateWaterRippleMultipler>(ref HookWaterRippleMultipler, globalLiquids, (GlobalLiquid g) => g.WaterRippleMultiplier);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, int, int>>(ref HookModifyTilesNearby, globalLiquids, (GlobalLiquid g) => g.ModifyNearbyTiles);
 			if (!unloading)
 			{
 				loaded = true;
@@ -687,6 +688,16 @@ namespace ModLiquidLib.ModLoader
 			for (int k = 0; k < hookWaterRippleMultipler.Length; k++)
 			{
 				hookWaterRippleMultipler[k](type, ref multiplier);
+			}
+		}
+
+		public static void ModifyNearbyTiles(int x, int y, int type, int liquidX, int liquidY)
+		{
+			GetLiquid(type)?.ModifyNearbyTiles(x, y, liquidX, liquidY);
+			Action<int, int, int, int, int>[] hookModifyTilesNearby = HookModifyTilesNearby;
+			for (int k = 0; k < hookModifyTilesNearby.Length; k++)
+			{
+				hookModifyTilesNearby[k](x, y, type, liquidX, liquidY);
 			}
 		}
 	}
