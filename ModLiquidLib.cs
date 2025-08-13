@@ -1,27 +1,18 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
-using ModLiquidLib.Utils.LiquidContent;
 using ModLiquidLib.Utils.ManualHooks;
-using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.GameContent.Shaders;
-using Terraria.Graphics;
 using Terraria.Graphics.Light;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
-using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib
 {
@@ -80,8 +71,6 @@ namespace ModLiquidLib
 
 			MapHelper.Initialize();
 		}
-
-		public event Action<TileBatch> OnWaveDraw;
 
 		public override void PostSetupContent()
 		{
