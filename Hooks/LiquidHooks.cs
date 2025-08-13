@@ -192,7 +192,7 @@ namespace ModLiquidLib.Hooks
 							Liquid.AddWater(self.x, self.y + 1);
 					}
 				}
-				return betweenCondition;
+				return true;
 			});
 			c.EmitBrtrue(IL_0000);
 			c.EmitRet();
