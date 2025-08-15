@@ -120,6 +120,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Action<int, int, int, int, int>[] HookModifyTilesNearby;
 
+		private static Func<int, int, int, int, int, bool>[] HookOnPump;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -163,7 +165,11 @@ namespace ModLiquidLib.ModLoader
 
 		public static Condition NearLiquid(int liquidID)
 		{
-			string liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
+			string liquidMapName = "";
+			if (liquidID < MapLiquidLoader.liquidLookup.Length)
+			{
+				liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
+			}
 			LocalizedText text;
 			if (liquidID == LiquidID.Water)
 				text = Language.GetText("Conditions.NearWater");
@@ -224,6 +230,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateLiquidMaskMode>(ref HookLiquidLightMaskMode, globalLiquids, (GlobalLiquid g) => g.LiquidLightMaskMode);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateWaterRippleMultipler>(ref HookWaterRippleMultipler, globalLiquids, (GlobalLiquid g) => g.WaterRippleMultiplier);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, int, int>>(ref HookModifyTilesNearby, globalLiquids, (GlobalLiquid g) => g.ModifyNearbyTiles);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int, int, bool>>(ref HookOnPump, globalLiquids, (GlobalLiquid g) => g.OnPump);
 			if (!unloading)
 			{
 				loaded = true;
@@ -699,6 +706,19 @@ namespace ModLiquidLib.ModLoader
 			{
 				hookModifyTilesNearby[k](x, y, type, liquidX, liquidY);
 			}
+		}
+
+		public static bool OnPump(int type, int x, int y, int x2, int y2)
+		{
+			Func<int, int, int, int, int, bool>[] hookOnPump = HookOnPump;
+			for (int k = 0; k < hookOnPump.Length; k++)
+			{
+				if (!hookOnPump[k](type, x, y, x2, y2))
+				{
+					return false;
+				}
+			}
+			return GetLiquid(type)?.OnPump(x, y, x2, y2) ?? true;
 		}
 	}
 }

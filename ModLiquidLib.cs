@@ -68,6 +68,7 @@ namespace ModLiquidLib
 			IL_LightMap.BlurLine += LightMapHooks.ModifyLiquidMaskMode;
 			On_Main.DrawTileInWater += MainHooks.RenderWaterTiles;
 			IL_Liquid.DelWater += LiquidHooks.EditLiquidTileTransformations;
+			IL_Wiring.XferWater += WiringHooks.LiquidPumpEdits;
 
 			MapHelper.Initialize();
 		}
@@ -147,6 +148,7 @@ namespace ModLiquidLib
 			IL_LightMap.BlurLine -= LightMapHooks.ModifyLiquidMaskMode;
 			On_Main.DrawTileInWater -= MainHooks.RenderWaterTiles;
 			IL_Liquid.DelWater -= LiquidHooks.EditLiquidTileTransformations;
+			IL_Wiring.XferWater -= WiringHooks.LiquidPumpEdits;
 		}
 
 		public enum MessageType : byte

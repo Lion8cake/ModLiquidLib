@@ -1,4 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,6 +17,13 @@ namespace ModLiquidLib.Utils.LiquidContent
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
 			return true;
+		}
+
+		public override GlobalProjectile Clone(Projectile from, Projectile to)
+		{
+			ModLiquidProjectile liquidProjClone = (ModLiquidProjectile)MemberwiseClone();
+			liquidProjClone.moddedWet = from.GetGlobalProjectile<ModLiquidProjectile>().moddedWet.ToArray();
+			return liquidProjClone;
 		}
 	}
 }

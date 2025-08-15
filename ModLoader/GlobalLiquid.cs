@@ -486,15 +486,34 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// 
+		/// Allows manipulation of tiles when grass burns. This allows modders to make grasses burn with a liquid or do other interactions if a liquid is nearby a tile. <br/>
+		/// Only effects tiles in a 9x9 area around a liquid and only executes every few seconds. <br/>
+		/// Can be used to allow modders to make sure their grasses burn when near lava.
 		/// </summary>
-		/// <param name="i"></param>
-		/// <param name="j"></param>
+		/// <param name="i">The x position in tile coordinates.</param>
+		/// <param name="j">The y position in tile coordinates.</param>
 		/// <param name="type"></param>
-		/// <param name="liquidX"></param>
-		/// <param name="liquidY"></param>
+		/// <param name="liquidX">The x position of the liquid in tile coordinates.</param>
+		/// <param name="liquidY">The y position of the liquid in tile coordinates.</param>
 		public virtual void ModifyNearbyTiles(int i, int j, int type, int liquidX, int liquidY)
 		{
+		}
+
+		/// <summary>
+		/// Allows modders to do extra interactions when a liquid is pumped. <br/>
+		/// Works similarly to a Pre hook, executing before any liquids are moved for each pump. <br/>
+		/// Return true for pumps to execute their normal liquid moving logic. <br/>
+		/// Returns true by default.
+		/// </summary>
+		/// <param name="inLiquidType"></param>
+		/// <param name="inX">The x position of the in pump in tile coordinates.</param>
+		/// <param name="inY">The y position of the in pump in tile coordinates.</param>
+		/// <param name="outX">The x position of the out pump in tile coordinates.</param>
+		/// <param name="outY">The y position of the out pump in tile coordinates.</param>
+		/// <returns></returns>
+		public virtual bool OnPump(int inLiquidType, int inX, int inY, int outX, int outY)
+		{
+			return true;
 		}
 	}
 }

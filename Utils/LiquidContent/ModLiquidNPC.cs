@@ -1,4 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,6 +17,13 @@ namespace ModLiquidLib.Utils.LiquidContent
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 		{
 			return true;
+		}
+
+		public override GlobalNPC Clone(NPC from, NPC to)
+		{
+			ModLiquidNPC liquidNPCClone = (ModLiquidNPC)MemberwiseClone();
+			liquidNPCClone.moddedWet = from.GetGlobalNPC<ModLiquidNPC>().moddedWet.ToArray();
+			return liquidNPCClone;
 		}
 
 		public override void AI(NPC npc)

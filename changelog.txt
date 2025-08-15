@@ -1,3 +1,10 @@
+Version 0.1.2.0
+
+Revered a change made in 0.1.1.0 that attempted to fix a small mistake in the editing of liquid updates that caused no liquid updates to occur
+Added failsafe to getting a liquids name if it failed (mods are now able to be loaded in multiplayer correctly again)
+Added OnPump hooks to ModLiquid and GlobalLiquid
+Fixed Globals cloning incorrectly, causing entities having a null wet array
+
 Version 0.1.1.0
 
 Added ILiquidModTile to extend ModTile capabilities

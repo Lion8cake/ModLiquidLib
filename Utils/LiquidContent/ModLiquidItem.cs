@@ -1,5 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
-using System;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -17,6 +17,13 @@ namespace ModLiquidLib.Utils.LiquidContent
 		public override bool AppliesToEntity(Item entity, bool lateInstantiation)
 		{
 			return true;
+		}
+
+		public override GlobalItem Clone(Item from, Item to)
+		{
+			ModLiquidItem liquidItemClone = (ModLiquidItem)MemberwiseClone();
+			liquidItemClone.moddedWet = from.GetGlobalItem<ModLiquidItem>().moddedWet.ToArray();
+			return liquidItemClone;
 		}
 	}
 }

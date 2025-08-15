@@ -41,6 +41,3 @@ This file is handled just for map data for liquids, standing as Tmodloader Liqui
 Be careful and aware of other mods that edit or add liquids, as this mod heavily edits everything liquid related in Terraria.
 Most mods will work with this library but for mods that don't, please report on the github linked above.
 For mods incompatable, do not harrass developers to fix incompatabilities, only ask once and ask politely.
-
-[quote=tModLoader ModLiquidLib]
-Developed By Lion8cake[/quote]
