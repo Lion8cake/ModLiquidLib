@@ -69,6 +69,8 @@ namespace ModLiquidLib
 			On_Main.DrawTileInWater += MainHooks.RenderWaterTiles;
 			IL_Liquid.DelWater += LiquidHooks.EditLiquidTileTransformations;
 			IL_Wiring.XferWater += WiringHooks.LiquidPumpEdits;
+			On_Collision.WaterCollision += CollisionHooks.PreventWaterCollisionOverloadFromExecuting;
+			IL_Player.DryCollision += PlayerHooks.AllowCustomAccessories;
 
 			MapHelper.Initialize();
 		}
@@ -149,6 +151,8 @@ namespace ModLiquidLib
 			On_Main.DrawTileInWater -= MainHooks.RenderWaterTiles;
 			IL_Liquid.DelWater -= LiquidHooks.EditLiquidTileTransformations;
 			IL_Wiring.XferWater -= WiringHooks.LiquidPumpEdits;
+			On_Collision.WaterCollision -= CollisionHooks.PreventWaterCollisionOverloadFromExecuting;
+			IL_Player.DryCollision -= PlayerHooks.AllowCustomAccessories;
 		}
 
 		public enum MessageType : byte

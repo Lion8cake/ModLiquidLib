@@ -1,3 +1,10 @@
+Version 0.1.3.0
+
+Added more documentation to ModLiquid.cs for varius properties
+Added canLiquidBeWalkedOn array to ModLiquidPlayer which allows modders to specify which liquid shouldn't be walked on at a given moment
+Please see Example Mod (ModLiquid)'s Example Waders to see how to use canLiquidBeWalkedOn.
+Added replaced "Collision.WaterCollision" with "ModLiquidLib.Hooks.CollisionHooks.WaterCollision"
+
 Version 0.1.2.0
 
 Revered a change made in 0.1.1.0 that attempted to fix a small mistake in the editing of liquid updates that caused no liquid updates to occur

@@ -1,9 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -18,6 +14,8 @@ namespace ModLiquidLib.Utils.LiquidContent
 		//Modded liquids start at the index of 0 as vanilla liquids are recorded in their own seperate fields
 		//use (id - LiquidID.Count) to get the correct modded liquid ID wet type
 		public bool[] moddedWet = new bool[LiquidLoader.LiquidCount - LiquidID.Count];
+
+		public bool[] canLiquidBeWalkedOn = new bool[LiquidLoader.LiquidCount];
 
 		public bool[] AdjLiquid
 		{
@@ -48,6 +46,29 @@ namespace ModLiquidLib.Utils.LiquidContent
 			set
 			{
 				_oldAdjLiquid = value;
+			}
+		}
+
+		public override void ResetEffects()
+		{
+			for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+			{
+				canLiquidBeWalkedOn[i] = false;
+			}
+		}
+
+		public override void PreUpdateMovement()
+		{
+			for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+			{
+				if (i == LiquidID.Lava)
+				{
+					canLiquidBeWalkedOn[i] = Player.waterWalk;
+				}
+				else
+				{
+					canLiquidBeWalkedOn[i] = Player.waterWalk || Player.waterWalk2;
+				}
 			}
 		}
 

@@ -99,6 +99,16 @@ namespace ModLiquidLib.Utils
 			return player.GetModPlayer<ModLiquidPlayer>().AdjLiquid[Liquid];
 		}
 
+		public static bool[] GetWalkableLiquids(this Player player)
+		{
+			return player.GetModPlayer<ModLiquidPlayer>().canLiquidBeWalkedOn;
+		}
+
+		public static void SetWalkableLiquids(this Player player, bool[] walkableLiquids)
+		{
+			 Array.Copy(player.GetModPlayer<ModLiquidPlayer>().canLiquidBeWalkedOn, walkableLiquids, LiquidLoader.LiquidCount);
+		}
+
 		public static bool[] GetModdedWetArray(this Player player)
 		{
 			return player.GetModPlayer<ModLiquidPlayer>().moddedWet;

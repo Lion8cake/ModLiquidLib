@@ -13,6 +13,44 @@ namespace ModLiquidLib.Hooks
 {
 	internal class PlayerHooks
 	{
+		internal static void AllowCustomAccessories(ILContext il)
+		{
+			ILCursor c = new(il);
+			int vector4_varNum = -1;
+
+			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>("WaterCollision"), i => i.MatchStloc(out vector4_varNum));
+			c.EmitLdloca(vector4_varNum);
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((ref Vector2 vector4, Player self, bool fallThrough) =>
+			{
+				vector4 = CollisionHooks.WaterCollision(self.position, vector4, self.width, self.height, self.GetModPlayer<ModLiquidPlayer>().canLiquidBeWalkedOn, fallThrough, fall2: false);
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>("WaterCollision"), i => i.MatchStfld<Entity>("velocity"));
+			c.EmitLdarg(0);
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((Player self, bool fallThrough) =>
+			{
+				return CollisionHooks.WaterCollision(self.position, self.velocity, self.width, self.height, self.GetModPlayer<ModLiquidPlayer>().canLiquidBeWalkedOn, fallThrough, fall2: false);
+			});
+			c.EmitStfld(typeof(Entity).GetField(nameof(Entity.velocity)));
+
+			c.Index = 0;
+			for (int j = 0; j < 3; j++)
+			{
+				ILLabel IL_XXXX = null;
+				c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("waterWalk"), i => i.MatchBrtrue(out IL_XXXX));
+				c.EmitLdarg(0);
+				c.EmitDelegate((Player self) =>
+				{
+					return self.GetModPlayer<ModLiquidPlayer>().canLiquidBeWalkedOn.Contains(true);
+				});
+				c.EmitBrtrue(IL_XXXX);
+			}
+		}
+
 		internal static void BucketSupport(ILContext il)
 		{
 			ILCursor c = new(il);

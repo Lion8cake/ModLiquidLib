@@ -18,6 +18,7 @@ namespace ModLiquidLib.ID
 			.Description("Indicates if the tile nearby counts towards a certain liquid  when crafting.")
 			.RegisterCustomSet(new bool[4]);
 
+			/// <summary> The Item created when a bucket is used on a liquid selected </summary>
 			public static int[] CreateLiquidBucketItem = Factory.CreateNamedSet("CreateLiquidBucketItem")
 			.Description("The Item created when a bucket is used on a liquid selected")
 			.RegisterIntSet(-1, Water, ItemID.WaterBucket, Lava, ItemID.LavaBucket, Honey, ItemID.HoneyBucket);

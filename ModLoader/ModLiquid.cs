@@ -11,12 +11,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Audio;
 using Terraria.Graphics.Light;
-using Terraria.GameContent;
 using ModLiquidLib.Utils.Structs;
 
 namespace ModLiquidLib.ModLoader
 {
-
 	/// <summary>
 	/// This class represents a type of liquid that can be added by a mod. Only one instance of this class will ever exist for each type of liquid that is added. Any hooks that are called will be called by the instance corresponding to the liquid type. This is to prevent the game from using a massive amount of memory storing liquid instances.<br />
 	/// </summary>
@@ -25,12 +23,18 @@ namespace ModLiquidLib.ModLoader
 	{
 		public string LocalizationCategory => "Liquids";
 
+		/// <summary> The Liquid ID of this Modded Liquid </summary>
 		public ushort Type { get; internal set; }
 
+		/// <summary> The block texture of this liquid. Used for some slope framing and when liquids are rendered in retro lighting modes. </summary>
 		public virtual string BlockTexture => Texture + "_Block";
 
+		/// <summary> The slope texture of this liquid. Used for rendering the liquids next to tile slopes. </summary>
 		public virtual string SlopeTexture => Texture + "_Slope";
 
+		/// <summary> A property that controls LiquidRenderer.WATERFALL_LENGTH for this LiquidID. <br/>
+		/// This is the length that liquids draw downwards when falling or when there is a half slope below. <br>
+		/// Defaults to 10.</summary>
 		public int LiquidFallLength 
 		{
 			get
@@ -43,6 +47,11 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
+		/// <summary> A property that controls LiquidRenderer.DEFAULT_OPACITY for this LiquidID. <br/>
+		/// This is the Opacity of this liquid when in not in any retro lighting mode. <br/>
+		/// Defaults to 0.6f.<br/> <br/>
+		/// For retro opacity, please see RetroDrawEffects's RetroLiquidDrawInfo.liquidAlphaMultiplier. <br/>
+		/// For slope opacity, please see SlopeOpacity property. </summary>
 		public float DefaultOpacity 
 		{
 			get
@@ -55,6 +64,9 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
+		/// <summary> A property that controls LiquidRenderer.VISCOSITY_Mask for this LiquidID. <br/>
+		/// This is how powerful the ripples are for this liquid. Be careful when setting this property to larger numbers (ie: 255). <br/>
+		/// Defaults to 0.</summary>
 		public byte VisualViscosity 
 		{
 			get
