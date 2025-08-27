@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.IO;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
 using ModLiquidLib.Utils.Structs;
@@ -37,6 +38,8 @@ namespace ModLiquidLib.ModLoader
 		private delegate void DelegatePoolSizeMultiplier(int type, ref float multiplier);
 
 		private delegate void DelegateWaterRippleMultipler(int type, ref float multiplier);
+
+		private delegate void DelegateStopWatchMPHMultiplier(int type, ref float multiplier);
 
 		private delegate void DelegateSlopeOpacity(int type, ref float slopeOpacity);
 
@@ -121,6 +124,8 @@ namespace ModLiquidLib.ModLoader
 		private static Action<int, int, int, int, int>[] HookModifyTilesNearby;
 
 		private static Func<int, int, int, int, int, bool>[] HookOnPump;
+
+		private static DelegateStopWatchMPHMultiplier[] HookStopWatchMPHMultiplier;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -220,7 +225,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool, bool>>(ref HookOnProjectileSplash, globalLiquids, (GlobalLiquid g) => g.OnProjectileSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool>>(ref HookOnFishingBobberSplash, globalLiquids, (GlobalLiquid g) => g.OnFishingBobberSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
@@ -231,6 +236,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateWaterRippleMultipler>(ref HookWaterRippleMultipler, globalLiquids, (GlobalLiquid g) => g.WaterRippleMultiplier);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, int, int>>(ref HookModifyTilesNearby, globalLiquids, (GlobalLiquid g) => g.ModifyNearbyTiles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int, int, bool>>(ref HookOnPump, globalLiquids, (GlobalLiquid g) => g.OnPump);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateStopWatchMPHMultiplier>(ref HookStopWatchMPHMultiplier, globalLiquids, (GlobalLiquid g) => g.StopWatchMPHMultiplier);
 			if (!unloading)
 			{
 				loaded = true;
@@ -605,7 +611,7 @@ namespace ModLiquidLib.ModLoader
 			return true;
 		}
 
-		public static bool PlayerCollision(int type, Player player, bool fallThrough, bool ignorePlats)
+		public static bool PlayerLiquidMovement(int type, Player player, bool fallThrough, bool ignorePlats)
 		{
 			Func<Player, int, bool, bool, bool>[] hookPlayerCollision = HookPlayerCollision;
 			for (int k = 0; k < hookPlayerCollision.Length; k++)
@@ -615,7 +621,7 @@ namespace ModLiquidLib.ModLoader
 					return false;
 				}
 			}
-			return GetLiquid(type)?.PlayerCollision(player, fallThrough, ignorePlats) ?? true;
+			return GetLiquid(type)?.PlayerLiquidMovement(player, fallThrough, ignorePlats) ?? true;
 		}
 
 		public static bool? ChecksForDrowning(int type)
@@ -719,6 +725,20 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return GetLiquid(type)?.OnPump(x, y, x2, y2) ?? true;
+		}
+
+		public static void StopWatchMPHMultiplier(int type, ref float multiplier)
+		{
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				multiplier = modLiquid.StopWatchMPHMultiplier;
+			}
+			DelegateStopWatchMPHMultiplier[] hookStopWatchMPHMultiplier = HookStopWatchMPHMultiplier;
+			for (int k = 0; k < hookStopWatchMPHMultiplier.Length; k++)
+			{
+				hookStopWatchMPHMultiplier[k](type, ref multiplier);
+			}
 		}
 	}
 }

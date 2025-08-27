@@ -109,6 +109,12 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> The opacity that this liquid slope renders at. Lava and Honey use this to look thicker. Defaults to 0.5f. </summary>
 		public float SlopeOpacity { get; set; } = 0.5f;
 
+		/// <summary> The multiplier thats used to specify how slow (or fast) the player moves while in this liquid. </summary>
+		public float PlayerMovementMultiplier { get; set; } = 0.5f;
+
+		/// <summary> The multiplier used for stopwatches to know how to offset the MPH reading. </summary>
+		public float StopWatchMPHMultiplier { get; set; } = 0.5f;
+
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
 		/// </summary>
@@ -519,13 +525,14 @@ namespace ModLiquidLib.ModLoader
 		/// <summary>
 		/// Allows the user to specify how the liquid interacts with player movement speed. <br/>
 		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
-		/// Return true for the liquid to use the water/lava collision. Returns true by default.
+		/// Return true for the liquid to use the normal liquid collision code. <br/>
+		/// Returns true by default.
 		/// </summary>
 		/// <param name="player">The player instance thats being effected by the liquid.</param>
 		/// <param name="fallThrough">Whether or not the player is falling through the liquid.</param>
 		/// <param name="ignorePlats">Whether or not the player ignores platforms when falling.</param>
 		/// <returns></returns>
-		public virtual bool PlayerCollision(Player player, bool fallThrough, bool ignorePlats)
+		public virtual bool PlayerLiquidMovement(Player player, bool fallThrough, bool ignorePlats)
 		{
 			return true;
 		}

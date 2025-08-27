@@ -32,7 +32,7 @@ Relevant Links:
 [h3]QnA:[/h3]
 
 [i][b]What about the 4 liquid, liquid limit?[/b][/i]
-That has been expanded to 255, allowing modders a whole 250 new liquids to work with.
+That has been expanded to 64, allowing modders a whole 59 new liquids to work with.
 
 [i][b]What is the .TLMap file in player folders?[/b][/i]
 This file is handled just for map data for liquids, standing as Tmodloader Liquid Map file. When moving players, please move this file as well to keep liquid map data.

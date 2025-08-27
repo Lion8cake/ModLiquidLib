@@ -378,16 +378,17 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Allows the user to specify how liquids interacts with player movement speed. <br/>
+		/// Allows the user to specify how a liquid interacts with player movement speed. <br/>
 		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
-		/// Return true for the liquid to use it's collision. Returns true by default.
+		/// Return true for the liquid to use the normal liquid collision code. <br/>
+		/// Returns true by default.
 		/// </summary>
 		/// <param name="player">The player instance thats being effected by the liquid.</param>
 		/// <param name="type"></param>
 		/// <param name="fallThrough">Whether or not the player is falling through the liquid.</param>
 		/// <param name="ignorePlats">Whether or not the player ignores platforms when falling.</param>
 		/// <returns></returns>
-		public virtual bool PlayerCollision(Player player, int type, bool fallThrough, bool ignorePlats)
+		public virtual bool PlayerLiquidMovement(Player player, int type, bool fallThrough, bool ignorePlats)
 		{
 			return true;
 		}
@@ -514,6 +515,10 @@ namespace ModLiquidLib.ModLoader
 		public virtual bool OnPump(int inLiquidType, int inX, int inY, int outX, int outY)
 		{
 			return true;
+		}
+
+		public virtual void StopWatchMPHMultiplier(int type, ref float multiplier)
+		{
 		}
 	}
 }

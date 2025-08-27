@@ -3,11 +3,7 @@ using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.ManualHooks;
-using System;
-using System.Diagnostics.Metrics;
 using System.IO;
-using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
 using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
@@ -17,7 +13,6 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
 
 namespace ModLiquidLib
 {
@@ -28,6 +23,7 @@ namespace ModLiquidLib
 			TModLoaderUtils.Load();
 
 			On_ModContent.ResizeArrays += ModContentHooks.ResizeArraysLiquid;
+			On_WaterfallStylesLoader.ResizeArrays += LiquidFallLoader.ResizeMoreFallArrays;
 			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray; //stuff to be done BEFORE resizing arrays
 			On_TileLightScanner.ApplyLiquidLight += TileLightScannerHooks.ApplyModliquidLight;
 			IL_MapHelper.CreateMapTile += MapHelperHooks.AddLiquidMapEntrys;
@@ -77,7 +73,7 @@ namespace ModLiquidLib
 			On_Collision.WaterCollision += CollisionHooks.PreventWaterCollisionOverloadFromExecuting; //replace with log message, jump over any vanilla use
 			IL_Player.DryCollision += PlayerHooks.AllowCustomAccessories;
 			On_WaterfallManager.UpdateFrame += WaterfallManagerHooks.AnimateModWaterfall;
-			On_WaterfallStylesLoader.ResizeArrays += LiquidFallLoader.ResizeMoreFallArrays;
+			IL_Main.DrawInfoAccs += MainHooks.ModifyStopWatchLiquidMultipliers;
 
 			MapHelper.Initialize();
 		}
@@ -105,6 +101,7 @@ namespace ModLiquidLib
 		public override void Unload()
 		{
 			On_ModContent.ResizeArrays -= ModContentHooks.ResizeArraysLiquid;
+			On_WaterfallStylesLoader.ResizeArrays -= LiquidFallLoader.ResizeMoreFallArrays;
 			TModLoaderUtils.Unload();
 			LiquidLoader.ResizeArrays(true);
 			LiquidLoader.Unload();
@@ -161,7 +158,7 @@ namespace ModLiquidLib
 			On_Collision.WaterCollision -= CollisionHooks.PreventWaterCollisionOverloadFromExecuting;
 			IL_Player.DryCollision -= PlayerHooks.AllowCustomAccessories;
 			On_WaterfallManager.UpdateFrame -= WaterfallManagerHooks.AnimateModWaterfall;
-			On_WaterfallStylesLoader.ResizeArrays -= LiquidFallLoader.ResizeMoreFallArrays;
+			IL_Main.DrawInfoAccs -= MainHooks.ModifyStopWatchLiquidMultipliers;
 		}
 
 		public enum MessageType : byte

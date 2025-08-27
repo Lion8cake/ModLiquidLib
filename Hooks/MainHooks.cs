@@ -12,6 +12,35 @@ namespace ModLiquidLib.Hooks
 {
 	internal class MainHooks
 	{
+		internal static void ModifyStopWatchLiquidMultipliers(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_0ce3 = null;
+			int stopwatchMPH_varNum = -1;
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>("honeyWet"), i => i.MatchBrfalse(out _), i => i.MatchLdloc(out stopwatchMPH_varNum));
+			c.GotoPrev(MoveType.After, i => i.MatchLdfld<Player>("ignoreWater"), i => i.MatchBrtrue(out IL_0ce3));
+			c.EmitLdloca(stopwatchMPH_varNum);
+			c.EmitDelegate((ref float num13) =>
+			{
+				float multiplier = 1f;
+				if (Main.player[Main.myPlayer].shimmerWet)
+				{
+					multiplier = 0.375f;
+				}
+				else if (Main.player[Main.myPlayer].honeyWet)
+				{
+					multiplier = 0.25f;
+				}
+				else if (Main.player[Main.myPlayer].wet)
+				{
+					multiplier = 0.5f;
+				}
+				LiquidLoader.StopWatchMPHMultiplier(PlayerHooks.WetToLiquidID(Main.player[Main.myPlayer]), ref multiplier);
+				num13 *= multiplier;
+			});
+			c.EmitBr(IL_0ce3);
+		}
+
 		internal static void RenderWaterTiles(On_Main.orig_DrawTileInWater orig, Vector2 drawOffset, int x, int y)
 		{
 			orig.Invoke(drawOffset, x, y);

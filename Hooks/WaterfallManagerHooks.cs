@@ -130,7 +130,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(waterfallType_numVar);
 			c.EmitDelegate((int regularFrame, int num4) =>
 			{
-				if (num4 >= ID.WaterfallID.Count)
+				if (num4 >= ID.WaterfallID.Count && num4 < LiquidFallLoader.wFallFrame.Length)
 				{
 					return LiquidFallLoader.wFallFrame[num4];
 				}
