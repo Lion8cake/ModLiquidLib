@@ -2,7 +2,6 @@
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -25,7 +24,10 @@ namespace ModLiquidLib.Hooks
 				{
 					if (liquidIn[i])
 					{
-						self.GetGlobalItem<ModLiquidItem>().moddedWet[i - LiquidID.Count] = true;
+						if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+						{
+							liquidItem.moddedWet[i - LiquidID.Count] = true;
+						}
 					}
 				}
 			});
@@ -83,29 +85,32 @@ namespace ModLiquidLib.Hooks
 					{
 						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 						{
-							if (self.GetGlobalItem<ModLiquidItem>().moddedWet[i - LiquidID.Count])
+							if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
 							{
-								if (LiquidLoader.OnItemSplash(i, self, true))
+								if (liquidItem.moddedWet[i - LiquidID.Count])
 								{
-									ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
-									if (modLiquid.OnItemSplash(self, true))
+									if (LiquidLoader.OnItemSplash(i, self, true))
 									{
-										if (modLiquid.SplashDustType >= 0)
+										ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+										if (modLiquid.OnItemSplash(self, true))
 										{
-											for (int j = 0; j < 5; j++)
+											if (modLiquid.SplashDustType >= 0)
 											{
-												int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
-												Main.dust[dust].velocity.Y -= 2f;
-												Main.dust[dust].velocity.X *= 2.5f;
-												Main.dust[dust].scale = 1.3f;
-												Main.dust[dust].alpha = 100;
-												Main.dust[dust].noGravity = true;
+												for (int j = 0; j < 5; j++)
+												{
+													int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
+													Main.dust[dust].velocity.Y -= 2f;
+													Main.dust[dust].velocity.X *= 2.5f;
+													Main.dust[dust].scale = 1.3f;
+													Main.dust[dust].alpha = 100;
+													Main.dust[dust].noGravity = true;
+												}
 											}
+											SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
 										}
-										SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
 									}
+									return true;
 								}
-								return true;
 							}
 						}
 						return false;
@@ -117,29 +122,32 @@ namespace ModLiquidLib.Hooks
 					{
 						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 						{
-							if (self.GetGlobalItem<ModLiquidItem>().moddedWet[i - LiquidID.Count])
+							if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
 							{
-								if (LiquidLoader.OnItemSplash(i, self, false))
+								if (liquidItem.moddedWet[i - LiquidID.Count])
 								{
-									ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
-									if (modLiquid.OnItemSplash(self, false))
+									if (LiquidLoader.OnItemSplash(i, self, false))
 									{
-										if (modLiquid.SplashDustType >= 0)
+										ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+										if (modLiquid.OnItemSplash(self, false))
 										{
-											for (int j = 0; j < 5; j++)
+											if (modLiquid.SplashDustType >= 0)
 											{
-												int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
-												Main.dust[dust].velocity.Y -= 2f;
-												Main.dust[dust].velocity.X *= 2.5f;
-												Main.dust[dust].scale = 1.3f;
-												Main.dust[dust].alpha = 100;
-												Main.dust[dust].noGravity = true;
+												for (int j = 0; j < 5; j++)
+												{
+													int dust = Dust.NewDust(new Vector2(self.position.X - 6f, self.position.Y + (self.height / 2) - 8f), self.width + 12, 24, modLiquid.SplashDustType);
+													Main.dust[dust].velocity.Y -= 2f;
+													Main.dust[dust].velocity.X *= 2.5f;
+													Main.dust[dust].scale = 1.3f;
+													Main.dust[dust].alpha = 100;
+													Main.dust[dust].noGravity = true;
+												}
 											}
+											SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
 										}
-										SoundEngine.PlaySound(modLiquid.SplashSound, self.position);
 									}
+									return true;
 								}
-								return true;
 							}
 						}
 						return false;
@@ -192,7 +200,10 @@ namespace ModLiquidLib.Hooks
 			{
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
-					self.GetGlobalItem<ModLiquidItem>().moddedWet[i - LiquidID.Count] = false;
+					if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+					{
+						liquidItem.moddedWet[i - LiquidID.Count] = false;
+					}
 				}
 			});
 

@@ -22,7 +22,10 @@ namespace ModLiquidLib.Utils.LiquidContent
 		public override GlobalItem Clone(Item from, Item to)
 		{
 			ModLiquidItem liquidItemClone = (ModLiquidItem)MemberwiseClone();
-			liquidItemClone.moddedWet = from.GetGlobalItem<ModLiquidItem>().moddedWet.ToArray();
+			if (from.TryGetGlobalItem(out ModLiquidItem liquidItem))
+			{
+				liquidItemClone.moddedWet = liquidItem.moddedWet.ToArray();
+			}
 			return liquidItemClone;
 		}
 	}

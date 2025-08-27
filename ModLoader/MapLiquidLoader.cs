@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.Map;
 using Terraria;
-using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
-using System.Reflection;
-using ModLiquidLib.Utils;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -26,12 +18,12 @@ namespace ModLiquidLib.ModLoader
 
 		internal static int modTileOptions(ushort type)
 		{
-			return TModLoaderUtils.tileEntries[type].Count;
+			return MapLoader.tileEntries[type].Count;
 		}
 
 		internal static int modWallOptions(ushort type)
 		{
-			return TModLoaderUtils.wallEntries[type].Count;
+			return MapLoader.wallEntries[type].Count;
 		}
 
 		internal static int modLiquidOptions(ushort type)

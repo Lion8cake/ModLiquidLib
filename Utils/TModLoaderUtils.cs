@@ -16,25 +16,19 @@ using Terraria.ModLoader.Core;
 
 namespace ModLiquidLib.Utils
 {
-    //internalised to prevent malicious users from accessing tmodloader functions
     public static class TModLoaderUtils
 	{
 		internal static void Load()
 		{
 			_addliquidCounts = typeof(SceneMetrics).GetField("_liquidCounts", BindingFlags.NonPublic | BindingFlags.Instance);
-			tileEntries = (IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>>)typeof(MapLoader).GetField("tileEntries", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-			wallEntries = (IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>>)typeof(MapLoader).GetField("wallEntries", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 		}
 
 		internal static void Unload()
 		{
 			_addliquidCounts = null;
-			wallEntries = null;
 		}
 
 		internal static FieldInfo _addliquidCounts;
-		internal static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> tileEntries;
-		internal static IDictionary<ushort, IList<Terraria.ModLoader.MapEntry>> wallEntries;
 
 		internal static int[] Get_liquidCounts(this SceneMetrics self)
 		{
@@ -126,7 +120,8 @@ namespace ModLiquidLib.Utils
 
 		public static bool[] GetModdedWetArray(this Item item)
 		{
-			return item.GetGlobalItem<ModLiquidItem>().moddedWet;
+			item.TryGetGlobalItem(out ModLiquidItem liquidItem);
+			return liquidItem.moddedWet;
 		}
 
 		public static bool[] GetModdedWetArray(this Entity entity)
@@ -145,7 +140,8 @@ namespace ModLiquidLib.Utils
 			}
 			if (entity is Item item)
 			{
-				return item.GetGlobalItem<ModLiquidItem>().moddedWet;
+				item.TryGetGlobalItem(out ModLiquidItem liquidItem);
+				return liquidItem.moddedWet;
 			}
 			return new bool[LiquidLoader.LiquidCount - LiquidID.Count];
 		}
@@ -188,6 +184,135 @@ namespace ModLiquidLib.Utils
 		public static void AddLight(this WaterfallManager self, int waterfallType, int x, int y)
 		{
 			WaterfallManager.AddLight(waterfallType, x, y);
+		}
+
+		public static int GetWFallFrame(this WaterfallManager self, int type)
+		{
+			if (type >= ID.WaterfallID.Count)
+			{
+				return LiquidFallLoader.wFallFrame[type];
+			}
+			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			{
+				return self.slowFrame;
+			}
+			else if (type == ID.WaterfallID.Rain)
+			{
+				return self.rainFrameForeground;
+			}
+			else if (type == ID.WaterfallID.Snow)
+			{
+				return self.snowFrameForeground;
+			}
+			else
+			{
+				return self.regularFrame;
+			}
+		}
+
+		public static int GetWFallFrameBack(this WaterfallManager self, int type)
+		{
+			if (type >= ID.WaterfallID.Count)
+			{
+				return LiquidFallLoader.wFallFrameBack[type];
+			}
+			else if (type == ID.WaterfallID.Rain)
+			{
+				return self.rainFrameBackground;
+			}
+			else
+			{
+				ModContent.GetInstance<ModLiquidLib>().Logger.Warn("Attempting to get a waterfall back frame for a vanilla waterfall that does not contain a backframe frame.");
+				return 0;
+			}
+		}
+
+		public static int GetWFallFrameCounter(this WaterfallManager self, int type)
+		{
+			if (type >= ID.WaterfallID.Count)
+			{
+				return LiquidFallLoader.wFallFrameCounter[type];
+			}
+			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			{
+				return self.wFallFrCounter2;
+			}
+			else if (type == ID.WaterfallID.Rain)
+			{
+				return self.rainFrameCounter;
+			}
+			else if (type == ID.WaterfallID.Snow)
+			{
+				return self.snowFrameCounter;
+			}
+			else
+			{
+				return self.wFallFrCounter;
+			}
+		}
+
+		public static void SetWFallFrame(this WaterfallManager self, int type, int frame)
+		{
+			if (type >= ID.WaterfallID.Count)
+			{
+				LiquidFallLoader.wFallFrame[type] = frame;
+			}
+			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			{
+				self.slowFrame = frame;
+			}
+			else if (type == ID.WaterfallID.Rain)
+			{
+				self.rainFrameForeground = frame;
+			}
+			else if (type == ID.WaterfallID.Snow)
+			{
+				self.snowFrameForeground = frame;
+			}
+			else
+			{
+				self.regularFrame = frame;
+			}
+		}
+
+		public static void SetWFallFrameBack(this WaterfallManager self, int type, int frame)
+		{
+			if (type >= ID.WaterfallID.Count)
+			{
+				LiquidFallLoader.wFallFrameBack[type] = frame;
+			}
+			else if (type == ID.WaterfallID.Rain)
+			{
+				self.rainFrameBackground = frame;
+			}
+			else
+			{
+				ModContent.GetInstance<ModLiquidLib>().Logger.Warn("Attempting to get a waterfall back frame for a vanilla waterfall that does not contain a backframe frame.");
+			}
+		}
+
+		public static void SetWFallFrameCounter(this WaterfallManager self, int type, int frame)
+		{
+			if (type >= ID.WaterfallID.Count)
+			{
+				LiquidFallLoader.wFallFrameCounter[type] = frame;
+			}
+			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			{
+				self.wFallFrCounter2 = frame;
+			}
+			else if (type == ID.WaterfallID.Rain)
+			{
+				self.rainFrameCounter = frame;
+			}
+			else if (type == ID.WaterfallID.Snow)
+			{
+				self.snowFrameCounter = frame;
+			}
+			else
+			{
+				self.wFallFrCounter = frame;
+			}
 		}
 	}
 }

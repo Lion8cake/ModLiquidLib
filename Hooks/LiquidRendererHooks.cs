@@ -107,7 +107,7 @@ namespace ModLiquidLib.Hooks
 					i => i.MatchLdfld<LiquidCache>("VisibleType"), 
 					i => i.MatchLdcI4(1));
 				c.Index = 0;
-				c.GotoNext(MoveType.Before, 
+				c.GotoNext(MoveType.After, 
 					i => i.MatchLdfld<LiquidCache>("VisibleType"), 
 					i => i.MatchLdcI4(1), 
 					i => i.MatchBneUn(out IL_13a0));
@@ -115,6 +115,7 @@ namespace ModLiquidLib.Hooks
 				{
 					return;
 				}
+				c.EmitLdloc(pointer2_varNum);
 				c.EmitLdfld(typeof(LiquidCache).GetField("VisibleType"));
 				c.EmitLdloc(x_varNum);
 				c.EmitLdloc(y_varNum);
@@ -124,7 +125,6 @@ namespace ModLiquidLib.Hooks
 					return LiquidLoader.EmitEffects(x, y, liquidID, Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr2)));
 				});
 				c.EmitBrfalse(IL_13a0);
-				c.EmitLdloc(pointer2_varNum);
 			}
 		}
 	}

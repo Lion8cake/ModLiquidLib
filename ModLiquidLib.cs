@@ -3,7 +3,11 @@ using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.ManualHooks;
+using System;
+using System.Diagnostics.Metrics;
 using System.IO;
+using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
@@ -13,6 +17,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace ModLiquidLib
 {
@@ -41,8 +46,8 @@ namespace ModLiquidLib
 			IL_Liquid.SettleWaterAt += LiquidHooks.EditLiquidGenMovement;
 			On_UIModItem.OnInitialize += UIModItemHooks.AddLiquidCount;
 			IL_Liquid.LiquidCheck += LiquidHooks.EditLiquidMergeTiles;
-			On_Liquid.GetLiquidMergeTypes += LiquidHooks.PreventMergeOverloadFromExecuting;
-			On_WorldGen.PlayLiquidChangeSound += WorldGenHooks.PreventSoundOverloadFromExecuting;
+			On_Liquid.GetLiquidMergeTypes += LiquidHooks.PreventMergeOverloadFromExecuting; //replace with log message, jump over any vanilla use
+			On_WorldGen.PlayLiquidChangeSound += WorldGenHooks.PreventSoundOverloadFromExecuting; //replace with log message, jump over any vanilla use
 			IL_NetMessage.CompressTileBlock_Inner += NetMessageHooks.SendLiquidTypes;
 			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles += PlayerHooks.AddLiquidCraftingConditions;
@@ -69,8 +74,10 @@ namespace ModLiquidLib
 			On_Main.DrawTileInWater += MainHooks.RenderWaterTiles;
 			IL_Liquid.DelWater += LiquidHooks.EditLiquidTileTransformations;
 			IL_Wiring.XferWater += WiringHooks.LiquidPumpEdits;
-			On_Collision.WaterCollision += CollisionHooks.PreventWaterCollisionOverloadFromExecuting;
+			On_Collision.WaterCollision += CollisionHooks.PreventWaterCollisionOverloadFromExecuting; //replace with log message, jump over any vanilla use
 			IL_Player.DryCollision += PlayerHooks.AllowCustomAccessories;
+			On_WaterfallManager.UpdateFrame += WaterfallManagerHooks.AnimateModWaterfall;
+			On_WaterfallStylesLoader.ResizeArrays += LiquidFallLoader.ResizeMoreFallArrays;
 
 			MapHelper.Initialize();
 		}
@@ -153,6 +160,8 @@ namespace ModLiquidLib
 			IL_Wiring.XferWater -= WiringHooks.LiquidPumpEdits;
 			On_Collision.WaterCollision -= CollisionHooks.PreventWaterCollisionOverloadFromExecuting;
 			IL_Player.DryCollision -= PlayerHooks.AllowCustomAccessories;
+			On_WaterfallManager.UpdateFrame -= WaterfallManagerHooks.AnimateModWaterfall;
+			On_WaterfallStylesLoader.ResizeArrays -= LiquidFallLoader.ResizeMoreFallArrays;
 		}
 
 		public enum MessageType : byte

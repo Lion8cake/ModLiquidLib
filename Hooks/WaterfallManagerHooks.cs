@@ -1,14 +1,46 @@
 ﻿using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 using static Terraria.WaterfallManager;
 
 namespace ModLiquidLib.Hooks
 {
 	internal class WaterfallManagerHooks
 	{
+		internal static void AnimateModWaterfall(On_WaterfallManager.orig_UpdateFrame orig, WaterfallManager self)
+		{
+			for (int i = ID.WaterfallID.Count; i < LoaderManager.Get<WaterFallStylesLoader>().TotalCount; i++)
+			{
+				if (LoaderManager.Get<WaterFallStylesLoader>().Get(i) is ModLiquidFall)
+				{
+					ModLiquidFall fall = (ModLiquidFall)LoaderManager.Get<WaterFallStylesLoader>().Get(i);
+					if (LoaderUtils.HasOverride(fall, (Expression<Func<ModLiquidFall, LiquidFallLoader.DelegateAnimateWaterfall>>)((ModLiquidFall t) => t.AnimateWaterfall)))
+					{
+						LiquidFallLoader.AnimateWaterfall(i);
+						continue;
+					}
+				}
+				LiquidFallLoader.wFallFrameCounter[i]++;
+				if (LiquidFallLoader.wFallFrameCounter[i] > 2)
+				{
+					LiquidFallLoader.wFallFrameCounter[i] = 0;
+					LiquidFallLoader.wFallFrame[i]++;
+					if (LiquidFallLoader.wFallFrame[i] > 15)
+					{
+						LiquidFallLoader.wFallFrame[i] = 0;
+					}
+				}
+			}
+			orig.Invoke(self);
+		}
+
 		internal static void EditWaterfallStyle(ILContext il)
 		{
 			ILCursor c = new(il);
@@ -75,7 +107,7 @@ namespace ModLiquidLib.Hooks
 				i => i.MatchLdsfld<Main>("drewLava"),		//}
 				i => i.MatchBrtrue(out IL_149d)); //used to get the ILLable from the continue
 			c.GotoPrev( //Goes to after the intialisation of variables 3 through to 15. This is just before the drawing of lava, honey and shimmer waterfalls
-				MoveType.After,
+				MoveType.Before,
 				i => i.MatchLdloc(waterfallType_numVar), //int num11 = 0;
 				i => i.MatchLdcI4(1),					 //int num13 = 0;
 				i => i.MatchBeq(out _),					 //int num14;
@@ -88,10 +120,22 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(x_numVar); //X position of the waterfall
 			c.EmitLdloc(y_numVar); //Y position of the waterfall
 			c.EmitDelegate((WaterfallManager self, int i, int num4, int num5, int num6) => 
-			{                                                                            //if (!PreDraw(i, num5, num6, num4, Main.spriteBatch))
+			{
+				//if (!PreDraw(i, num5, num6, num4, Main.spriteBatch))
 				return !LiquidFallLoader.PreDraw(self.waterfalls[i], num5, num6, num4, Main.spriteBatch); //{
 			});																			 //		continue;
-			c.EmitBrtrue(IL_149d);														 //}
+			c.EmitBrtrue(IL_149d);                                                       //}
+
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<WaterfallManager>("regularFrame"));
+			c.EmitLdloc(waterfallType_numVar);
+			c.EmitDelegate((int regularFrame, int num4) =>
+			{
+				if (num4 >= ID.WaterfallID.Count)
+				{
+					return LiquidFallLoader.wFallFrame[num4];
+				}
+				return regularFrame;
+			});
 
 			c.GotoNext(MoveType.After, i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(12), i => i.MatchBeq(out _), i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(22), i => i.MatchBeq(out IL_0a27));
 			c.EmitLdloc(waterfallType_numVar);
