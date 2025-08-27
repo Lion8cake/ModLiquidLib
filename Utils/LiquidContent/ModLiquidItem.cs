@@ -21,7 +21,7 @@ namespace ModLiquidLib.Utils.LiquidContent
 
 		public override GlobalItem Clone(Item from, Item to)
 		{
-			ModLiquidItem liquidItemClone = (ModLiquidItem)MemberwiseClone();
+			ModLiquidItem liquidItemClone = (ModLiquidItem)base.Clone(from, to);
 			if (from.TryGetGlobalItem(out ModLiquidItem liquidItem))
 			{
 				liquidItemClone.moddedWet = liquidItem.moddedWet.ToArray();
