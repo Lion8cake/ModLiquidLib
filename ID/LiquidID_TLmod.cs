@@ -1,6 +1,5 @@
 ﻿using ModLiquidLib.ModLoader;
 using ReLogic.Reflection;
-using System;
 using Terraria.ID;
 using Terraria.ModLoader;
 

@@ -532,7 +532,7 @@ namespace ModLiquidLib.ModLoader
 					return (bool)hookBlockTilePlacement[k](player, i, j, type);
 				}
 			}
-			return GetLiquid(type)?.BlocksTilePlacement(player, i, j) ?? false;
+			return GetLiquid(type)?.BlocksTilePlacement(player, i, j) ?? type == LiquidID.Lava ? true : false;
 		}
 
 		public static bool OnPlayerSplash(int type, Player player, bool isEnter)
