@@ -378,7 +378,7 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Allows the user to specify how a liquid interacts with player movement speed. <br/>
+		/// Allows the user to specify how a liquid interacts with the player (especially player movement). <br/>
 		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
 		/// Return true for the liquid to use the normal liquid collision code. <br/>
 		/// Returns true by default.
@@ -388,20 +388,51 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="fallThrough">Whether or not the player is falling through the liquid.</param>
 		/// <param name="ignorePlats">Whether or not the player ignores platforms when falling.</param>
 		/// <returns></returns>
-		public virtual bool PlayerLiquidMovement(Player player, int type, bool fallThrough, bool ignorePlats)
+		public virtual bool PlayerLiquidCollision(Player player, int type, bool fallThrough, bool ignorePlats)
 		{
 			return true;
 		}
 
-		public virtual void ItemLiquidMovement(Item item, int type, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
+		/// <summary>
+		/// Allows the user to specify how a liquid interacts with an item (especially item gravity and movement). <br/>
+		/// Please see <see cref="P:Terraria.Item.UpdateItem" />, to see how vanilla handles it's liquid collision.
+		/// </summary>
+		/// <param name="item">The item instance thats being effected by the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="wetVelocity">The velocity of the item when in the liquid.</param>
+		/// <param name="gravity">The gravity of the item.</param>
+		/// <param name="maxFallSpeed">The maximum fall speed of the item.</param>
+		public virtual void ItemLiquidCollision(Item item, int type, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
 		{
 		}
 
-		public virtual void NPCLiquidMovement(NPC npc, int type, ref float gravity, ref float maxFallSpeed)
+		/// <summary>
+		/// Allows the user to specify how a liquid interacts with an npc (especially npc gravity and movement). <br/>
+		/// Please see <see cref="P:Terraria.NPC.UpdateNPC_UpdateGravity" />, to see how vanilla handles it's liquid collision.
+		/// </summary>
+		/// <param name="npc">The npc instance thats being effected by the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="gravity">The gravity of the npc.</param>
+		/// <param name="maxFallSpeed">The maximum fall speed of the npc.</param>
+		public virtual void NPCLiquidCollision(NPC npc, int type, ref float gravity, ref float maxFallSpeed)
 		{
 		}
 
-		public virtual bool ProjectileLiquidMovement(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
+		/// <summary>
+		/// Allows the user to specify how a liquid interacts with a projectile (especially projectile movement). <br/>
+		/// Please see <see cref="P:Terraria.Projectile.HandleMovement" />, to see how vanilla handles it's liquid collision. <br/>
+		/// Return true for the liquid to use the normal liquid collision code. <br/>
+		/// Returns true by default.
+		/// </summary>
+		/// <param name="projectile">The projectile instance thats being effected by the liquid.</param>
+		/// <param name="type"></param>
+		/// <param name="wetVelocity">The velocity of the item when in the liquid.</param>
+		/// <param name="collisionPosition">The position of where the projectile is calculated when colliding with this liquid.</param>
+		/// <param name="Width">The modified width of this projectile.</param>
+		/// <param name="Height">The modified height of this projectile.</param>
+		/// <param name="fallThrough">Whether or not the projectile can fall through.</param>
+		/// <returns></returns>
+		public virtual bool ProjectileLiquidCollision(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
 		{
 			return true;
 		}

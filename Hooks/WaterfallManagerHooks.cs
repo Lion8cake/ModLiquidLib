@@ -2,10 +2,8 @@
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using static Terraria.WaterfallManager;
@@ -16,7 +14,14 @@ namespace ModLiquidLib.Hooks
 	{
 		internal static void AnimateModWaterfall(On_WaterfallManager.orig_UpdateFrame orig, WaterfallManager self)
 		{
-			for (int i = ID.WaterfallID.Count; i < LoaderManager.Get<WaterFallStylesLoader>().TotalCount; i++)
+			int totalCount = LoaderManager.Get<WaterFallStylesLoader>().TotalCount;
+			if (totalCount > LiquidFallLoader.wFallFrame.Length)
+			{
+				Array.Resize(ref LiquidFallLoader.wFallFrame, totalCount);
+				Array.Resize(ref LiquidFallLoader.wFallFrameBack, totalCount);
+				Array.Resize(ref LiquidFallLoader.wFallFrameCounter, totalCount);
+			}
+			for (int i = ID.WaterfallID.Count; i < LiquidFallLoader.wFallFrame.Length; i++)
 			{
 				if (LoaderManager.Get<WaterFallStylesLoader>().Get(i) is ModLiquidFall)
 				{

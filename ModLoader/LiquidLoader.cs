@@ -237,10 +237,10 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool, bool>>(ref HookOnProjectileSplash, globalLiquids, (GlobalLiquid g) => g.OnProjectileSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool>>(ref HookOnFishingBobberSplash, globalLiquids, (GlobalLiquid g) => g.OnFishingBobberSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidMovement);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateItemLiquidMovement>(ref HookItemLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ItemLiquidMovement);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateNPCLiquidMovement>(ref HookNPCLiquidMovement, globalLiquids, (GlobalLiquid g) => g.NPCLiquidMovement);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateProjectileLiquidMovement>(ref HookProjectileLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ProjectileLiquidMovement);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateItemLiquidMovement>(ref HookItemLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ItemLiquidCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateNPCLiquidMovement>(ref HookNPCLiquidMovement, globalLiquids, (GlobalLiquid g) => g.NPCLiquidCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateProjectileLiquidMovement>(ref HookProjectileLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ProjectileLiquidCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
@@ -636,12 +636,12 @@ namespace ModLiquidLib.ModLoader
 					return false;
 				}
 			}
-			return GetLiquid(type)?.PlayerLiquidMovement(player, fallThrough, ignorePlats) ?? true;
+			return GetLiquid(type)?.PlayerLiquidCollision(player, fallThrough, ignorePlats) ?? true;
 		}
 
 		public static void ItemLiquidMovement(int type, Item item, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
 		{
-			GetLiquid(type)?.ItemLiquidMovement(item, ref wetVelocity, ref gravity, ref maxFallSpeed);
+			GetLiquid(type)?.ItemLiquidCollision(item, ref wetVelocity, ref gravity, ref maxFallSpeed);
 			DelegateItemLiquidMovement[] hookItemLiquidMovement = HookItemLiquidMovement;
 			for (int k = 0; k < hookItemLiquidMovement.Length; k++)
 			{
@@ -651,7 +651,7 @@ namespace ModLiquidLib.ModLoader
 
 		public static void NPCLiquidMovement(int type, NPC npc, ref float gravity, ref float maxFallSpeed)
 		{
-			GetLiquid(type)?.NPCLiquidMovement(npc, ref gravity, ref maxFallSpeed);
+			GetLiquid(type)?.NPCLiquidCollision(npc, ref gravity, ref maxFallSpeed);
 			DelegateNPCLiquidMovement[] hookNPCLiquidMovement = HookNPCLiquidMovement;
 			for (int k = 0; k < hookNPCLiquidMovement.Length; k++)
 			{
@@ -669,7 +669,7 @@ namespace ModLiquidLib.ModLoader
 					return false;
 				}
 			}
-			return GetLiquid(type)?.ProjectileLiquidMovement(proj, ref wetVelocity, collisionPosition, Width, Height, fallThrough) ?? true;
+			return GetLiquid(type)?.ProjectileLiquidCollision(proj, ref wetVelocity, collisionPosition, Width, Height, fallThrough) ?? true;
 		}
 
 		public static bool? ChecksForDrowning(int type)
