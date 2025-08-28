@@ -1,17 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.Utils.LiquidContent;
+using ModLiquidLib.Utils.Structs;
 using ReLogic.Content;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.Liquid;
+using Terraria.Graphics;
+using Terraria.Graphics.Light;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.Graphics;
-using Terraria;
-using Terraria.ID;
-using Terraria.Audio;
-using Terraria.Graphics.Light;
-using ModLiquidLib.Utils.Structs;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -114,6 +115,9 @@ namespace ModLiquidLib.ModLoader
 
 		/// <summary> The multiplier used for stopwatches to know how to offset the MPH reading. </summary>
 		public float StopWatchMPHMultiplier { get; set; } = 0.5f;
+
+		/// <summary> The default value that ModLiquidNPC.moddedLiquidMovementSpeed sets to before ModNPC.SetDefaults </summary>
+		public float NPCMovementMultiplierDefault { get; set; } = 0.5f;
 
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
@@ -540,6 +544,11 @@ namespace ModLiquidLib.ModLoader
 
 		public virtual void ItemLiquidMovement(Item item, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
 		{
+		}
+
+		public virtual void NPCLiquidMovement(NPC npc, ref float gravity, ref float maxFallSpeed)
+		{
+
 		}
 
 		/// <summary>

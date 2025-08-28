@@ -10,9 +10,96 @@ namespace ModLiquidLib.Hooks
 {
 	internal class NPCHooks
 	{
-		internal static void UnwetNPCs(ILContext il)
+		internal static void EditNPCLiquidMovement(ILContext il)
 		{
 			ILCursor c = new(il);
+			c.GotoNext(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"));
+			c.EmitDelegate((NPC self) =>
+			{
+				float gravity = self.gravity;
+				float maxFallSpeed = self.maxFallSpeed;
+				if (self.shimmerWet)
+				{
+					gravity = 0.15f;
+					maxFallSpeed = 5.5f;
+				}
+				else if (self.honeyWet)
+				{
+					gravity = 0.1f;
+					maxFallSpeed = 4f;
+				}
+				else
+				{
+					gravity = 0.2f;
+					maxFallSpeed = 7f;
+				}
+				LiquidLoader.NPCLiquidMovement(WetToLiquidID(self), self, ref gravity, ref maxFallSpeed);
+				self.gravity = gravity;
+				self.maxFallSpeed = maxFallSpeed;
+			});
+			c.EmitRet();
+			c.EmitLdarg(0);
+		}
+
+		internal static int WetToLiquidID(NPC self)
+		{
+			int modLiquidID = -1;
+			if (self.TryGetGlobalNPC(out ModLiquidNPC liquidNPC))
+			{
+				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+				{
+					if (liquidNPC.moddedWet[i - LiquidID.Count])
+					{
+						modLiquidID = i;
+					}
+				}
+			}
+			if (modLiquidID == -1)
+			{
+				if (self.shimmerWet)
+				{
+					modLiquidID = LiquidID.Shimmer;
+				}
+				else if (self.honeyWet)
+				{
+					modLiquidID = LiquidID.Honey;
+				}
+				else if (self.lavaWet)
+				{
+					modLiquidID = LiquidID.Lava;
+				}
+				else
+				{
+					modLiquidID = LiquidID.Water;
+				}
+			}
+			return modLiquidID;
+		}
+
+		private static bool hasModdedWet(NPC self)
+		{
+			for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+			{
+				if (self.GetGlobalNPC<ModLiquidNPC>().moddedWet[i - LiquidID.Count])
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		internal static void ResetLiquidMovementMultipliersForDD2(On_NPC.orig_LazySetLiquidMovementDD2 orig, NPC self)
+		{
+			orig.Invoke(self);
+			self.shimmerMovementSpeed = 1f;
+		}
+
+		internal static void UnwetNPCsAndUpdateWetVel(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_00f6 = null;
+			int oldDryVel_varNum = -1;
+
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("honeyWet"), i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("shimmerWet"));
 			c.EmitLdarg(0);
 			c.EmitDelegate((NPC self) =>
@@ -22,6 +109,43 @@ namespace ModLiquidLib.Hooks
 					self.GetGlobalNPC<ModLiquidNPC>().moddedWet[i - LiquidID.Count] = false;
 				}
 			});
+
+			c.GotoNext(MoveType.Before, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrfalse(out _),
+				i => i.MatchLdarg(0), i => i.MatchLdloc(out oldDryVel_varNum), i => i.MatchLdarg(0), i => i.MatchLdfld<NPC>("shimmerMovementSpeed"), i => i.MatchCall<NPC>("Collision_MoveWhileWet"), i => i.MatchBr(out IL_00f6));
+			c.EmitLdarg(0);
+			c.EmitLdloc(oldDryVel_varNum);
+			c.EmitDelegate((NPC self, Vector2 oldDryVelocity) =>
+			{
+				if (hasModdedWet(self))
+				{
+					for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+					{
+						ModLiquidNPC liquidNPC = self.GetGlobalNPC<ModLiquidNPC>();
+						if (liquidNPC.moddedWet[i - LiquidID.Count])
+						{
+							self.Collision_MoveWhileWet(oldDryVelocity, liquidNPC.moddedLiquidMovementSpeed[i - LiquidID.Count]);
+							break;
+						}
+					}
+				}
+				else if (self.shimmerWet)
+				{
+					self.Collision_MoveWhileWet(oldDryVelocity, self.shimmerMovementSpeed);
+				}
+				else if (self.honeyWet)
+				{
+					self.Collision_MoveWhileWet(oldDryVelocity, self.honeyMovementSpeed);
+				}
+				else if (self.lavaWet)
+				{
+					self.Collision_MoveWhileWet(oldDryVelocity, self.lavaMovementSpeed);
+				}
+				else
+				{
+					self.Collision_MoveWhileWet(oldDryVelocity, self.waterMovementSpeed);
+				}
+			});
+			c.EmitBr(IL_00f6);
 		}
 
 		internal static void UpdateNPCSplash(ILContext il)

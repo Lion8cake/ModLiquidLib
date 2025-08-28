@@ -86,21 +86,6 @@ namespace ModLiquidLib.Hooks
 			return modLiquidID;
 		}
 
-		private static bool hasModdedWet(Item self)
-		{
-			if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
-			{
-				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
-				{
-					if (liquidItem.moddedWet[i - LiquidID.Count])
-					{
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
 		internal static void UpdateItemSplash(ILContext il)
 		{
 			ILCursor c = new(il);

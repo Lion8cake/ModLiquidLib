@@ -397,6 +397,10 @@ namespace ModLiquidLib.ModLoader
 		{
 		}
 
+		public virtual void NPCLiquidMovement(NPC npc, int type, ref float gravity, ref float maxFallSpeed)
+		{
+		}
+
 		/// <summary>
 		/// Hook for deciding whether a liquid should allow or disallow, when overtop of the Collision.CheckDrowning position, to be considered drowning or not. <br/>
 		/// Not to be confused with CanPlayersDrown, which is a hook called every frame to check if the player is drowning or not. Useful for making items such as a Breething Reed. <br/>

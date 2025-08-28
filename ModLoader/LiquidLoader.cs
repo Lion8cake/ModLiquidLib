@@ -47,6 +47,8 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegateItemLiquidMovement(Item item, int type, ref Vector2 wetVelocity, ref float grav, ref float gravMax);
 
+		private delegate void DelegateNPCLiquidMovement(NPC npc, int type, ref float grav, ref float gravMax);
+
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -108,6 +110,8 @@ namespace ModLiquidLib.ModLoader
 		private static Func<Player, int, bool, bool, bool>[] HookPlayerCollision;
 
 		private static DelegateItemLiquidMovement[] HookItemLiquidMovement;
+
+		private static DelegateNPCLiquidMovement[] HookNPCLiquidMovement;
 
 		private static Func<int, bool?>[] HookChecksForDrowning;
 
@@ -231,6 +235,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateItemLiquidMovement>(ref HookItemLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ItemLiquidMovement);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateNPCLiquidMovement>(ref HookNPCLiquidMovement, globalLiquids, (GlobalLiquid g) => g.NPCLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
@@ -636,6 +641,16 @@ namespace ModLiquidLib.ModLoader
 			for (int k = 0; k < hookItemLiquidMovement.Length; k++)
 			{
 				hookItemLiquidMovement[k](item, type, ref wetVelocity, ref gravity, ref maxFallSpeed);
+			}
+		}
+
+		public static void NPCLiquidMovement(int type, NPC npc, ref float gravity, ref float maxFallSpeed)
+		{
+			GetLiquid(type)?.NPCLiquidMovement(npc, ref gravity, ref maxFallSpeed);
+			DelegateNPCLiquidMovement[] hookNPCLiquidMovement = HookNPCLiquidMovement;
+			for (int k = 0; k < hookNPCLiquidMovement.Length; k++)
+			{
+				hookNPCLiquidMovement[k](npc, type, ref gravity, ref maxFallSpeed);
 			}
 		}
 

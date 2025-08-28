@@ -2,6 +2,7 @@ using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
+using ModLiquidLib.Utils.LiquidContent;
 using ModLiquidLib.Utils.ManualHooks;
 using System.IO;
 using Terraria;
@@ -54,7 +55,7 @@ namespace ModLiquidLib
 			IL_Collision.DrownCollision += CollisionHooks.LiquidDrownCollisionCheck;
 			IL_Player.CheckDrowning += PlayerHooks.CanPlayerEmitDrowningBubbles;
 			IL_Item.MoveInWorld += ItemHooks.UpdateItemSplash;
-			IL_NPC.UpdateCollision += NPCHooks.UnwetNPCs;
+			IL_NPC.UpdateCollision += NPCHooks.UnwetNPCsAndUpdateWetVel;
 			IL_NPC.Collision_WaterCollision += NPCHooks.UpdateNPCSplash;
 			IL_Projectile.Update += ProjectileHooks.UpdateProjectileSplash;
 			IL_Projectile.GetFishingPondState += ProjectileHooks.FishingPondLiquidEdits;
@@ -75,6 +76,8 @@ namespace ModLiquidLib
 			On_WaterfallManager.UpdateFrame += WaterfallManagerHooks.AnimateModWaterfall;
 			IL_Main.DrawInfoAccs += MainHooks.ModifyStopWatchLiquidMultipliers;
 			IL_Item.UpdateItem += ItemHooks.EditItemLiquidMovement;
+			On_NPC.LazySetLiquidMovementDD2 += NPCHooks.ResetLiquidMovementMultipliersForDD2;
+			IL_NPC.UpdateNPC_UpdateGravity += NPCHooks.EditNPCLiquidMovement;
 
 			MapHelper.Initialize();
 		}
@@ -140,7 +143,7 @@ namespace ModLiquidLib
 			IL_Collision.DrownCollision -= CollisionHooks.LiquidDrownCollisionCheck;
 			IL_Player.CheckDrowning -= PlayerHooks.CanPlayerEmitDrowningBubbles;
 			IL_Item.MoveInWorld -= ItemHooks.UpdateItemSplash;
-			IL_NPC.UpdateCollision -= NPCHooks.UnwetNPCs;
+			IL_NPC.UpdateCollision -= NPCHooks.UnwetNPCsAndUpdateWetVel;
 			IL_NPC.Collision_WaterCollision -= NPCHooks.UpdateNPCSplash;
 			IL_Projectile.Update -= ProjectileHooks.UpdateProjectileSplash;
 			IL_Projectile.GetFishingPondState -= ProjectileHooks.FishingPondLiquidEdits;
@@ -161,6 +164,8 @@ namespace ModLiquidLib
 			On_WaterfallManager.UpdateFrame -= WaterfallManagerHooks.AnimateModWaterfall;
 			IL_Main.DrawInfoAccs -= MainHooks.ModifyStopWatchLiquidMultipliers;
 			IL_Item.UpdateItem -= ItemHooks.EditItemLiquidMovement;
+			On_NPC.LazySetLiquidMovementDD2 -= NPCHooks.ResetLiquidMovementMultipliersForDD2;
+			IL_NPC.UpdateNPC_UpdateGravity -= NPCHooks.EditNPCLiquidMovement;
 		}
 
 		public enum MessageType : byte
