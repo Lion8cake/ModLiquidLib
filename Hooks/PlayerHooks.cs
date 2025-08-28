@@ -625,7 +625,6 @@ namespace ModLiquidLib.Hooks
 			player.TryFloatingInFluid();
 		}
 
-
 		internal static int WetToLiquidID(Player self)
 		{
 			int modLiquidID = -1;

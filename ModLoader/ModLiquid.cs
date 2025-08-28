@@ -537,6 +537,11 @@ namespace ModLiquidLib.ModLoader
 			return true;
 		}
 
+
+		public virtual void ItemLiquidMovement(Item item, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
+		{
+		}
+
 		/// <summary>
 		/// Allows you to give conditions for when the game attempts to check to see if the player is drowning. <br/>
 		/// Set isDrowning to either true or false depending on whether the player should or should not be drowning. <br/>

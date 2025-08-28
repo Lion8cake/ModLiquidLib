@@ -74,6 +74,7 @@ namespace ModLiquidLib
 			IL_Player.DryCollision += PlayerHooks.AllowCustomAccessories;
 			On_WaterfallManager.UpdateFrame += WaterfallManagerHooks.AnimateModWaterfall;
 			IL_Main.DrawInfoAccs += MainHooks.ModifyStopWatchLiquidMultipliers;
+			IL_Item.UpdateItem += ItemHooks.EditItemLiquidMovement;
 
 			MapHelper.Initialize();
 		}
@@ -159,6 +160,7 @@ namespace ModLiquidLib
 			IL_Player.DryCollision -= PlayerHooks.AllowCustomAccessories;
 			On_WaterfallManager.UpdateFrame -= WaterfallManagerHooks.AnimateModWaterfall;
 			IL_Main.DrawInfoAccs -= MainHooks.ModifyStopWatchLiquidMultipliers;
+			IL_Item.UpdateItem -= ItemHooks.EditItemLiquidMovement;
 		}
 
 		public enum MessageType : byte

@@ -45,6 +45,8 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegateLiquidMaskMode(int i, int j, int type, ref LightMaskMode liquidMaskMode);
 
+		private delegate void DelegateItemLiquidMovement(Item item, int type, ref Vector2 wetVelocity, ref float grav, ref float gravMax);
+
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -104,6 +106,8 @@ namespace ModLiquidLib.ModLoader
 		private static Func<Item, int, bool, bool>[] HookOnItemSplash;
 
 		private static Func<Player, int, bool, bool, bool>[] HookPlayerCollision;
+
+		private static DelegateItemLiquidMovement[] HookItemLiquidMovement;
 
 		private static Func<int, bool?>[] HookChecksForDrowning;
 
@@ -226,6 +230,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool>>(ref HookOnFishingBobberSplash, globalLiquids, (GlobalLiquid g) => g.OnFishingBobberSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidMovement);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateItemLiquidMovement>(ref HookItemLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ItemLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
@@ -622,6 +627,16 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return GetLiquid(type)?.PlayerLiquidMovement(player, fallThrough, ignorePlats) ?? true;
+		}
+
+		public static void ItemLiquidMovement(int type, Item item, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
+		{
+			GetLiquid(type)?.ItemLiquidMovement(item, ref wetVelocity, ref gravity, ref maxFallSpeed);
+			DelegateItemLiquidMovement[] hookItemLiquidMovement = HookItemLiquidMovement;
+			for (int k = 0; k < hookItemLiquidMovement.Length; k++)
+			{
+				hookItemLiquidMovement[k](item, type, ref wetVelocity, ref gravity, ref maxFallSpeed);
+			}
 		}
 
 		public static bool? ChecksForDrowning(int type)
