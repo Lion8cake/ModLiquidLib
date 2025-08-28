@@ -119,6 +119,9 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> The default value that ModLiquidNPC.moddedLiquidMovementSpeed sets to before ModNPC.SetDefaults </summary>
 		public float NPCMovementMultiplierDefault { get; set; } = 0.5f;
 
+		/// <summary> The multiplier thats used to specify how slow (or fast) projectiles move while in this liquid. </summary>
+		public float ProjectileMovementMultiplier { get; set; } = 0.5f;
+
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
 		/// </summary>
@@ -548,7 +551,11 @@ namespace ModLiquidLib.ModLoader
 
 		public virtual void NPCLiquidMovement(NPC npc, ref float gravity, ref float maxFallSpeed)
 		{
+		}
 
+		public virtual bool ProjectileLiquidMovement(Projectile projectile, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
+		{
+			return true;
 		}
 
 		/// <summary>

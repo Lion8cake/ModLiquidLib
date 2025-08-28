@@ -78,6 +78,7 @@ namespace ModLiquidLib
 			IL_Item.UpdateItem += ItemHooks.EditItemLiquidMovement;
 			On_NPC.LazySetLiquidMovementDD2 += NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity += NPCHooks.EditNPCLiquidMovement;
+			IL_Projectile.HandleMovement += ProjectileHooks.EditProjectileLiquidMovement;
 
 			MapHelper.Initialize();
 		}
@@ -166,6 +167,7 @@ namespace ModLiquidLib
 			IL_Item.UpdateItem -= ItemHooks.EditItemLiquidMovement;
 			On_NPC.LazySetLiquidMovementDD2 -= NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity -= NPCHooks.EditNPCLiquidMovement;
+			IL_Projectile.HandleMovement -= ProjectileHooks.EditProjectileLiquidMovement;
 		}
 
 		public enum MessageType : byte

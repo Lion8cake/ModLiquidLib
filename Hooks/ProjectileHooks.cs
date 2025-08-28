@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using ModLiquidLib.IO;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using System.Runtime.Intrinsics.X86;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -12,6 +14,133 @@ namespace ModLiquidLib.Hooks
 {
 	internal class ProjectileHooks
 	{
+		internal static void EditProjectileLiquidMovement(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_0e54 = null;
+			int wetPos_varNum = -1;
+			int wetX_varNum = -1;
+			int wetY_varNum = -1;
+			int fallthrough_varNum = -1;
+
+			c.GotoNext(MoveType.After, i => i.MatchBr(out IL_0e54), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"), i => i.MatchBrfalse(out _));
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out wetPos_varNum), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("velocity"), i => i.MatchLdloc(out wetX_varNum), i => i.MatchLdloc(out wetY_varNum), i => i.MatchLdloc(out fallthrough_varNum), i => i.MatchLdloc(fallthrough_varNum), i => i.MatchLdcI4(1), i => i.MatchCall<Collision>("TileCollision"));
+			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"));
+			c.EmitLdarga(1);
+			c.EmitLdloc(wetPos_varNum);
+			c.EmitLdloc(wetX_varNum);
+			c.EmitLdloc(wetY_varNum);
+			c.EmitLdloc(fallthrough_varNum);
+			c.EmitDelegate((Projectile self, ref Vector2 wetVelocity, Vector2 vector12, int num12, int num23, bool flag11) =>
+			{
+				if (LiquidLoader.ProjectileLiquidMovement(WetToLiquidID(self), self, ref wetVelocity, vector12, num12, num23, flag11))
+				{
+					if (hasModdedWet(self))
+					{
+						Vector2 vector = self.velocity;
+						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						wetVelocity = self.velocity * LiquidLoader.GetLiquid(WetToLiquidID(self)).ProjectileMovementMultiplier;
+						if (self.velocity.X != vector.X)
+						{
+							wetVelocity.X = self.velocity.X;
+						}
+						if (self.velocity.Y != vector.Y)
+						{
+							wetVelocity.Y = self.velocity.Y;
+						}
+					}
+					else if (self.shimmerWet)
+					{
+						Vector2 vector20 = self.velocity;
+						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						wetVelocity = self.velocity * 0.375f;
+						if (self.velocity.X != vector20.X)
+						{
+							wetVelocity.X = self.velocity.X;
+						}
+						if (self.velocity.Y != vector20.Y)
+						{
+							wetVelocity.Y = self.velocity.Y;
+						}
+					}
+					else if (self.honeyWet)
+					{
+						Vector2 vector21 = self.velocity;
+						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						wetVelocity = self.velocity * 0.25f;
+						if (self.velocity.X != vector21.X)
+						{
+							wetVelocity.X = self.velocity.X;
+						}
+						if (self.velocity.Y != vector21.Y)
+						{
+							wetVelocity.Y = self.velocity.Y;
+						}
+					}
+					else
+					{
+						Vector2 vector22 = self.velocity;
+						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						wetVelocity = self.velocity * 0.5f;
+						if (self.velocity.X != vector22.X)
+						{
+							wetVelocity.X = self.velocity.X;
+						}
+						if (self.velocity.Y != vector22.Y)
+						{
+							wetVelocity.Y = self.velocity.Y;
+						}
+					}
+				}
+			});
+			c.EmitBr(IL_0e54);
+			c.EmitLdarg(0);
+		}
+
+		internal static int WetToLiquidID(Projectile self)
+		{
+			int modLiquidID = -1;
+			for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+			{
+				if (self.GetGlobalProjectile<ModLiquidProjectile>().moddedWet[i - LiquidID.Count])
+				{
+					modLiquidID = i;
+				}
+			}
+			if (modLiquidID == -1)
+			{
+				if (self.shimmerWet)
+				{
+					modLiquidID = LiquidID.Shimmer;
+				}
+				else if (self.honeyWet)
+				{
+					modLiquidID = LiquidID.Honey;
+				}
+				else if (self.lavaWet)
+				{
+					modLiquidID = LiquidID.Lava;
+				}
+				else
+				{
+					modLiquidID = LiquidID.Water;
+				}
+			}
+			return modLiquidID;
+		}
+
+		private static bool hasModdedWet(Projectile self)
+		{
+			for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+			{
+				if (self.GetGlobalProjectile<ModLiquidProjectile>().moddedWet[i - LiquidID.Count])
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		internal static void BlockOtherWaterSplashes(On_Projectile.orig_AI_061_FishingBobber_DoASplash orig, Projectile self)
 		{
 			for (int i = 0; i < LiquidLoader.LiquidCount; i++)

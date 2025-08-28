@@ -597,6 +597,10 @@ namespace ModLiquidLib.Hooks
 						{
 							self.WaterCollision(fallThrough, ignorePlats);
 						}
+						else
+						{
+							return false;
+						}
 					}
 					return true;
 				}

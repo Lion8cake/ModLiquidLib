@@ -401,6 +401,11 @@ namespace ModLiquidLib.ModLoader
 		{
 		}
 
+		public virtual bool ProjectileLiquidMovement(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
+		{
+			return true;
+		}
+
 		/// <summary>
 		/// Hook for deciding whether a liquid should allow or disallow, when overtop of the Collision.CheckDrowning position, to be considered drowning or not. <br/>
 		/// Not to be confused with CanPlayersDrown, which is a hook called every frame to check if the player is drowning or not. Useful for making items such as a Breething Reed. <br/>
