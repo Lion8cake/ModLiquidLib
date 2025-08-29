@@ -205,7 +205,7 @@ namespace ModLiquidLib.Hooks
 				{
 					if (self.GetWet(i))
 					{
-						if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireBuffs)
+						if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireDebuffs)
 						{
 							putsOutOnfire = false;
 						}

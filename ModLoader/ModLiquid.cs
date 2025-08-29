@@ -127,7 +127,7 @@ namespace ModLiquidLib.ModLoader
 		public bool UsesLavaCollisionForWet { get; set; } = false;
 
 		/// <summary> Whether or not this liquid removes the On Fire! debuffs when entering. </summary>
-		public bool ExtinguishesOnFireBuffs { get; set; } = true;
+		public bool ExtinguishesOnFireDebuffs { get; set; } = true;
 
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
