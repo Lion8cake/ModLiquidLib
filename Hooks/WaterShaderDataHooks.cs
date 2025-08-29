@@ -26,8 +26,10 @@ namespace ModLiquidLib.Hooks
 
 			int npc_varNum = -1;
 			int num_varNum = -1;
+			int num2_varNum = -1;
 			int player_varNum = -1;
 			int num3_varNum = -1;
+			int num4_varNum = -1;
 			int projFlag_varNum = -1;
 			int projFlag2_varNum = -1;
 			int projectile_varNum = -1;
@@ -44,6 +46,56 @@ namespace ModLiquidLib.Hooks
 			});
 			c.EmitBr(IL_0234);
 
+			c.GotoNext(MoveType.After, i => i.MatchLdcR4(-20), i => i.MatchStloc(out num2_varNum), i => i.MatchLdarg(0));
+			c.EmitLdloc(npc_varNum);
+			c.EmitLdloca(num_varNum);
+			c.EmitLdloca(num2_varNum);
+			c.EmitDelegate((WaterShaderData self, NPC npc, ref float num, ref float num2) =>
+			{
+				bool hasWater = true;
+				for (int i = LiquidLoader.LiquidCount - 1; i > 0; i--)
+				{
+					if (i >= LiquidID.Count)
+					{
+						if (npc.GetWet(i))
+						{
+							LiquidLoader.NPCRippleModifier(i, npc, ref num, ref num2);
+							hasWater = false;
+						}
+					}
+					else if (i == LiquidID.Shimmer)
+					{
+						if (npc.shimmerWet)
+						{
+							LiquidLoader.NPCRippleModifier(i, npc, ref num, ref num2);
+							hasWater = false;
+						}
+					}
+					else if (i == LiquidID.Honey)
+					{
+						if (npc.honeyWet)
+						{
+							LiquidLoader.NPCRippleModifier(i, npc, ref num, ref num2);
+							hasWater = false;
+						}
+					}
+					else if (i == LiquidID.Lava)
+					{
+						if (npc.lavaWet)
+						{
+							LiquidLoader.NPCRippleModifier(i, npc, ref num, ref num2);
+							hasWater = false;
+						}
+					}
+				}
+				if (hasWater)
+				{
+					LiquidLoader.NPCRippleModifier(LiquidID.Water, npc, ref num, ref num2);
+					hasWater = false;
+				}
+			});
+			c.EmitLdarg(0);
+
 			c.GotoNext(MoveType.After, i => i.MatchLdfld<WaterShaderData>("_usePlayerWaves"));
 			c.GotoNext(MoveType.Before, 
 				i => i.MatchLdarg(0), i => i.MatchLdfld<WaterShaderData>("_useViscosityFilter"), i => i.MatchBrtrue(out IL_04f7), 
@@ -58,6 +110,56 @@ namespace ModLiquidLib.Hooks
 				EntityMultiplerModifier(self, player, ref num3, player.lavaWet, player.honeyWet, player.shimmerWet);
 			});
 			c.EmitBr(IL_04f7);
+
+			c.GotoNext(MoveType.After, i => i.MatchLdcR4(-20), i => i.MatchStloc(out num4_varNum), i => i.MatchLdloc(num3_varNum), i => i.MatchLdcR4(3), i => i.MatchMul(), i => i.MatchStloc(num3_varNum), i => i.MatchLdarg(0));
+			c.EmitLdloc(player_varNum);
+			c.EmitLdloca(num3_varNum);
+			c.EmitLdloca(num4_varNum);
+			c.EmitDelegate((WaterShaderData self, Player player, ref float num3, ref float num4) =>
+			{
+				bool hasWater = true;
+				for (int i = LiquidLoader.LiquidCount - 1; i > 0; i--)
+				{
+					if (i >= LiquidID.Count)
+					{
+						if (player.GetWet(i))
+						{
+							LiquidLoader.PlayerRippleModifier(i, player, ref num3, ref num4);
+							hasWater = false;
+						}
+					}
+					else if (i == LiquidID.Shimmer)
+					{
+						if (player.shimmerWet)
+						{
+							LiquidLoader.PlayerRippleModifier(i, player, ref num3, ref num4);
+							hasWater = false;
+						}
+					}
+					else if (i == LiquidID.Honey)
+					{
+						if (player.honeyWet)
+						{
+							LiquidLoader.PlayerRippleModifier(i, player, ref num3, ref num4);
+							hasWater = false;
+						}
+					}
+					else if (i == LiquidID.Lava)
+					{
+						if (player.lavaWet)
+						{
+							LiquidLoader.PlayerRippleModifier(i, player, ref num3, ref num4);
+							hasWater = false;
+						}
+					}
+				}
+				if (hasWater)
+				{
+					LiquidLoader.PlayerRippleModifier(LiquidID.Water, player, ref num3, ref num4);
+					hasWater = false;
+				}
+			});
+			c.EmitLdarg(0);
 
 			c.GotoNext(MoveType.After, i => i.MatchLdfld<WaterShaderData>("_useProjectileWaves"));
 			c.GotoNext(MoveType.After, 

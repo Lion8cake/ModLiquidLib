@@ -58,6 +58,10 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegateModLiquidAnimateLiquid(GameTime gameTime, ref int frame, ref float frameState);
 
+		private delegate void DelegateNPCRippleModifier(NPC npc, int type, ref float rippleStrength, ref float rippleOffset);
+
+		private delegate void DelegatePlayerRippleModifier(Player player, int type, ref float rippleStrength, ref float rippleOffset);
+
 		private static int nextLiquid = LiquidID.Count;
 
 		internal static readonly IList<ModLiquid> liquids = new List<ModLiquid>();
@@ -157,6 +161,10 @@ namespace ModLiquidLib.ModLoader
 		private static Action<Player, int>[] HookOnPlayerCollision;
 
 		private static DelegateAnimateLiquid[] HookAnimateLiquid;
+
+		private static DelegateNPCRippleModifier[] HookNPCRippleModifier;
+
+		private static DelegatePlayerRippleModifier[] HookPlayerRippleModifier;
 
 		public static int LiquidCount => nextLiquid;
 
@@ -279,6 +287,8 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<NPC, int>>(ref HookOnNPCCollision, globalLiquids, (GlobalLiquid g) => g.OnNPCCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<Projectile, int>>(ref HookOnProjectileCollision, globalLiquids, (GlobalLiquid g) => g.OnProjectileCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateAnimateLiquid>(ref HookAnimateLiquid, globalLiquids, (GlobalLiquid g) => g.AnimateLiquid);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateNPCRippleModifier>(ref HookNPCRippleModifier, globalLiquids, (GlobalLiquid g) => g.NPCRippleModifier);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePlayerRippleModifier>(ref HookPlayerRippleModifier, globalLiquids, (GlobalLiquid g) => g.PlayerRippleModifier);
 			if (!unloading)
 			{
 				loaded = true;
@@ -893,6 +903,26 @@ namespace ModLiquidLib.ModLoader
 				}
 			}
 			return !hasOverride;
+		}
+
+		public static void NPCRippleModifier(int type, NPC npc, ref float rippleStrength, ref float rippleOffset)
+		{
+			GetLiquid(type)?.NPCRippleModifier(npc, ref rippleStrength, ref rippleOffset);
+			DelegateNPCRippleModifier[] hookNPCRippleModifier = HookNPCRippleModifier;
+			for (int k = 0; k < hookNPCRippleModifier.Length; k++)
+			{
+				hookNPCRippleModifier[k](npc, type, ref rippleStrength, ref rippleOffset);
+			}
+		}
+
+		public static void PlayerRippleModifier(int type, Player player, ref float rippleStrength, ref float rippleOffset)
+		{
+			GetLiquid(type)?.PlayerRippleModifier(player, ref rippleStrength, ref rippleOffset);
+			DelegatePlayerRippleModifier[] hookPlayerRippleModifier = HookPlayerRippleModifier;
+			for (int k = 0; k < hookPlayerRippleModifier.Length; k++)
+			{
+				hookPlayerRippleModifier[k](player, type, ref rippleStrength, ref rippleOffset);
+			}
 		}
 	}
 }
