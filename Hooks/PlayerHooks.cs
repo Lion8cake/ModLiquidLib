@@ -3,6 +3,7 @@ using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Diagnostics.Contracts;
@@ -369,6 +370,8 @@ namespace ModLiquidLib.Hooks
 			int shimmer_var9 = -1;
 			int fallThrough_var14 = -1;
 			int ignorePlats_var13 = -1;
+			VariableDefinition liquidWetArr_varDef = new(il.Import(typeof(bool[])));
+			il.Body.Variables.Add(liquidWetArr_varDef);
 
 			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_01fa), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
 			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _), 
@@ -432,15 +435,18 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
-				LiquidCollision.WetCollision(self.position, self.width, self.height, out bool[] liquidIn);
+				LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (liquidIn[i])
 					{
 						self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count] = true;
+						LiquidLoader.OnPlayerCollision(i, self);
 					}
 				}
+				return liquidIn;
 			});
+			c.EmitStloc(liquidWetArr_varDef);
 			for (int j = 0; j < 2; j++)
 			{
 				#region Shimmer Splash Edit 
@@ -599,9 +605,9 @@ namespace ModLiquidLib.Hooks
 			}
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("honeyWet"), i => i.MatchLdloc(out shimmer_var9));
 			c.EmitLdarg(0);
-			c.EmitDelegate((int unused, Player self) =>
+			c.EmitLdloc(liquidWetArr_varDef);
+			c.EmitDelegate((int unused, Player self, bool[] liquidIn) =>
 			{
-				LiquidCollision.WetCollision(self.position, self.width, self.height, out bool[] liquidIn);
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (!liquidIn[i])

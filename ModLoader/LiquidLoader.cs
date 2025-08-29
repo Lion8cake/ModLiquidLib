@@ -145,6 +145,12 @@ namespace ModLiquidLib.ModLoader
 
 		private static DelegateStopWatchMPHMultiplier[] HookStopWatchMPHMultiplier;
 
+		private static Action<Projectile, int>[] HookOnProjectileCollision;
+
+		private static Action<NPC, int>[] HookOnNPCCollision;
+
+		private static Action<Player, int>[] HookOnPlayerCollision;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -243,12 +249,12 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool, bool>>(ref HookOnProjectileSplash, globalLiquids, (GlobalLiquid g) => g.OnProjectileSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Projectile, int, bool>>(ref HookOnFishingBobberSplash, globalLiquids, (GlobalLiquid g) => g.OnFishingBobberSplash);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Item, int, bool, bool>>(ref HookOnItemSplash, globalLiquids, (GlobalLiquid g) => g.OnItemSplash);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<Player, int, bool, bool, bool>>(ref HookPlayerCollision, globalLiquids, (GlobalLiquid g) => g.PlayerLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegatePlayerGravityModifier>(ref HookPlayerGravityModifier, globalLiquids, (GlobalLiquid g) => g.PlayerGravityModifier);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateItemLiquidMovement>(ref HookItemLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ItemLiquidCollision);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<NPC, int, Vector2, bool>>(ref HookNPCLiquidCollision, globalLiquids, (GlobalLiquid g) => g.NPCLiquidCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<NPC, int, Vector2, bool>>(ref HookNPCLiquidCollision, globalLiquids, (GlobalLiquid g) => g.NPCLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateNPCGravityModifier>(ref HookNPCGravityModifier, globalLiquids, (GlobalLiquid g) => g.NPCGravityModifier);
-			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateProjectileLiquidMovement>(ref HookProjectileLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ProjectileLiquidCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateProjectileLiquidMovement>(ref HookProjectileLiquidMovement, globalLiquids, (GlobalLiquid g) => g.ProjectileLiquidMovement);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookChecksForDrowning, globalLiquids, (GlobalLiquid g) => g.ChecksForDrowning);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, bool?>>(ref HookPlayersEmitBreathBubbles, globalLiquids, (GlobalLiquid g) => g.PlayersEmitBreathBubbles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateCanPlayerDrown>(ref HookCanPlayerDrown, globalLiquids, (GlobalLiquid g) => g.CanPlayerDrown);
@@ -260,6 +266,9 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, int, int>>(ref HookModifyTilesNearby, globalLiquids, (GlobalLiquid g) => g.ModifyNearbyTiles);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, int, int, bool>>(ref HookOnPump, globalLiquids, (GlobalLiquid g) => g.OnPump);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateStopWatchMPHMultiplier>(ref HookStopWatchMPHMultiplier, globalLiquids, (GlobalLiquid g) => g.StopWatchMPHMultiplier);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<Player, int>>(ref HookOnPlayerCollision, globalLiquids, (GlobalLiquid g) => g.OnPlayerCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<NPC, int>>(ref HookOnNPCCollision, globalLiquids, (GlobalLiquid g) => g.OnNPCCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<Projectile, int>>(ref HookOnProjectileCollision, globalLiquids, (GlobalLiquid g) => g.OnProjectileCollision);
 			if (!unloading)
 			{
 				loaded = true;
@@ -644,7 +653,7 @@ namespace ModLiquidLib.ModLoader
 					return false;
 				}
 			}
-			return GetLiquid(type)?.PlayerLiquidCollision(player, fallThrough, ignorePlats) ?? true;
+			return GetLiquid(type)?.PlayerLiquidMovement(player, fallThrough, ignorePlats) ?? true;
 		}
 
 		public static void PlayerGravityModifier(int type, Player player, ref float gravity, ref float maxFallSpeed, ref int jumpHeight, ref float jumpSpeed)
@@ -677,7 +686,7 @@ namespace ModLiquidLib.ModLoader
 					return false;
 				}
 			}
-			return GetLiquid(type)?.NPCLiquidCollision(npc, dryVelocity) ?? true;
+			return GetLiquid(type)?.NPCLiquidMovement(npc, dryVelocity) ?? true;
 		}
 
 		public static void NPCGravityModifier(int type, NPC npc, ref float gravity, ref float maxFallSpeed)
@@ -700,7 +709,7 @@ namespace ModLiquidLib.ModLoader
 					return false;
 				}
 			}
-			return GetLiquid(type)?.ProjectileLiquidCollision(proj, ref wetVelocity, collisionPosition, Width, Height, fallThrough) ?? true;
+			return GetLiquid(type)?.ProjectileLiquidMovement(proj, ref wetVelocity, collisionPosition, Width, Height, fallThrough) ?? true;
 		}
 
 		public static bool? ChecksForDrowning(int type)
@@ -817,6 +826,36 @@ namespace ModLiquidLib.ModLoader
 			for (int k = 0; k < hookStopWatchMPHMultiplier.Length; k++)
 			{
 				hookStopWatchMPHMultiplier[k](type, ref multiplier);
+			}
+		}
+
+		public static void OnPlayerCollision(int type, Player player)
+		{
+			GetLiquid(type)?.OnPlayerCollision(player);
+			Action<Player, int>[] hookOnPlayerCollision = HookOnPlayerCollision;
+			for (int k = 0; k < hookOnPlayerCollision.Length; k++)
+			{
+				hookOnPlayerCollision[k](player, type);
+			}
+		}
+
+		public static void OnNPCCollision(int type, NPC npc)
+		{
+			GetLiquid(type)?.OnNPCCollision(npc);
+			Action<NPC, int>[] hookOnNPCCollision = HookOnNPCCollision;
+			for (int k = 0; k < hookOnNPCCollision.Length; k++)
+			{
+				hookOnNPCCollision[k](npc, type);
+			}
+		}
+
+		public static void OnProjectileCollision(int type, Projectile proj)
+		{
+			GetLiquid(type)?.OnProjectileCollision(proj);
+			Action<Projectile, int>[] hookOnProjectileCollision = HookOnProjectileCollision;
+			for (int k = 0; k < hookOnProjectileCollision.Length; k++)
+			{
+				hookOnProjectileCollision[k](proj, type);
 			}
 		}
 	}

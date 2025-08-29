@@ -82,7 +82,7 @@ namespace ModLiquidLib.Hooks
 				if (projectile.ignoreWater)
 				{
 					bool num9 = Collision.LavaCollision(projectile.position, projectile.width, projectile.height);
-					flag = LiquidCollision.WetCollision(projectile.position, projectile.width, projectile.height, out bool[] wets);
+					flag = LiquidCollision.GetAppropriateWets(projectile.position, projectile.width, projectile.height, out bool[] wets);
 					flag2 = Collision.honey;
 					hasShimmer = Collision.shimmer;
 					bool hasModWet = false;

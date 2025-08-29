@@ -95,7 +95,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((Item self) =>
 			{
-				LiquidCollision.WetCollision(self.position, self.width, self.height, out bool[] liquidIn);
+				LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (liquidIn[i])

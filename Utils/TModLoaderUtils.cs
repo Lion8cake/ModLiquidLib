@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.Liquid;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -108,9 +109,37 @@ namespace ModLiquidLib.Utils
 			return player.GetModPlayer<ModLiquidPlayer>().moddedWet;
 		}
 
+		public static bool GetWet(this Player player, int liquidID)
+		{
+			if (liquidID == 1)
+				return player.lavaWet;
+			else if (liquidID == 2)
+				return player.honeyWet;
+			else if (liquidID == 3)
+				return player.shimmerWet;
+			else if (liquidID >= LiquidID.Count)
+				return player.GetModPlayer<ModLiquidPlayer>().moddedWet[liquidID - LiquidID.Count];
+			else
+				return player.wet;
+		}
+
 		public static bool[] GetModdedWetArray(this NPC npc)
 		{
 			return npc.GetGlobalNPC<ModLiquidNPC>().moddedWet;
+		}
+
+		public static bool GetWet(this NPC npc, int liquidID)
+		{
+			if (liquidID == 1)
+				return npc.lavaWet;
+			else if (liquidID == 2)
+				return npc.honeyWet;
+			else if (liquidID == 3)
+				return npc.shimmerWet;
+			else if (liquidID >= LiquidID.Count)
+				return npc.GetGlobalNPC<ModLiquidNPC>().moddedWet[liquidID - LiquidID.Count];
+			else
+				return npc.wet;
 		}
 
 		public static bool[] GetModdedWetArray(this Projectile proj)
@@ -118,10 +147,47 @@ namespace ModLiquidLib.Utils
 			return proj.GetGlobalProjectile<ModLiquidProjectile>().moddedWet;
 		}
 
+		public static bool GetWet(this Projectile proj, int liquidID)
+		{
+			if (liquidID == 1)
+				return proj.lavaWet;
+			else if (liquidID == 2)
+				return proj.honeyWet;
+			else if (liquidID == 3)
+				return proj.shimmerWet;
+			else if (liquidID >= LiquidID.Count)
+				return proj.GetGlobalProjectile<ModLiquidProjectile>().moddedWet[liquidID - LiquidID.Count];
+			else
+				return proj.wet;
+		}
+
 		public static bool[] GetModdedWetArray(this Item item)
 		{
-			item.TryGetGlobalItem(out ModLiquidItem liquidItem);
-			return liquidItem.moddedWet;
+			if (item.TryGetGlobalItem(out ModLiquidItem liquidItem))
+			{
+				return liquidItem.moddedWet;
+			}
+			return new bool[LiquidLoader.LiquidCount - LiquidID.Count];
+		}
+
+		public static bool GetWet(this Item item, int liquidID)
+		{
+			if (liquidID == 1)
+				return item.lavaWet;
+			else if (liquidID == 2)
+				return item.honeyWet;
+			else if (liquidID == 3)
+				return item.shimmerWet;
+			else if (liquidID >= LiquidID.Count)
+			{
+				if (item.TryGetGlobalItem(out ModLiquidItem liquidItem))
+				{
+					return liquidItem.moddedWet[liquidID - LiquidID.Count];
+				}
+				return false;
+			}
+			else
+				return item.wet;
 		}
 
 		public static bool[] GetModdedWetArray(this Entity entity)
@@ -144,6 +210,27 @@ namespace ModLiquidLib.Utils
 				return liquidItem.moddedWet;
 			}
 			return new bool[LiquidLoader.LiquidCount - LiquidID.Count];
+		}
+
+		public static bool GetModdedWetArray(this Entity entity, int liquidID)
+		{
+			if (entity is Player player)
+			{
+				return player.GetWet(liquidID);
+			}
+			if (entity is NPC npc)
+			{
+				return npc.GetWet(liquidID);
+			}
+			if (entity is Projectile proj)
+			{
+				return proj.GetWet(liquidID);
+			}
+			if (entity is Item item)
+			{
+				return item.GetWet(liquidID);
+			}
+			return false;
 		}
 
 		public static void TryFloatingInFluid(this Player player)

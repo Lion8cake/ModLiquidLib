@@ -388,7 +388,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="fallThrough">Whether or not the player is falling through the liquid.</param>
 		/// <param name="ignorePlats">Whether or not the player ignores platforms when falling.</param>
 		/// <returns></returns>
-		public virtual bool PlayerLiquidCollision(Player player, int type, bool fallThrough, bool ignorePlats)
+		public virtual bool PlayerLiquidMovement(Player player, int type, bool fallThrough, bool ignorePlats)
 		{
 			return true;
 		}
@@ -409,7 +409,8 @@ namespace ModLiquidLib.ModLoader
 
 		/// <summary>
 		/// Allows the user to specify how a liquid interacts with an item (especially item gravity and movement). <br/>
-		/// Please see <see cref="P:Terraria.Item.UpdateItem" />, to see how vanilla handles it's liquid collision.
+		/// Please see <see cref="P:Terraria.Item.UpdateItem" />, to see how vanilla handles it's liquid collision. <br/> <br/>
+		/// This method is also used to modify items detected to be in liquids. Use this to do things such as deleting items touching this liquid.
 		/// </summary>
 		/// <param name="item">The item instance thats being effected by the liquid.</param>
 		/// <param name="type"></param>
@@ -430,7 +431,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="type"></param>
 		/// <param name="dryVelocity">The velocity of the NPC before being modified by the liquid.</param>
 		/// <returns></returns>
-		public virtual bool NPCLiquidCollision(NPC npc, int type, Vector2 dryVelocity)
+		public virtual bool NPCLiquidMovement(NPC npc, int type, Vector2 dryVelocity)
 		{
 			return true;
 		}
@@ -461,7 +462,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="Height">The modified height of this projectile.</param>
 		/// <param name="fallThrough">Whether or not the projectile can fall through.</param>
 		/// <returns></returns>
-		public virtual bool ProjectileLiquidCollision(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
+		public virtual bool ProjectileLiquidMovement(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
 		{
 			return true;
 		}
@@ -590,7 +591,46 @@ namespace ModLiquidLib.ModLoader
 			return true;
 		}
 
+		/// <summary>
+		/// A hook to modify a liquid's stopwatch MPH multiplier whether that be modder or vanilla liquids. <br/>
+		/// Water has its multiplier set to 0.5, honey 0.25 and shimmer 0.375 as an example of existing values.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="multiplier">The multiplier for the stopwatch MPH.</param>
 		public virtual void StopWatchMPHMultiplier(int type, ref float multiplier)
+		{
+		}
+
+		/// <summary>
+		/// Executed whenever the collision check for players is executed and found true.
+		/// This is used for adding de/buffs, damaging the player or incrimenting/deincrementing timers or ModPlayer fields.
+		/// Vanilla liquids use this to add buffs or debuffs such as On Fire!, Honey, or Shimmering.
+		/// </summary>
+		/// <param name="player">The player instance being effected by this liquid.</param>
+		/// <param name="type"></param>
+		public virtual void OnPlayerCollision(Player player, int type)
+		{
+		}
+
+		/// <summary>
+		/// Executed whenever the collision check for NPCs is executed and found true.
+		/// This is used for adding debuffs, damaging the npc or incrimenting/deincrementing timers or GlobalNPC fields.
+		/// Vanilla liquids use this to damage the NPC and apply On Fire! when touching lava.
+		/// </summary>
+		/// <param name="npc">The NPC instance being effected by this liquid.</param>
+		/// <param name="type"></param>
+		public virtual void OnNPCCollision(NPC npc, int type)
+		{
+		}
+
+		/// <summary>
+		/// Executed whenever the collision check for projectiles is executed and found true.
+		/// This is used for changing projectile types, killing projectiles, and doing other misc effects.
+		/// Vanilla liquids use this to transforming flaming arrows into arrows and killing flamethrower flames.
+		/// </summary>
+		/// <param name="proj">The Projectile instance being effected by this liquid.</param>
+		/// <param name="type"></param>
+		public virtual void OnProjectileCollision(Projectile proj, int type)
 		{
 		}
 	}
