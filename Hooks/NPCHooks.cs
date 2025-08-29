@@ -33,7 +33,7 @@ namespace ModLiquidLib.Hooks
 					gravity = 0.2f;
 					maxFallSpeed = 7f;
 				}
-				LiquidLoader.NPCLiquidMovement(WetToLiquidID(self), self, ref gravity, ref maxFallSpeed);
+				LiquidLoader.NPCGravityModifier(WetToLiquidID(self), self, ref gravity, ref maxFallSpeed);
 				self.gravity = gravity;
 				self.maxFallSpeed = maxFallSpeed;
 			});
