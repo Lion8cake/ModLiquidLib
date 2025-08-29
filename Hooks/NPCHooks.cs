@@ -2,17 +2,115 @@
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.Biomes.Desert;
 using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
 {
 	internal class NPCHooks
 	{
+		internal static void EditBreathDusts(ILContext il)
+		{
+			ILCursor c = new(il);
+			ILLabel IL_01aa = null;
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("lavaWet"));
+			c.EmitDelegate((bool isLavaWet) =>
+			{
+				if (isLavaWet)
+				{
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Lava);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
+				}
+				return isLavaWet;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
+			c.EmitDelegate((bool isHoneyWet) =>
+			{
+				if (isHoneyWet)
+				{
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Honey);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
+				}
+				return isHoneyWet;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("shimmerWet"));
+			c.EmitDelegate((bool isShimmerWet) =>
+			{
+				if (isShimmerWet)
+				{
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Shimmer);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
+				}
+				return isShimmerWet;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchBrtrue(out IL_01aa));
+			c.EmitLdarg(0);
+			c.EmitDelegate((NPC self) =>
+			{
+				for (int i = LiquidLoader.LiquidCount - 1; i >= 0; i--)
+				{
+					if (i == LiquidID.Lava || i == LiquidID.Honey || i == LiquidID.Shimmer)
+					{
+						continue;
+					}
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(i);
+					if (flag != null)
+					{
+						if (!(bool)flag)
+						{
+							if (i >= LiquidID.Count)
+							{
+								if (self.GetGlobalNPC<ModLiquidNPC>().moddedWet[i - LiquidID.Count])
+								{
+									return true;
+								}
+							}
+							else if (i == LiquidID.Water)
+							{
+								if (self.wet && !self.lavaWet && !self.honeyWet && !self.shimmerWet && !self.GetGlobalNPC<ModLiquidNPC>().moddedWet.Contains(true))
+								{
+									return true;
+								}
+							}
+						}
+					}
+
+					if (i >= LiquidID.Count)
+					{
+						ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
+						if (modLiquid != null)
+						{
+							if (!modLiquid.AllowEmitBreathBubbles)
+							{
+								if (self.GetGlobalNPC<ModLiquidNPC>().moddedWet[i - LiquidID.Count])
+								{
+									return true;
+								}
+							}
+						}
+					}
+				}
+				return false;
+			});
+			c.EmitBrtrue(IL_01aa);
+		}
+
 		internal static void EditNPCLiquidMovement(ILContext il)
 		{
 			ILCursor c = new(il);

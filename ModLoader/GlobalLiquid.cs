@@ -480,13 +480,13 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Hook for deciding whether a liquid should emit breath dusts when the player is slowly drowning. <br/>
+		/// Hook for deciding whether a liquid should emit breath dusts when a player or npc is slowly drowning. <br/>
 		/// ChecksForDrowning must be set to true for this to run.
 		/// Return null to execute the normal breath behaviour. Returns null by default.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public virtual bool? PlayersEmitBreathBubbles(int type)
+		public virtual bool? AllowEmitBreathBubbles(int type)
 		{
 			return null;
 		}

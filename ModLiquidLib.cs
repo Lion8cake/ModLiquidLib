@@ -2,7 +2,6 @@ using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
-using ModLiquidLib.Utils.LiquidContent;
 using ModLiquidLib.Utils.ManualHooks;
 using System.IO;
 using Terraria;
@@ -79,6 +78,7 @@ namespace ModLiquidLib
 			On_NPC.LazySetLiquidMovementDD2 += NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity += NPCHooks.EditNPCLiquidMovement;
 			IL_Projectile.HandleMovement += ProjectileHooks.EditProjectileLiquidMovement;
+			IL_NPC.CheckDrowning += NPCHooks.EditBreathDusts;
 
 			MapHelper.Initialize();
 		}
@@ -168,6 +168,7 @@ namespace ModLiquidLib
 			On_NPC.LazySetLiquidMovementDD2 -= NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity -= NPCHooks.EditNPCLiquidMovement;
 			IL_Projectile.HandleMovement -= ProjectileHooks.EditProjectileLiquidMovement;
+			IL_NPC.CheckDrowning -= NPCHooks.EditBreathDusts;
 		}
 
 		public enum MessageType : byte

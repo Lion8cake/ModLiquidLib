@@ -98,8 +98,8 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> The check in Collision that checks if a coord will be drowning in water.</summary>
 		public bool ChecksForDrowning { get; set; } = true;
 
-		/// <summary> Whether or not, when drowning, the player will emit dusts from their mouth. </summary>
-		public bool PlayersEmitBreathBubbles { get; set; } = true;
+		/// <summary> Whether or not, when drowning, a player or npc will emit dusts from their mouth. </summary>
+		public bool AllowEmitBreathBubbles { get; set; } = true;
 
 		/// <summary> The multiplier used to change how many tiles are needed to fish in a pool of liquid. Honey uses a 1.5x multiplier for its pool size. </summary>
 		public float FishingPoolSizeMultiplier { get; set; } = 1f;

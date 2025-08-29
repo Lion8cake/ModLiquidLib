@@ -234,29 +234,29 @@ namespace ModLiquidLib.Hooks
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("lavaWet"));
 			c.EmitDelegate((bool isLavaWet) =>
 			{
-				bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Lava);
-				if (flag == null)
+				if (isLavaWet)
 				{
-					return isLavaWet;
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Lava);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
 				}
-				else
-				{
-					return !(bool)flag;
-				}
+				return isLavaWet;
 			});
 
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
 			c.EmitDelegate((bool isHoneyWet) =>
 			{
-				bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Honey);
-				if (flag == null)
+				if (isHoneyWet)
 				{
-					return isHoneyWet;
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Honey);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
 				}
-				else
-				{
-					return !(bool)flag;
-				}
+				return isHoneyWet;
 			});
 
 			c.GotoNext(MoveType.After, i => i.MatchBrtrue(out IL_03f2));
@@ -303,7 +303,7 @@ namespace ModLiquidLib.Hooks
 						ModLiquid modLiquid = LiquidLoader.GetLiquid(i);
 						if (modLiquid != null)
 						{
-							if (!modLiquid.PlayersEmitBreathBubbles)
+							if (!modLiquid.AllowEmitBreathBubbles)
 							{
 								if (self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count])
 								{
