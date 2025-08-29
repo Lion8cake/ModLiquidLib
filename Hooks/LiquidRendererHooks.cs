@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using ReLogic.Content;
 using System;
 using System.Runtime.CompilerServices;
+using Terraria;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -14,6 +15,39 @@ namespace ModLiquidLib.Hooks
 {
 	internal class LiquidRendererHooks
 	{
+		internal static int[] liquidAnimationFrame = new int[LiquidID.Count];
+
+		internal static float[] liquidFrameState = new float[LiquidID.Count];
+
+		internal static void UpdateLiquidArrayFrames(On_LiquidRenderer.orig_Update orig, LiquidRenderer self, GameTime gameTime)
+		{
+			orig.Invoke(self, gameTime);
+			if (!Main.gamePaused && Main.hasFocus)
+			{
+				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+				{
+					if (LiquidLoader.AnimateLiquid(i, gameTime, ref liquidAnimationFrame[i], ref liquidFrameState[i]))
+					{
+						liquidAnimationFrame[i] = self._animationFrame;
+						liquidFrameState[i] = self._frameState;
+					}
+				}
+			}
+		}
+
+		internal unsafe static void EditAnimationField(ILContext il)
+		{
+			ILCursor c = new(il);
+			int pointer2_varNum = -1;
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out pointer2_varNum), i => i.MatchLdfld<SpecialLiquidDrawCache>("IsVisible"));
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<LiquidRenderer>("_animationFrame"));
+			c.EmitLdloc(pointer2_varNum);
+			c.EmitDelegate((int unused, IntPtr ptr2) =>
+			{
+				return liquidAnimationFrame[Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type];
+			});
+		}
+
 		internal unsafe static void EditLiquidRendering(ILContext il)
 		{
 			ILCursor c = new(il);
@@ -43,6 +77,14 @@ namespace ModLiquidLib.Hooks
 					waterStyle,
 					globalAlpha);
 			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<LiquidRenderer>("_animationFrame"));
+			c.EmitLdloc(pointer2_varNum);
+			c.EmitDelegate((int unused, IntPtr ptr2) =>
+			{
+				return liquidAnimationFrame[Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type];
+			});
+
 			c.GotoNext(MoveType.After,
 				i => i.MatchLdfld<LiquidRenderer>("_liquidTextures"),
 				i => i.MatchLdloc(out miscWatersType_varNum));

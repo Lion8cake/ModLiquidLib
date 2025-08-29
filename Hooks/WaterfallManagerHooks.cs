@@ -15,13 +15,13 @@ namespace ModLiquidLib.Hooks
 		internal static void AnimateModWaterfall(On_WaterfallManager.orig_UpdateFrame orig, WaterfallManager self)
 		{
 			int totalCount = LoaderManager.Get<WaterFallStylesLoader>().TotalCount;
-			if (totalCount > LiquidFallLoader.wFallFrame.Length)
+			if (totalCount > MainHooks.wFallFrame.Length)
 			{
-				Array.Resize(ref LiquidFallLoader.wFallFrame, totalCount);
-				Array.Resize(ref LiquidFallLoader.wFallFrameBack, totalCount);
-				Array.Resize(ref LiquidFallLoader.wFallFrameCounter, totalCount);
+				Array.Resize(ref MainHooks.wFallFrame, totalCount);
+				Array.Resize(ref MainHooks.wFallFrameBack, totalCount);
+				Array.Resize(ref MainHooks.wFallFrameCounter, totalCount);
 			}
-			for (int i = ID.WaterfallID.Count; i < LiquidFallLoader.wFallFrame.Length; i++)
+			for (int i = ID.WaterfallID.Count; i < MainHooks.wFallFrame.Length; i++)
 			{
 				if (LoaderManager.Get<WaterFallStylesLoader>().Get(i) is ModLiquidFall)
 				{
@@ -32,14 +32,14 @@ namespace ModLiquidLib.Hooks
 						continue;
 					}
 				}
-				LiquidFallLoader.wFallFrameCounter[i]++;
-				if (LiquidFallLoader.wFallFrameCounter[i] > 2)
+				MainHooks.wFallFrameCounter[i]++;
+				if (MainHooks.wFallFrameCounter[i] > 2)
 				{
-					LiquidFallLoader.wFallFrameCounter[i] = 0;
-					LiquidFallLoader.wFallFrame[i]++;
-					if (LiquidFallLoader.wFallFrame[i] > 15)
+					MainHooks.wFallFrameCounter[i] = 0;
+					MainHooks.wFallFrame[i]++;
+					if (MainHooks.wFallFrame[i] > 15)
 					{
-						LiquidFallLoader.wFallFrame[i] = 0;
+						MainHooks.wFallFrame[i] = 0;
 					}
 				}
 			}
@@ -135,9 +135,9 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(waterfallType_numVar);
 			c.EmitDelegate((int regularFrame, int num4) =>
 			{
-				if (num4 >= ID.WaterfallID.Count && num4 < LiquidFallLoader.wFallFrame.Length)
+				if (num4 >= ID.WaterfallID.Count && num4 < MainHooks.wFallFrame.Length)
 				{
-					return LiquidFallLoader.wFallFrame[num4];
+					return MainHooks.wFallFrame[num4];
 				}
 				return regularFrame;
 			});

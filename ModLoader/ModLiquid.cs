@@ -689,5 +689,18 @@ namespace ModLiquidLib.ModLoader
 		public virtual void OnProjectileCollision(Projectile proj)
 		{
 		}
+
+		/// <summary>
+		/// Allows you to animate your liquid. <br/>
+		/// Overriding this method will prevent normal vanilla liquid animations from playing, allowing you to animate without interference. <br/>
+		/// Use frameState to keep track of how long the current frame has been active, and use frame to change the current frame. <br/>
+		/// GameTime has also been provided to check the current seconds that has overlapped ingame.
+		/// </summary>
+		/// <param name="gameTime">The current amount of time that has passed since the game has been opened.</param>
+		/// <param name="frame">The current frame the liquid is on.</param>
+		/// <param name="frameState">The current frame counter the liquid is on.</param>
+		public virtual void AnimateLiquid(GameTime gameTime, ref int frame, ref float frameState)
+		{
+		}
 	}
 }

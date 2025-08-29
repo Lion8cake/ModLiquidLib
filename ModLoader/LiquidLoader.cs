@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.Hooks;
 using ModLiquidLib.IO;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
@@ -52,6 +53,10 @@ namespace ModLiquidLib.ModLoader
 		private delegate void DelegateNPCGravityModifier(NPC npc, int type, ref float grav, ref float gravMax);
 
 		private delegate bool DelegateProjectileLiquidMovement(Projectile proj, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int height, bool fallThrough);
+
+		private delegate bool DelegateAnimateLiquid(int type, GameTime gameTime, ref int frame, ref float frameState);
+
+		private delegate void DelegateModLiquidAnimateLiquid(GameTime gameTime, ref int frame, ref float frameState);
 
 		private static int nextLiquid = LiquidID.Count;
 
@@ -151,6 +156,8 @@ namespace ModLiquidLib.ModLoader
 
 		private static Action<Player, int>[] HookOnPlayerCollision;
 
+		private static DelegateAnimateLiquid[] HookAnimateLiquid;
+
 		public static int LiquidCount => nextLiquid;
 
 		public static Asset<Texture2D>[] LiquidAssets = new Asset<Texture2D>[4];
@@ -223,6 +230,8 @@ namespace ModLiquidLib.ModLoader
 			Array.Resize(ref Unsafe.AsRef(in LiquidRenderer.DEFAULT_OPACITY), LiquidCount);
 			Array.Resize(ref Unsafe.AsRef(in LiquidRenderer.WAVE_MASK_STRENGTH), LiquidCount);
 			Array.Resize(ref Unsafe.AsRef(in LiquidRenderer.VISCOSITY_MASK), LiquidCount);
+			Array.Resize(ref LiquidRendererHooks.liquidAnimationFrame, LiquidCount);
+			Array.Resize(ref LiquidRendererHooks.liquidFrameState, LiquidCount);
 			LoaderUtils.ResetStaticMembers(typeof(LiquidID));
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateModifyLight>(ref HookModifyLight, globalLiquids, (GlobalLiquid g) => g.ModifyLight);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidDrawCache, Vector2, bool, int, float, bool>>(ref HookPreDraw, globalLiquids, (GlobalLiquid g) => g.PreDraw);
@@ -269,6 +278,7 @@ namespace ModLiquidLib.ModLoader
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<Player, int>>(ref HookOnPlayerCollision, globalLiquids, (GlobalLiquid g) => g.OnPlayerCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<NPC, int>>(ref HookOnNPCCollision, globalLiquids, (GlobalLiquid g) => g.OnNPCCollision);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<Projectile, int>>(ref HookOnProjectileCollision, globalLiquids, (GlobalLiquid g) => g.OnProjectileCollision);
+			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateAnimateLiquid>(ref HookAnimateLiquid, globalLiquids, (GlobalLiquid g) => g.AnimateLiquid);
 			if (!unloading)
 			{
 				loaded = true;
@@ -857,6 +867,32 @@ namespace ModLiquidLib.ModLoader
 			{
 				hookOnProjectileCollision[k](proj, type);
 			}
+		}
+
+		public static bool AnimateLiquid(int type, GameTime gameTime, ref int frame, ref float frameState)
+		{
+			bool hasOverride = false;
+			ModLiquid modLiquid = GetLiquid(type);
+			if (modLiquid != null)
+			{
+				if (LoaderUtils.HasOverride(modLiquid, (Expression<Func<ModLiquid, DelegateModLiquidAnimateLiquid>>)((ModLiquid t) => t.AnimateLiquid)))
+				{
+					hasOverride = true;
+				}
+				modLiquid.AnimateLiquid(gameTime, ref frame, ref frameState);
+			}
+			DelegateAnimateLiquid[] hookAnimateLiquid = HookAnimateLiquid;
+			if (hookAnimateLiquid != null)
+			{
+				for (int k = 0; k < hookAnimateLiquid.Length; k++)
+				{
+					if (!hookAnimateLiquid[k](type, gameTime, ref frame, ref frameState))
+					{
+						return false;
+					}
+				}
+			}
+			return !hasOverride;
 		}
 	}
 }

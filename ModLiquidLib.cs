@@ -79,6 +79,8 @@ namespace ModLiquidLib
 			IL_NPC.UpdateNPC_UpdateGravity += NPCHooks.EditNPCLiquidMovement;
 			IL_Projectile.HandleMovement += ProjectileHooks.EditProjectileLiquidMovement;
 			IL_NPC.CheckDrowning += NPCHooks.EditBreathDusts;
+			On_LiquidRenderer.Update += LiquidRendererHooks.UpdateLiquidArrayFrames;
+			IL_LiquidRenderer.DrawShimmer += LiquidRendererHooks.EditAnimationField;
 
 			MapHelper.Initialize();
 		}
@@ -169,6 +171,8 @@ namespace ModLiquidLib
 			IL_NPC.UpdateNPC_UpdateGravity -= NPCHooks.EditNPCLiquidMovement;
 			IL_Projectile.HandleMovement -= ProjectileHooks.EditProjectileLiquidMovement;
 			IL_NPC.CheckDrowning -= NPCHooks.EditBreathDusts;
+			On_LiquidRenderer.Update -= LiquidRendererHooks.UpdateLiquidArrayFrames;
+			IL_LiquidRenderer.DrawShimmer -= LiquidRendererHooks.EditAnimationField;
 		}
 
 		public enum MessageType : byte

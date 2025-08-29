@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.Hooks;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
 using System;
@@ -238,14 +239,14 @@ namespace ModLiquidLib.Utils
 			player.TryFloatingInFluid();
 		} 
 
-		public static int GetAnimationFrame(this LiquidRenderer liquidDrawing)
+		public static int GetAnimationFrame(this LiquidRenderer liquidDrawing, int liquidID)
 		{
-			return liquidDrawing._animationFrame;
+			return LiquidRendererHooks.liquidAnimationFrame[liquidID];
 		}
 
-		public static void SetAnimationFrame(this LiquidRenderer liquidDrawing, int animationFrame)
+		public static float GetAnimationFrameState(this LiquidRenderer liquidDrawing, int liquidID)
 		{
-			liquidDrawing._animationFrame = animationFrame;
+			return LiquidRendererHooks.liquidFrameState[liquidID];
 		}
 
 		public static void DrawWaterfall(this WaterfallManager self, int waterfallType, int x, int y, float opacity, Vector2 position, Rectangle sourceRect, Color color, SpriteEffects effects)
@@ -277,7 +278,7 @@ namespace ModLiquidLib.Utils
 		{
 			if (type >= ID.WaterfallID.Count)
 			{
-				return LiquidFallLoader.wFallFrame[type];
+				return MainHooks.wFallFrame[type];
 			}
 			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
 			{
@@ -301,7 +302,7 @@ namespace ModLiquidLib.Utils
 		{
 			if (type >= ID.WaterfallID.Count)
 			{
-				return LiquidFallLoader.wFallFrameBack[type];
+				return MainHooks.wFallFrameBack[type];
 			}
 			else if (type == ID.WaterfallID.Rain)
 			{
@@ -318,7 +319,7 @@ namespace ModLiquidLib.Utils
 		{
 			if (type >= ID.WaterfallID.Count)
 			{
-				return LiquidFallLoader.wFallFrameCounter[type];
+				return MainHooks.wFallFrameCounter[type];
 			}
 			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
 			{
@@ -342,7 +343,7 @@ namespace ModLiquidLib.Utils
 		{
 			if (type >= ID.WaterfallID.Count)
 			{
-				LiquidFallLoader.wFallFrame[type] = frame;
+				MainHooks.wFallFrame[type] = frame;
 			}
 			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
 			{
@@ -366,7 +367,7 @@ namespace ModLiquidLib.Utils
 		{
 			if (type >= ID.WaterfallID.Count)
 			{
-				LiquidFallLoader.wFallFrameBack[type] = frame;
+				MainHooks.wFallFrameBack[type] = frame;
 			}
 			else if (type == ID.WaterfallID.Rain)
 			{
@@ -382,7 +383,7 @@ namespace ModLiquidLib.Utils
 		{
 			if (type >= ID.WaterfallID.Count)
 			{
-				LiquidFallLoader.wFallFrameCounter[type] = frame;
+				MainHooks.wFallFrameCounter[type] = frame;
 			}
 			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
 			{

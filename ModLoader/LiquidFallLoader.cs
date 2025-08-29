@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using ModLiquidLib.Hooks;
 using ModLiquidLib.Utils.ManualHooks;
 using System;
 using Terraria;
@@ -11,18 +12,12 @@ namespace ModLiquidLib.ModLoader
 	{
 		internal delegate void DelegateAnimateWaterfall(ref int frame, ref int frameBack, ref int frameCounter);
 
-		internal static int[] wFallFrame = new int[ID.WaterfallID.Count];
-
-		internal static int[] wFallFrameBack = new int[ID.WaterfallID.Count];
-
-		internal static int[] wFallFrameCounter = new int[ID.WaterfallID.Count];
-
 		internal static void ResizeMoreFallArrays(On_WaterfallStylesLoader.orig_ResizeArrays orig, WaterFallStylesLoader self)
 		{
 			orig.Invoke(self);
-			Array.Resize(ref wFallFrame, self.TotalCount);
-			Array.Resize(ref wFallFrameBack, self.TotalCount);
-			Array.Resize(ref wFallFrameCounter, self.TotalCount);
+			Array.Resize(ref MainHooks.wFallFrame, self.TotalCount);
+			Array.Resize(ref MainHooks.wFallFrameBack, self.TotalCount);
+			Array.Resize(ref MainHooks.wFallFrameCounter, self.TotalCount);
 		}
 
 		public static bool PreDraw(WaterfallManager.WaterfallData currentWaterfallData, int i, int j, int type, SpriteBatch spriteBatch)
@@ -58,7 +53,7 @@ namespace ModLiquidLib.ModLoader
 				ModLiquidFall waterStyle = (ModLiquidFall)LoaderManager.Get<WaterFallStylesLoader>().Get(type);
 				if (waterStyle != null)
 				{
-					waterStyle?.AnimateWaterfall(ref wFallFrame[waterStyle.Slot], ref wFallFrameBack[waterStyle.Slot], ref wFallFrameCounter[waterStyle.Slot]);
+					waterStyle?.AnimateWaterfall(ref MainHooks.wFallFrame[waterStyle.Slot], ref MainHooks.wFallFrameBack[waterStyle.Slot], ref MainHooks.wFallFrameCounter[waterStyle.Slot]);
 				}
 			}
 		}
