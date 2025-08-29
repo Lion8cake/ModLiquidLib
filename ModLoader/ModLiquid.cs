@@ -129,6 +129,9 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> Whether or not this liquid removes the On Fire! debuffs when entering. </summary>
 		public bool ExtinguishesOnFireDebuffs { get; set; } = true;
 
+		/// <summary> The multiplier repsonsible for multiplying how much opacity each step in this liquid's fall should be drawn at. </summary>
+		public float LiquidfallOpacityMultiplier { get; set; } = 1f;
+
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
 		/// </summary>

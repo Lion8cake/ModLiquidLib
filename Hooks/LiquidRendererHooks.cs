@@ -128,46 +128,57 @@ namespace ModLiquidLib.Hooks
 			});
 		}
 
-		internal static void SpawnDustBubbles(ILContext il)
+		internal unsafe static void SpawnDustBubbles(ILContext il)
 		{
 			ILCursor c = new(il);
 			ILLabel IL_13a0 = null;
 			int x_varNum = -1;
 			int y_varNum = -1;
 			int pointer2_varNum = -1;
+			int ptr3_varNum = -1;
+			int liquidfallLoop_varNum = -1;
 
-			unsafe
+			c.GotoNext(MoveType.Before, i => i.MatchSub(), i => i.MatchStloc(out _), i => i.MatchLdloc(out ptr3_varNum), i => i.MatchLdloc(out liquidfallLoop_varNum), i => i.MatchConvI(), i => i.MatchSizeof(typeof(LiquidCache)));
+			c.EmitLdloc(ptr3_varNum);
+			c.EmitLdfld(typeof(LiquidCache).GetField(nameof(LiquidCache.Type)));
+			c.EmitDelegate((float num3, int type) =>
 			{
-				c.GotoNext(MoveType.After, 
-					i => i.MatchStloc(out x_varNum), 
-					i => i.MatchBr(out _), 
-					i => i.MatchLdloc(out _), 
-					i => i.MatchLdfld<Rectangle>("Y"), 
-					i => i.MatchStloc(out y_varNum), 
-					i => i.MatchBr(out _), 
-					i => i.MatchLdloc(out pointer2_varNum), 
-					i => i.MatchLdfld<LiquidCache>("VisibleType"), 
-					i => i.MatchLdcI4(1));
-				c.Index = 0;
-				c.GotoNext(MoveType.After, 
-					i => i.MatchLdfld<LiquidCache>("VisibleType"), 
-					i => i.MatchLdcI4(1), 
-					i => i.MatchBneUn(out IL_13a0));
-				if (IL_13a0 == null)
+				if (type >= LiquidID.Count)
 				{
-					return;
+					return (float)(num3 * LiquidLoader.GetLiquid(type).LiquidfallOpacityMultiplier);
 				}
-				c.EmitLdloc(pointer2_varNum);
-				c.EmitLdfld(typeof(LiquidCache).GetField("VisibleType"));
-				c.EmitLdloc(x_varNum);
-				c.EmitLdloc(y_varNum);
-				c.EmitLdloc(pointer2_varNum);
-				c.EmitDelegate((byte liquidID, int x, int y, IntPtr ptr2) =>
-				{
-					return LiquidLoader.EmitEffects(x, y, liquidID, Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr2)));
-				});
-				c.EmitBrfalse(IL_13a0);
+				return num3;
+			});
+
+			c.GotoNext(MoveType.After, 
+				i => i.MatchStloc(out x_varNum), 
+				i => i.MatchBr(out _), 
+				i => i.MatchLdloc(out _), 
+				i => i.MatchLdfld<Rectangle>("Y"), 
+				i => i.MatchStloc(out y_varNum), 
+				i => i.MatchBr(out _), 
+				i => i.MatchLdloc(out pointer2_varNum), 
+				i => i.MatchLdfld<LiquidCache>("VisibleType"), 
+				i => i.MatchLdcI4(1));
+			c.Index = 0;
+			c.GotoNext(MoveType.After, 
+				i => i.MatchLdfld<LiquidCache>("VisibleType"), 
+				i => i.MatchLdcI4(1), 
+				i => i.MatchBneUn(out IL_13a0));
+			if (IL_13a0 == null)
+			{
+				return;
 			}
+			c.EmitLdloc(pointer2_varNum);
+			c.EmitLdfld(typeof(LiquidCache).GetField("VisibleType"));
+			c.EmitLdloc(x_varNum);
+			c.EmitLdloc(y_varNum);
+			c.EmitLdloc(pointer2_varNum);
+			c.EmitDelegate((byte liquidID, int x, int y, IntPtr ptr2) =>
+			{
+				return LiquidLoader.EmitEffects(x, y, liquidID, Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr2)));
+			});
+			c.EmitBrfalse(IL_13a0);
 		}
 	}
 }

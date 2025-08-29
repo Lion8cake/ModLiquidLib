@@ -1,3 +1,23 @@
+Version 0.1.4.0
+
+Added workaround to a common null exception with Items
+Fixed ModLiquid/GlobalLiquid.EmitEffects running even when there was no liquid present
+Added Animation hook to ModLiquidFall to manipulate the animation of a modded waterfall
+Removed unnessesary reflection, causing load time duration
+Removed the ability to get the now rarely used WaterfallManager animation fields
+Added various new methods to classes such as Player.cs, NPC.cs, Item.cs, Projectile.cs, WaterfallManager.cs, etc
+Fixed being able to (by default) place tiles in lava 
+Added 6 hooks and 1 property related to Entity movement in liquids (please see Example Mod (ModLiquid) on how to use).
+Added the ability for modded liquids to use the lava collision rather than normal collision
+Added proper methods (2) for players and npcs to have their stats effected by liquids (ie: Buffs, debuffs, etc)
+Added a property to specify if a modded liquid can put out the On Fire! debuff
+Renamed "PlayerEmitBreathBubbles" to "AllowEmitBreathBubbles" and now supports NPCs along with players
+Added AnimateLiquid hooks to both ModLiquid and GlobalLiquid
+Added NPC/PlayerRippleModifiders, which allows for the modification of liquid ripples
+Added support for changing liquidfall opaque-ness
+Added GetWet methods for all entites to get the wet state of a Liquid ID (this prevents modders from needing to take away a the vanilla count from moddedwets)
+Added .xml documentation file to the main project
+
 Version 0.1.3.0
 
 Added more documentation to ModLiquid.cs for varius properties
