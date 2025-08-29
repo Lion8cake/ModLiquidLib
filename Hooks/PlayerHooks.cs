@@ -363,11 +363,70 @@ namespace ModLiquidLib.Hooks
 		{
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];
+			ILLabel IL_01fa = null;
 			ILLabel IL_82ba = null;
 			ILLabel IL_838e = null;
 			int shimmer_var9 = -1;
 			int fallThrough_var14 = -1;
 			int ignorePlats_var13 = -1;
+
+			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_01fa), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
+			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _), 
+				i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"), i => i.MatchBrfalse(out _),
+				i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"), i => i.MatchBrfalse(out _),
+				i => i.MatchLdarg(0), i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("gravity"));
+			c.EmitDelegate((Player self) => 
+			{
+				if (self.shimmerWet || self.shimmering)
+				{
+					if (self.shimmering)
+					{
+						self.gravity *= 0.9f;
+						self.maxFallSpeed *= 0.9f;
+					}
+					else
+					{
+						self.gravity = 0.15f;
+						Player.jumpHeight = 23;
+						Player.jumpSpeed = 5.51f;
+					}
+				}
+				else if (self.wet)
+				{
+					if (self.honeyWet)
+					{
+						self.gravity = 0.1f;
+						self.maxFallSpeed = 3f;
+					}
+					else if (self.merman)
+					{
+						self.gravity = 0.3f;
+						self.maxFallSpeed = 7f;
+					}
+					else if (self.trident && !self.lavaWet)
+					{
+						self.gravity = 0.25f;
+						self.maxFallSpeed = 6f;
+						Player.jumpHeight = 25;
+						Player.jumpSpeed = 5.51f;
+						if (self.controlUp)
+						{
+							self.gravity = 0.1f;
+							self.maxFallSpeed = 2f;
+						}
+					}
+					else
+					{
+						self.gravity = 0.2f;
+						self.maxFallSpeed = 5f;
+						Player.jumpHeight = 30;
+						Player.jumpSpeed = 6.01f;
+					}
+				}
+				LiquidLoader.PlayerGravityModifier(WetToLiquidID(self), self, ref self.gravity, ref self.maxFallSpeed, ref Player.jumpHeight, ref Player.jumpSpeed);
+			});
+			c.EmitBr(IL_01fa);
+			c.EmitLdarg(0);
 
 			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Collision>("shimmer"), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);

@@ -116,33 +116,36 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(oldDryVel_varNum);
 			c.EmitDelegate((NPC self, Vector2 oldDryVelocity) =>
 			{
-				if (hasModdedWet(self))
+				if (LiquidLoader.NPCLiquidMovement(WetToLiquidID(self), self, oldDryVelocity))
 				{
-					for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+					if (hasModdedWet(self))
 					{
-						ModLiquidNPC liquidNPC = self.GetGlobalNPC<ModLiquidNPC>();
-						if (liquidNPC.moddedWet[i - LiquidID.Count])
+						for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
 						{
-							self.Collision_MoveWhileWet(oldDryVelocity, liquidNPC.moddedLiquidMovementSpeed[i - LiquidID.Count]);
-							break;
+							ModLiquidNPC liquidNPC = self.GetGlobalNPC<ModLiquidNPC>();
+							if (liquidNPC.moddedWet[i - LiquidID.Count])
+							{
+								self.Collision_MoveWhileWet(oldDryVelocity, liquidNPC.moddedLiquidMovementSpeed[i - LiquidID.Count]);
+								break;
+							}
 						}
 					}
-				}
-				else if (self.shimmerWet)
-				{
-					self.Collision_MoveWhileWet(oldDryVelocity, self.shimmerMovementSpeed);
-				}
-				else if (self.honeyWet)
-				{
-					self.Collision_MoveWhileWet(oldDryVelocity, self.honeyMovementSpeed);
-				}
-				else if (self.lavaWet)
-				{
-					self.Collision_MoveWhileWet(oldDryVelocity, self.lavaMovementSpeed);
-				}
-				else
-				{
-					self.Collision_MoveWhileWet(oldDryVelocity, self.waterMovementSpeed);
+					else if (self.shimmerWet)
+					{
+						self.Collision_MoveWhileWet(oldDryVelocity, self.shimmerMovementSpeed);
+					}
+					else if (self.honeyWet)
+					{
+						self.Collision_MoveWhileWet(oldDryVelocity, self.honeyMovementSpeed);
+					}
+					else if (self.lavaWet)
+					{
+						self.Collision_MoveWhileWet(oldDryVelocity, self.lavaMovementSpeed);
+					}
+					else
+					{
+						self.Collision_MoveWhileWet(oldDryVelocity, self.waterMovementSpeed);
+					}
 				}
 			});
 			c.EmitBr(IL_00f6);

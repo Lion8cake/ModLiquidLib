@@ -528,7 +528,6 @@ namespace ModLiquidLib.ModLoader
 		{
 		}
 
-
 		/// <summary>
 		/// Allows the user to specify how the liquid interacts with the player (especially player movement). <br/>
 		/// Please see <see cref="P:Terraria.Player.WaterCollision" />, <see cref="P:Terraria.Player.HoneyCollision" />, or <see cref="P:Terraria.Player.ShimmerCollision" /> to see how vanilla handles it's liquid collision. <br/>
@@ -545,6 +544,19 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
+		/// Allows the user to specify how the liquid interacts with the player (especially player gravity). <br/>
+		/// Please see <see cref="P:Terraria.Player.Update" />, to see how vanilla handles it's liquid gravity.
+		/// </summary>
+		/// <param name="player">The player instance thats being effected by the liquid.</param>
+		/// <param name="gravity">The current player.gravity being changed.</param>
+		/// <param name="maxFallSpeed">The current player.maxFallSpeed being changed.</param>
+		/// <param name="jumpHeight">The current Player.jumpHeight being changed.</param>
+		/// <param name="jumpSpeed">The current Player.jumpSpeed being changed.</param>
+		public virtual void PlayerGravityModifier(Player player, ref float gravity, ref float maxFallSpeed, ref int jumpHeight, ref float jumpSpeed)
+		{
+		}
+
+		/// <summary>
 		/// Allows the user to specify how the liquid interacts with an item (especially item gravity and movement). <br/>
 		/// Please see <see cref="P:Terraria.Item.UpdateItem" />, to see how vanilla handles it's liquid collision.
 		/// </summary>
@@ -557,13 +569,27 @@ namespace ModLiquidLib.ModLoader
 		}
 
 		/// <summary>
-		/// Allows the user to specify how the liquid interacts with an npc (especially npc gravity and movement). <br/>
-		/// Please see <see cref="P:Terraria.NPC.UpdateNPC_UpdateGravity" />, to see how vanilla handles it's liquid collision.
+		/// Allows the user to specify how the liquid interacts with an npc (especially npc movement). <br/>
+		/// Please see <see cref="P:Terraria.NPC.UpdateCollision" />, to see how vanilla handles it's liquid collision. <br/>
+		/// Return true for the liquid to call the method that applies the liquid velocity multiplier. <br/>
+		/// Returns true by default.
+		/// </summary>
+		/// <param name="npc">The npc instance thats being effected by the liquid.</param>
+		/// <param name="dryVelocity">The velocity of the NPC before being modified by the liquid.</param>
+		/// <returns></returns>
+		public virtual bool NPCLiquidCollision(NPC npc, Vector2 dryVelocity)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Allows the user to specify how the liquid interacts with an npc (especially npc gravity). <br/>
+		/// Please see <see cref="P:Terraria.NPC.UpdateNPC_UpdateGravity" />, to see how vanilla handles it's liquid gravity.
 		/// </summary>
 		/// <param name="npc">The npc instance thats being effected by the liquid.</param>
 		/// <param name="gravity">The gravity of the npc.</param>
 		/// <param name="maxFallSpeed">The maximum fall speed of the npc.</param>
-		public virtual void NPCLiquidCollision(NPC npc, ref float gravity, ref float maxFallSpeed)
+		public virtual void NPCGravityModifier(NPC npc, ref float gravity, ref float maxFallSpeed)
 		{
 		}
 
