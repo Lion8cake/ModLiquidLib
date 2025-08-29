@@ -10,6 +10,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
@@ -370,6 +371,8 @@ namespace ModLiquidLib.Hooks
 			int shimmer_var9 = -1;
 			int fallThrough_var14 = -1;
 			int ignorePlats_var13 = -1;
+			int shimmerColCheck_varNum = -1;
+			int honeyColCheck_varNum = -1;
 			VariableDefinition liquidWetArr_varDef = new(il.Import(typeof(bool[])));
 			il.Body.Variables.Add(liquidWetArr_varDef);
 
@@ -431,19 +434,43 @@ namespace ModLiquidLib.Hooks
 			c.EmitBr(IL_01fa);
 			c.EmitLdarg(0);
 
-			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Collision>("shimmer"), i => i.MatchStloc(out _));
+			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Collision>("honey"), i => i.MatchStloc(out honeyColCheck_varNum), i => i.MatchLdsfld<Collision>("shimmer"), i => i.MatchStloc(out shimmerColCheck_varNum));
 			c.EmitLdarg(0);
-			c.EmitDelegate((Player self) =>
+			c.EmitLdloc(honeyColCheck_varNum);
+			c.EmitLdloc(shimmerColCheck_varNum);
+			c.EmitDelegate((Player self, bool flag19, bool shimmer) =>
 			{
-				LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
+				bool wetFlag = LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
+				bool isAnyOtherLiquidWet = false;
+
+				if (self.lavaWet)
+				{
+					LiquidLoader.OnPlayerCollision(LiquidID.Lava, self);
+					isAnyOtherLiquidWet = true;
+				}
+				if (shimmer)
+				{
+					LiquidLoader.OnPlayerCollision(LiquidID.Shimmer, self);
+					isAnyOtherLiquidWet = true;
+				}
+				if (flag19 && !self.shimmering)
+				{
+					LiquidLoader.OnPlayerCollision(LiquidID.Honey, self);
+					isAnyOtherLiquidWet = true;
+				}
+				
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (liquidIn[i])
 					{
 						self.GetModPlayer<ModLiquidPlayer>().moddedWet[i - LiquidID.Count] = true;
 						LiquidLoader.OnPlayerCollision(i, self);
+						isAnyOtherLiquidWet = true;
 					}
 				}
+
+				if (wetFlag && !isAnyOtherLiquidWet)
+					LiquidLoader.OnPlayerCollision(LiquidID.Water, self);
 				return liquidIn;
 			});
 			c.EmitStloc(liquidWetArr_varDef);

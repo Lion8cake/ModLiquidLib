@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.Biomes.Desert;
 using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
@@ -160,15 +162,37 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((NPC self) =>
 			{
-				LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
+				bool wetFlag = LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
+				bool isAnyOtherLiquidWet = false;
+
+				if (self.lavaWet)
+				{
+					LiquidLoader.OnNPCCollision(LiquidID.Lava, self);
+					isAnyOtherLiquidWet = true;
+				}
+				if (Collision.honey)
+				{
+					LiquidLoader.OnNPCCollision(LiquidID.Honey, self);
+					isAnyOtherLiquidWet = true;
+				}
+				if (Collision.shimmer)
+				{
+					LiquidLoader.OnNPCCollision(LiquidID.Shimmer, self);
+					isAnyOtherLiquidWet = true;
+				}
+
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (liquidIn[i])
 					{
 						self.GetGlobalNPC<ModLiquidNPC>().moddedWet[i - LiquidID.Count] = true;
 						LiquidLoader.OnNPCCollision(i, self);
+						isAnyOtherLiquidWet = true;
 					}
 				}
+
+				if (wetFlag && !isAnyOtherLiquidWet)
+					LiquidLoader.OnNPCCollision(LiquidID.Water, self);
 			});
 			for (int j = 0; j < 2; j++)
 			{

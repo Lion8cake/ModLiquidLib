@@ -337,20 +337,43 @@ namespace ModLiquidLib.Hooks
 		{
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];
+			int lavaCollisionFlag_varNum = -1;
 
-			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>("LavaCollision"), i => i.MatchStloc(out _));
+			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>("LavaCollision"), i => i.MatchStloc(out lavaCollisionFlag_varNum));
 			c.EmitLdarg(0);
-			c.EmitDelegate((Projectile self) =>
+			c.EmitLdloc(lavaCollisionFlag_varNum);
+			c.EmitDelegate((Projectile self, bool flag) =>
 			{
-				LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
+				bool wetFlag = LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
+				bool isAnyOtherLiquidWet = false;
+				if (flag)
+				{
+					LiquidLoader.OnProjectileCollision(LiquidID.Lava, self);
+					isAnyOtherLiquidWet = true;
+				}
+				if (Collision.honey)
+				{
+					LiquidLoader.OnProjectileCollision(LiquidID.Honey, self);
+					isAnyOtherLiquidWet = true;
+				}
+				if (Collision.shimmer)
+				{
+					LiquidLoader.OnProjectileCollision(LiquidID.Shimmer, self);
+					isAnyOtherLiquidWet = true;
+				}
+
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (liquidIn[i])
 					{
 						self.GetGlobalProjectile<ModLiquidProjectile>().moddedWet[i - LiquidID.Count] = true;
 						LiquidLoader.OnProjectileCollision(i, self);
+						isAnyOtherLiquidWet = true;
 					}
 				}
+
+				if (wetFlag && !isAnyOtherLiquidWet)
+					LiquidLoader.OnProjectileCollision(LiquidID.Water, self);
 			});
 			for (int j = 0; j < 2; j++)
 			{
