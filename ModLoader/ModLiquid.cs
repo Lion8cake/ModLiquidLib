@@ -126,6 +126,9 @@ namespace ModLiquidLib.ModLoader
 		/// This means collision is more sensitive, and the wet is active even when touching the smallest amount of this liquid. </summary>
 		public bool UsesLavaCollisionForWet { get; set; } = false;
 
+		/// <summary> Whether or not this liquid removes the On Fire! debuffs when entering. </summary>
+		public bool ExtinguishesOnFireBuffs { get; set; } = true;
+
 		/// <summary>
 		/// Adds an entry to the minimap for this liquid with the given color and display name. This should be called in SetDefaults.
 		/// </summary>

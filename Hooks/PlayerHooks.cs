@@ -474,6 +474,25 @@ namespace ModLiquidLib.Hooks
 				return liquidIn;
 			});
 			c.EmitStloc(liquidWetArr_varDef);
+
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<Player>("onFire3"), i => i.MatchBrfalse(out _), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("lavaWet"));
+			c.EmitLdarg(0);
+			c.EmitDelegate((bool lavaWet, Player self) =>
+			{
+				bool putsOutOnfire = true;
+				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+				{
+					if (self.GetWet(i))
+					{
+						if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireBuffs)
+						{
+							putsOutOnfire = false;
+						}
+					}
+				}
+				return lavaWet || !putsOutOnfire;
+			});
+
 			for (int j = 0; j < 2; j++)
 			{
 				#region Shimmer Splash Edit 

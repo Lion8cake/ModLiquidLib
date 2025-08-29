@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using ModLiquidLib.ModLoader;
+using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -194,6 +195,25 @@ namespace ModLiquidLib.Hooks
 				if (wetFlag && !isAnyOtherLiquidWet)
 					LiquidLoader.OnNPCCollision(LiquidID.Water, self);
 			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<NPC>("onFire"));
+			c.EmitLdarg(0);
+			c.EmitDelegate((bool onFire, NPC self) =>
+			{
+				bool putsOutOnfire = true;
+				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+				{
+					if (self.GetWet(i))
+					{
+						if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireBuffs)
+						{
+							putsOutOnfire = false;
+						}
+					}
+				}
+				return onFire && putsOutOnfire;
+			});
+
 			for (int j = 0; j < 2; j++)
 			{
 				
