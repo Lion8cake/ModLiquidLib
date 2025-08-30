@@ -1212,5 +1212,34 @@
             <param name="x">The outputted X value, if you want the X by itself use Tile.X</param>
             <param name="y">The outputted Y value, if you want the Y by itself use Tile.Y</param>
         </member>
+        <member name="M:ModLiquidLib.Utils.TModLoaderUtils.AddLiquid(Terraria.Recipe,System.Int32)">
+            <summary>
+            Adds a required crafting liquid with the given liquid type to this recipe. Ex: <c>recipe.AddLiquid(LiquidID.Lava)</c>
+            </summary>
+            <param name="recipe"></param>
+            <param name="liquidID">The liquid identifier.</param>
+            <exception cref="T:Terraria.ModLoader.Exceptions.RecipeException">No liquid has ID " + liquidID</exception>
+        </member>
+        <member name="M:ModLiquidLib.Utils.TModLoaderUtils.AddLiquid(Terraria.Recipe,Terraria.ModLoader.Mod,System.String)">
+            <summary>
+            Adds a required crafting liquid to this recipe with the given liquid name from the given mod. If the mod parameter is null, then it will automatically use a liquid from the mod creating this recipe.
+            </summary>
+            <param name="recipe"></param>
+            <param name="mod">The mod.</param>
+            <param name="liquidName">Name of the liquid.</param>
+            <exception cref="T:Terraria.ModLoader.Exceptions.RecipeException">The liquid " + liquidName + " does not exist in mod " + mod.Name + ". If you are trying to use a vanilla tile, try using Recipe.AddLiquid(liquidID).</exception>
+        </member>
+        <member name="M:ModLiquidLib.Utils.TModLoaderUtils.AddLiquid(Terraria.Recipe,ModLiquidLib.ModLoader.ModLiquid)">
+            <summary>
+            Adds a required crafting liquid to this recipe of the given type of liquid.
+            </summary>
+            <param name="recipe"></param>
+            <param name="liquid">The liquid.</param>
+        </member>
+        <member name="M:ModLiquidLib.Utils.TModLoaderUtils.AddLiquid``1(Terraria.Recipe)">
+            <summary>
+            Adds a required crafting liquid to this recipe of the given type of liquid.
+            </summary>
+        </member>
     </members>
 </doc>

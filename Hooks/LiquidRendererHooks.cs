@@ -24,7 +24,7 @@ namespace ModLiquidLib.Hooks
 			orig.Invoke(self, gameTime);
 			if (!Main.gamePaused && Main.hasFocus)
 			{
-				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+				for (int i = 0; i < liquidFrameState.Length; i++)
 				{
 					if (LiquidLoader.AnimateLiquid(i, gameTime, ref liquidAnimationFrame[i], ref liquidFrameState[i]))
 					{

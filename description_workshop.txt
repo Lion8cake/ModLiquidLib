@@ -29,6 +29,12 @@ Relevant Links:
 [url=https://github.com/Lion8cake/ModLiquidLib/issues] Please report issues here [/url]
 
 [hr][/hr]
+Translation Credits:
+[list]
+    [*]Spanish - reboot6609
+[/list]
+
+[hr][/hr]
 [h3]QnA:[/h3]
 
 [i][b]What about the 4 liquid, liquid limit?[/b][/i]

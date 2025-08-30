@@ -1,3 +1,8 @@
+Version 0.1.4.1
+
+Fixed XML file generation
+Fixed Liquid Animations causing the mod to be unable to be loaded
+
 Version 0.1.4.0
 
 Added workaround to a common null exception with Items
