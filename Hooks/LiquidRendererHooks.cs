@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib.Hooks
@@ -82,7 +83,11 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(pointer2_varNum);
 			c.EmitDelegate((int unused, IntPtr ptr2) =>
 			{
-				return liquidAnimationFrame[Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type];
+				if (Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type < liquidAnimationFrame.Length)
+				{
+					return liquidAnimationFrame[Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type];
+				}
+				return unused;
 			});
 
 			c.GotoNext(MoveType.After,
@@ -104,7 +109,11 @@ namespace ModLiquidLib.Hooks
 				{
 					return self._liquidTextures[num2].Value;
 				}
-				return LiquidLoader.LiquidAssets[Type].Value;
+				else if (Type < LiquidLoader.LiquidAssets.Length)
+				{
+					return LiquidLoader.LiquidAssets[Type].Value;
+				}
+				return old;
 			});
 			c.GotoNext(MoveType.After, i => i.MatchCallvirt<TileBatch>("Draw"));
 			c.EmitLdloc(x_varNum);

@@ -103,6 +103,12 @@ namespace ModLiquidLib
 				if (TileID.Sets.CountsAsShimmerSource[i])
 					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Shimmer] = TileID.Sets.CountsAsShimmerSource[i];
 			}
+
+			Logger.Debug(LiquidLoader.LiquidCount);
+			for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
+			{
+				Logger.Debug(LiquidLoader.GetLiquid(i).Name);
+			}
 		}
 
 		public override void Unload()
