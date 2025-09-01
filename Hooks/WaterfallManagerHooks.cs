@@ -12,6 +12,16 @@ namespace ModLiquidLib.Hooks
 {
 	internal class WaterfallManagerHooks
 	{
+		internal static void SemiFixforWaterfallLighting(On_WaterfallManager.orig_AddLight orig, int waterfallType, int x, int y)
+		{
+			if (waterfallType >= 26 && waterfallType < LoaderManager.Get<WaterFallStylesLoader>().TotalCount)
+			{
+				LoaderManager.Get<WaterFallStylesLoader>().Get(waterfallType).AddLight(x, y);
+				return;
+			}
+			orig.Invoke(waterfallType, x, y);
+		}
+
 		internal static void AnimateModWaterfall(On_WaterfallManager.orig_UpdateFrame orig, WaterfallManager self)
 		{
 			int totalCount = LoaderManager.Get<WaterFallStylesLoader>().TotalCount;

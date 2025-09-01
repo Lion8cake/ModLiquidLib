@@ -18,5 +18,7 @@ namespace ModLiquidLib.ModLoader.Default
 		public override bool SettleLiquidMovement(int i, int j) => false; //prevents unloaded liquids from being moved when loading worlds
 
 		public override bool PreLiquidMerge(int liquidX, int liquidY, int tileX, int tileY, int otherLiquid) => false; //prevents creating tiles
+
+		public override bool OnPump(int inX, int inY, int outX, int outY) => false; //prevents pumping
 	}
 }

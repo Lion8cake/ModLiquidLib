@@ -3,6 +3,7 @@ Version v2025.07
 Added AddLiquid methods to Recipe, an easy way to add liquids to recipes
 Fixed rendering issue when mods were disabled/unloaded
 Added Spanish localisation
+Unloaded liquid can nolonger be moved with pumps
 
 
 (Preview Version history)
