@@ -1,9 +1,12 @@
+using Microsoft.Xna.Framework;
 using ModLiquidLib.Hooks;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.ManualHooks;
+using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
@@ -87,7 +90,7 @@ namespace ModLiquidLib
 
 		public override void PostSetupContent()
 		{
-			IL_LiquidRenderer.DrawNormalLiquids += LiquidRendererHooks.EditLiquidRendering; //stuff to be done AFTER resizing arrays
+			IL_LiquidRenderer.DrawNormalLiquids += LiquidRendererHooks.EditLiquidRendering; //stuff to be done AFTER resizing arrays //Update 1/9/2025 - Most likely irrelivant since liquid cache stuff that was breaking is patched
 			IL_LiquidRenderer.InternalPrepareDraw += LiquidRendererHooks.SpawnDustBubbles;
 
 			MapLiquidLoader.FinishSetup();
@@ -102,12 +105,6 @@ namespace ModLiquidLib
 					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Honey] = TileID.Sets.CountsAsHoneySource[i];
 				if (TileID.Sets.CountsAsShimmerSource[i])
 					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Shimmer] = TileID.Sets.CountsAsShimmerSource[i];
-			}
-
-			Logger.Debug(LiquidLoader.LiquidCount);
-			for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
-			{
-				Logger.Debug(LiquidLoader.GetLiquid(i).Name);
 			}
 		}
 

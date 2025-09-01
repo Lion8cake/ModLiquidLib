@@ -241,6 +241,9 @@ namespace ModLiquidLib.ModLoader
 			Array.Resize(ref LiquidRendererHooks.liquidAnimationFrame, LiquidCount);
 			Array.Resize(ref LiquidRendererHooks.liquidFrameState, LiquidCount);
 			LoaderUtils.ResetStaticMembers(typeof(LiquidID));
+			LiquidRenderer.Instance._cache = new LiquidRenderer.LiquidCache[1];
+			LiquidRenderer.Instance._drawCache = new LiquidRenderer.LiquidDrawCache[1];
+			LiquidRenderer.Instance._drawCacheForShimmer = new LiquidRenderer.SpecialLiquidDrawCache[1];
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, DelegateModifyLight>(ref HookModifyLight, globalLiquids, (GlobalLiquid g) => g.ModifyLight);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Func<int, int, int, LiquidDrawCache, Vector2, bool, int, float, bool>>(ref HookPreDraw, globalLiquids, (GlobalLiquid g) => g.PreDraw);
 			TModLoaderUtils.BuildGlobalHook<GlobalLiquid, Action<int, int, int, LiquidDrawCache, Vector2, bool, int, float>>(ref HookPostDraw, globalLiquids, (GlobalLiquid g) => g.PostDraw); 
