@@ -147,6 +147,18 @@ namespace ModLiquidLib.Hooks
 			int ptr3_varNum = -1;
 			int liquidfallLoop_varNum = -1;
 
+			c.GotoNext(MoveType.After,
+				i => i.MatchStloc(out x_varNum),
+				i => i.MatchBr(out _),
+				i => i.MatchLdloc(out _),
+				i => i.MatchLdfld<Rectangle>("Y"),
+				i => i.MatchStloc(out y_varNum),
+				i => i.MatchBr(out _),
+				i => i.MatchLdloc(out pointer2_varNum),
+				i => i.MatchLdfld<LiquidCache>("VisibleType"),
+				i => i.MatchLdcI4(1));
+			c.Index = 0;
+
 			c.GotoNext(MoveType.Before, i => i.MatchSub(), i => i.MatchStloc(out _), i => i.MatchLdloc(out ptr3_varNum), i => i.MatchLdloc(out liquidfallLoop_varNum), i => i.MatchConvI(), i => i.MatchSizeof(typeof(LiquidCache)));
 			c.EmitLdloc(ptr3_varNum);
 			c.EmitLdfld(typeof(LiquidCache).GetField(nameof(LiquidCache.Type)));
@@ -159,18 +171,7 @@ namespace ModLiquidLib.Hooks
 				return num3;
 			});
 
-			c.GotoNext(MoveType.After, 
-				i => i.MatchStloc(out x_varNum), 
-				i => i.MatchBr(out _), 
-				i => i.MatchLdloc(out _), 
-				i => i.MatchLdfld<Rectangle>("Y"), 
-				i => i.MatchStloc(out y_varNum), 
-				i => i.MatchBr(out _), 
-				i => i.MatchLdloc(out pointer2_varNum), 
-				i => i.MatchLdfld<LiquidCache>("VisibleType"), 
-				i => i.MatchLdcI4(1));
-			c.Index = 0;
-			c.GotoNext(MoveType.After, 
+			c.GotoNext(MoveType.Before, 
 				i => i.MatchLdfld<LiquidCache>("VisibleType"), 
 				i => i.MatchLdcI4(1), 
 				i => i.MatchBneUn(out IL_13a0));
@@ -178,16 +179,21 @@ namespace ModLiquidLib.Hooks
 			{
 				return;
 			}
-			c.EmitLdloc(pointer2_varNum);
 			c.EmitLdfld(typeof(LiquidCache).GetField("VisibleType"));
 			c.EmitLdloc(x_varNum);
 			c.EmitLdloc(y_varNum);
 			c.EmitLdloc(pointer2_varNum);
-			c.EmitDelegate((byte liquidID, int x, int y, IntPtr ptr2) =>
+			c.EmitDelegate((byte liquidID, int x, int y, IntPtr ptr3) =>
 			{
-				return LiquidLoader.EmitEffects(x, y, liquidID, Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr2)));
+				Utils.Structs.LiquidCache liquidCache = Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr3));
+				if (liquidCache.HasVisibleLiquid)
+				{
+					return LiquidLoader.EmitEffects(x, y, liquidID, liquidCache);
+				}
+				return false;
 			});
 			c.EmitBrfalse(IL_13a0);
+			c.EmitLdloc(pointer2_varNum);
 		}
 	}
 }

@@ -14,10 +14,13 @@ namespace ModLiquidLib.Hooks
 	{
 		internal static void SemiFixforWaterfallLighting(On_WaterfallManager.orig_AddLight orig, int waterfallType, int x, int y)
 		{
-			if (waterfallType >= 26 && waterfallType < LoaderManager.Get<WaterFallStylesLoader>().TotalCount)
+			if (waterfallType >= LoaderManager.Get<WaterFallStylesLoader>().TotalCount)
+			{
+				return;
+			}
+			if (waterfallType >= 26)
 			{
 				LoaderManager.Get<WaterFallStylesLoader>().Get(waterfallType).AddLight(x, y);
-				return;
 			}
 			orig.Invoke(waterfallType, x, y);
 		}

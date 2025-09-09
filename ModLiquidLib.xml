@@ -658,7 +658,8 @@
             <summary> Whether or not this liquid removes the On Fire! debuffs when entering. </summary>
         </member>
         <member name="P:ModLiquidLib.ModLoader.ModLiquid.LiquidfallOpacityMultiplier">
-            <summary> The multiplier repsonsible for multiplying how much opacity each step in this liquid's fall should be drawn at. </summary>
+            <summary> The multiplier repsonsible for multiplying how much opacity each step in this liquid's fall should be drawn at.  
+            <br/> Only effects slopes when underground (similar to other liquids).</summary>
         </member>
         <member name="M:ModLiquidLib.ModLoader.ModLiquid.AddMapEntry(Microsoft.Xna.Framework.Color,Terraria.Localization.LocalizedText)">
             <summary>
