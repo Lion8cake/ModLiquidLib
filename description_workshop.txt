@@ -32,7 +32,11 @@ Relevant Links:
 Translation Credits:
 [list]
     [*]Spanish - reboot6609
+    [*]Polish - PashaVerti
+    [*]Simplified Chinese - Cyrilly
 [/list]
+
+All other translations were made by myself (Lion8cake), I do not speak any of these languages so please inform me of any inaccuracies if found.
 
 [hr][/hr]
 [h3]QnA:[/h3]
