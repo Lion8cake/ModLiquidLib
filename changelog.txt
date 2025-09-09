@@ -1,3 +1,7 @@
+Version (beta) v2025.08
+
+Added LiquidID_TLmod.Sets.CanBeAbsorbedBy which can be used to define sponges relating to liquids
+
 Version v2025.07.2
 
 Fixed EmitEffects not being called (outside of lava, and even then was even further broken emitting visuals when there was no liquid)

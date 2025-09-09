@@ -1,5 +1,6 @@
 ﻿using ModLiquidLib.ModLoader;
 using ReLogic.Reflection;
+using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,6 +22,26 @@ namespace ModLiquidLib.ID
 			public static int[] CreateLiquidBucketItem = Factory.CreateNamedSet("CreateLiquidBucketItem")
 			.Description("The Item created when a bucket is used on a liquid selected")
 			.RegisterIntSet(-1, Water, ItemID.WaterBucket, Lava, ItemID.LavaBucket, Honey, ItemID.HoneyBucket);
+
+			/// <summary> Whats Items a liquid can be absorbed by. Used for defining sponges. </summary>
+			public static List<int>[] CanBeAbsorbedBy = Factory.CreateNamedSet("CanBeAbsorbedBy")
+			.Description("Whats Items a liquid can be absorbed by. Used for defining sponges.")
+			.RegisterCustomSet<List<int>>(null, 
+				LiquidID.Water, new List<int>() { ItemID.SuperAbsorbantSponge, ItemID.UltraAbsorbantSponge }, 
+				LiquidID.Shimmer, new List<int>() { ItemID.SuperAbsorbantSponge, ItemID.UltraAbsorbantSponge },
+				LiquidID.Lava, new List<int>() { ItemID.LavaAbsorbantSponge, ItemID.UltraAbsorbantSponge },
+				LiquidID.Honey, new List<int>() { ItemID.HoneyAbsorbantSponge, ItemID.UltraAbsorbantSponge });
+
+			static Sets()
+			{
+				for (int i = 0; i < CanBeAbsorbedBy.Length; i++)
+				{
+					if (CanBeAbsorbedBy[i] == null)
+					{
+						CanBeAbsorbedBy[i] = new List<int>() { ItemID.UltraAbsorbantSponge };
+					}
+				}
+			}
 		}
 
 		public const short Water = 0;

@@ -10,6 +10,9 @@
         <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CreateLiquidBucketItem">
             <summary> The Item created when a bucket is used on a liquid selected </summary>
         </member>
+        <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CanBeAbsorbedBy">
+            <summary> Whats Items a liquid can be absorbed by. Used for defining sponges. </summary>
+        </member>
         <member name="T:ModLiquidLib.ModLoader.GlobalLiquid">
             <summary>
             This class allows you to modify the behavior of any liquid in the game, both vanilla and modded.
