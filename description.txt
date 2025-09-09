@@ -24,6 +24,10 @@ https://github.com/Lion8cake/ModLiquidLib/issues
 
 Translation Credits:
 Spanish - reboot6609
+Polish - PashaVerti
+Simplified Chinese - Cyrilly
+
+All other translations were made by myself (Lion8cake), I do not speak any of these languages so please inform me of any inaccuracies if found.
 
 QnA:
 

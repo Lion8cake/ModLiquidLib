@@ -2,6 +2,9 @@ Version v2025.07.2
 
 Fixed EmitEffects not being called (outside of lava, and even then was even further broken emitting visuals when there was no liquid)
 Updated ModLiquid's Slope Opacity documentation to now mention that it only effects opacity underground
+Added Polish localisation by PashaVerti
+Added Simplified Chinese localisation by Cyrilly
+Added the rest of the translations (I (Lion8cake) did these translations myself, if any are inaccurate or incorrect please inform me)
 
 
 Version v2025.07.1
@@ -14,7 +17,7 @@ Version v2025.07
 
 Added AddLiquid methods to Recipe, an easy way to add liquids to recipes
 Fixed rendering issue when mods were disabled/unloaded
-Added Spanish localisation
+Added Spanish localisation by reboot6609
 Unloaded liquid can nolonger be moved with pumps
 
 

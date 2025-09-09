@@ -1,0 +1,6 @@
+Mods: {
+	ModLiquidLib: {
+		ModsXLiquids: "{0}种液体"
+		Conditions.NearLiquid: 需要位于{0}附近
+	}
+}
