@@ -283,7 +283,7 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdloc(pointer2_varNum);
 				c.EmitDelegate((byte liquidID, int x, int y, IntPtr ptr3) =>
 				{
-					Utils.Structs.LiquidCache liquidCache = Unsafe.As<LiquidCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidCache>((void*)ptr3));
+					Utils.Structs.LiquidCache liquidCache = Unsafe.As<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache, Utils.Structs.LiquidCache>(ref Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr3));
 					if (liquidCache.HasVisibleLiquid)
 					{
 						return LiquidLoader.EmitEffects(x, y, liquidID, liquidCache);
@@ -305,11 +305,16 @@ namespace ModLiquidLib.Hooks
     		    /*c.GotoNext(MoveType.After, i => i.MatchStloc(out x_varNum), i => i.MatchBr(out _), i => i.MatchLdloc(out _), i => i.MatchLdfld<Rectangle>("Y"), i => i.MatchStloc(out y_varNum));
     		    c.GotoNext(MoveType.After, i => i.MatchLdloc(out pointer2_varNum), i => i.MatchLdfld<LiquidDrawCache>("IsVisible"));*/
 
+		        ILLabel loopLabel = null;
+		        c.GotoNext(x => x.MatchLdfld<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>("IsVisible"), x => x.MatchBrfalse(out loopLabel));
+		        
     		    c.GotoNext(x => x.MatchLdfld<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>("X"));
     		    c.GotoPrev(x => x.MatchLdloc(out pointer2_varNum));
     		    c.GotoNext(x => x.MatchStloc(out x_varNum));
-    		    c.GotoNext(x => x.MatchStloc(out y_varNum));
+    		    c.GotoNext(MoveType.After, x => x.MatchStloc(out y_varNum));
     		    
+    		    // c.EmitLdloc(pointer2_varNum);
+		        // c.EmitLdfld(typeof(LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache).GetField("IsVisible"));
     		    c.EmitLdloc(x_varNum);
     		    c.EmitLdloc(y_varNum);
     		    c.EmitLdloc(pointer2_varNum);
@@ -317,26 +322,27 @@ namespace ModLiquidLib.Hooks
     		    c.EmitLdarg(3);
     		    c.EmitLdarg(4);
     		    c.EmitLdarg(5);
-    		    c.EmitDelegate((bool isVisibleCondition, int i, int j, IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw) =>
+    		    c.EmitDelegate((/*bool isVisibleCondition,*/ int i, int j, IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw) =>
     		    {
-    		        return isVisibleCondition && LiquidLoader.PreDraw(
+    		        return /*isVisibleCondition &&*/ LiquidLoader.PreDraw(
     		            i, 
     		            j, 
-    		            Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type, 
-    		            Unsafe.As<LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
+    		            Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr2).Type, 
+    		            Unsafe.As<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr2)), 
     		            drawOffset, 
     		            isBackgroundDraw,
     		            waterStyle,
     		            globalAlpha);
     		    });
+		        c.EmitBrfalse(loopLabel);
 
     		    c.GotoPrev(MoveType.After, i => i.MatchLdsfld(typeof(LiquidSlopesPatch.Common.RewrittenLiquidRenderer), "_animationFrame"));
     		    c.EmitLdloc(pointer2_varNum);
     		    c.EmitDelegate((int unused, IntPtr ptr2) =>
     		    {
-    		        if (Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type < liquidAnimationFrame.Length)
+    		        if (Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr2).Type < liquidAnimationFrame.Length)
     		        {
-    		            return liquidAnimationFrame[Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type];
+    		            return liquidAnimationFrame[Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr2).Type];
     		        }
     		        return unused;
     		    });
@@ -353,7 +359,7 @@ namespace ModLiquidLib.Hooks
     		    c.EmitLdarg(0);
     		    c.EmitLdloc(miscWatersType_varNum);
     		    c.EmitLdloc(pointer2_varNum);
-    		    c.EmitLdfld(typeof(LiquidDrawCache).GetField("Type"));
+    		    c.EmitLdfld(typeof(LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache).GetField("Type"));
     		    c.EmitDelegate((Texture2D old, LiquidRenderer self, int num2, byte Type) =>
     		    {
     		        if (Type < LiquidID.Count)
@@ -379,8 +385,8 @@ namespace ModLiquidLib.Hooks
     		        LiquidLoader.PostDraw(
     		            i, 
     		            j, 
-    		            Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type, 
-    		            Unsafe.As<LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidDrawCache>((void*)ptr2)), 
+    		            Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr2).Type, 
+    		            Unsafe.As<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache, Utils.Structs.LiquidDrawCache>(ref Unsafe.AsRef<LiquidSlopesPatch.Common.RewrittenLiquidRenderer.LiquidDrawCache>((void*)ptr2)), 
     		            drawOffset, 
     		            isBackgroundDraw,
     		            waterStyle,
