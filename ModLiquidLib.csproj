@@ -15,4 +15,8 @@
 		<Publicize Include="tModLoader" PublicizeTarget="Fields, Types, Methods" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Reference Include="lib\LiquidSlopesPatch.dll" />
+	</ItemGroup>
+
 </Project>
