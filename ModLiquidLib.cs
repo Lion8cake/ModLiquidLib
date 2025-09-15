@@ -87,6 +87,7 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update += LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer += LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight += WaterfallManagerHooks.SemiFixforWaterfallLighting;
+			On_NPCLoader.ChooseSpawn += NPCLoaderHooks.DisableWaterSpawning;
 
 			MapHelper.Initialize();
 		}
@@ -180,6 +181,7 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update -= LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer -= LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight -= WaterfallManagerHooks.SemiFixforWaterfallLighting;
+			On_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DisableWaterSpawning;
 		}
 
 		public enum MessageType : byte
