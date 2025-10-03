@@ -13,6 +13,7 @@ using Terraria.Graphics.Light;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib.ModLoader
 {
