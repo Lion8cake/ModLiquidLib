@@ -1,6 +1,5 @@
 displayName = ModLiquid Library
 author = Lion8cake
-version = 2025.07.2
-
+version = 2025.08.0
 weakReferences = LiquidSlopesPatch
 sortAfter = LiquidSlopesPatch

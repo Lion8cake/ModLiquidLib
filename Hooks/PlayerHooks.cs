@@ -6,6 +6,7 @@ using ModLiquidLib.Utils.LiquidContent;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Terraria;
@@ -58,17 +59,90 @@ namespace ModLiquidLib.Hooks
 		internal static void BucketSupport(ILContext il)
 		{
 			ILCursor c = new(il);
-			ILLabel IL_0414 = null;
-			c.GotoNext(MoveType.After, i => i.MatchCall<Tile>("shimmer"));
-			c.EmitDelegate((bool isShimmer) =>
+			ILLabel IL_015d = null;
+			ILLabel IL_0709 = null;
+			ILLabel IL_027d = null;
+			ILLabel IL_0361 = null;
+			ILLabel IL_04a4 = null;
+			ILLabel IL_03be = c.DefineLabel();
+			int num2_varNum = -1;
+
+			c.GotoNext(i => i.MatchBge(out IL_015d), i => i.MatchRet(), i => i.MatchCall<Main>("get_GamepadDisableCursorItemIcon"));
+			c.GotoNext(i => i.MatchBrfalse(out IL_027d), i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(3032));
+			c.GotoNext(i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(5304), i => i.MatchBneUn(out IL_0709));
+			c.GotoNext(MoveType.After, i => i.MatchStloc(out _), i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(3032), i => i.MatchBeq(out IL_04a4),
+				i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(4872), i => i.MatchBeq(out _),
+				i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(5303), i => i.MatchBeq(out _),
+				i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(5304), i => i.MatchBeq(out _));
+			c.MarkLabel(IL_03be);
+			c.Index = 0;
+			c.EmitLdarg(0);
+			c.EmitLdarg(1);
+			c.EmitDelegate((Player self, Item sItem) =>
 			{
-				return LiquidID_TLmod.Sets.CreateLiquidBucketItem[Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidType] == -1;
+				List<int> validTypes = new List<int> { ItemID.EmptyBucket, ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket, ItemID.BottomlessLavaBucket, ItemID.BottomlessHoneyBucket, ItemID.BottomlessShimmerBucket };
+				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+				{
+					foreach (int iD in LiquidID_TLmod.Sets.CanBeAbsorbedBy[i])
+					{
+						if (!validTypes.Contains(iD))
+						{
+							validTypes.Add(iD);
+						}
+					}
+				}
+				if (!validTypes.Contains(sItem.type) || self.noBuilding || !(self.position.X / 16f - (float)Player.tileRangeX - (float)sItem.tileBoost <= (float)Player.tileTargetX) || !((self.position.X + (float)self.width) / 16f + (float)Player.tileRangeX + (float)sItem.tileBoost - 1f >= (float)Player.tileTargetX) || !(self.position.Y / 16f - (float)Player.tileRangeY - (float)sItem.tileBoost <= (float)Player.tileTargetY) || !((self.position.Y + (float)self.height) / 16f + (float)Player.tileRangeY + (float)sItem.tileBoost - 2f >= (float)Player.tileTargetY))
+				{
+					return true;
+				}
+				return false;
 			});
+			c.EmitBrfalse(IL_015d);
+			c.EmitRet();
 
-			c.GotoNext(MoveType.After, i => i.MatchBeq(out IL_0414), 
-				i => i.MatchLdsflda<Main>("tile"), i => i.MatchLdsfld<Player>("tileTargetX"), i => i.MatchLdsfld<Player>("tileTargetY"),
-				i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(0));
+			c.GotoNext(MoveType.Before, i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(205), i => i.MatchBneUn(out _));
+			c.EmitDelegate((Item sItem) =>
+			{
+				Tile tile;
+				if (sItem.type == ItemID.EmptyBucket)
+				{
+					tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+					if (LiquidID_TLmod.Sets.CreateLiquidBucketItem[Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidType] != -1)
+					{
+						return false;
+					}
+				}
+				tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+				if (LiquidID_TLmod.Sets.CanBeAbsorbedBy[tile.LiquidType].Contains(sItem.type))
+				{
+					return false;
+				}
+				return true;
+			});
+			c.EmitBrfalse(IL_027d);
+			c.EmitBr(IL_0709);
+			c.EmitLdarg(1);
 
+			c.GotoNext(MoveType.Before, i => i.MatchLdloca(out _), i => i.MatchCall<Tile>("get_liquid"), i => i.MatchLdindU1(), i => i.MatchLdcI4(0), i => i.MatchBle(out _), 
+				i => i.MatchLdloc(out num2_varNum), i => i.MatchLdcI4(100), i => i.MatchBgt(out IL_0361));
+			c.EmitLdloc(num2_varNum);
+			c.EmitLdarg(1);
+			c.EmitDelegate((int num2, Item sItem) =>
+			{
+				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+				return (tile.liquid <= 0 || (num2 <= 100 && !LiquidID_TLmod.Sets.CanBeAbsorbedBy[tile.LiquidType].Contains(sItem.type)));
+			});
+			c.EmitBrfalse(IL_0361);
+			c.EmitRet();
+
+			c.GotoNext(MoveType.After, i => i.MatchLdloca(out _), i => i.MatchCall<Tile>("liquidType"), i => i.MatchStloc(out _));
+			c.EmitLdarg(1);
+			c.EmitDelegate((Item sItem) =>
+			{
+				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+				return !LiquidID_TLmod.Sets.CanBeAbsorbedBy[tile.LiquidType].Contains(sItem.type);
+			});
+			c.EmitBrfalse(IL_04a4);
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
 			c.EmitDelegate((Player self, Item sItem) =>
@@ -83,7 +157,7 @@ namespace ModLiquidLib.Hooks
 				}
 				return false;
 			});
-			c.EmitBrtrue(IL_0414);
+			c.EmitBrtrue(IL_04a4);
 			c.EmitRet();
 		}
 

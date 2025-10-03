@@ -5,9 +5,11 @@ using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.ManualHooks;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.GameContent.Shaders;
@@ -16,6 +18,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Utilities;
 
 namespace ModLiquidLib
 {
@@ -85,9 +88,12 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update += LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer += LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight += WaterfallManagerHooks.SemiFixforWaterfallLighting;
+			IL_NPCLoader.ChooseSpawn += NPCLoaderHooks.DoAlternativeVanillaSpawning;
 
 			MapHelper.Initialize();
 		}
+
+		
 
 		public override void PostSetupContent()
 		{
@@ -178,6 +184,7 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update -= LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer -= LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight -= WaterfallManagerHooks.SemiFixforWaterfallLighting;
+			IL_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DoAlternativeVanillaSpawning;
 		}
 
 		public enum MessageType : byte
