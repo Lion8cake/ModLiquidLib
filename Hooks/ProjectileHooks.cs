@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using ModLiquidLib.ID;
 using ModLiquidLib.IO;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils.LiquidContent;
@@ -317,7 +318,7 @@ namespace ModLiquidLib.Hooks
 
 		internal static void ShimmerFishingItemFix(On_Projectile.orig_FishingCheck_RollItemDrop orig, Projectile self, ref Terraria.DataStructures.FishingAttempt fisher)
 		{
-			if (Main.tile[fisher.X, fisher.Y].LiquidType == LiquidID.Shimmer)
+			if (Main.tile[fisher.X, fisher.Y].LiquidType >= LiquidID.Shimmer && !LiquidID_TLmod.Sets.UsesWaterFishingLootPool[Main.tile[fisher.X, fisher.Y].LiquidType])
 			{
 				return;
 			}
@@ -326,7 +327,7 @@ namespace ModLiquidLib.Hooks
 
 		internal static void ShimmerFishingFix(On_Projectile.orig_FishingCheck_RollEnemySpawns orig, Projectile self, ref Terraria.DataStructures.FishingAttempt fisher)
 		{
-			if (Main.tile[fisher.X, fisher.Y].LiquidType == LiquidID.Shimmer)
+			if (Main.tile[fisher.X, fisher.Y].LiquidType >= LiquidID.Shimmer && !LiquidID_TLmod.Sets.UsesWaterFishingLootPool[Main.tile[fisher.X, fisher.Y].LiquidType])
 			{
 				return;
 			}

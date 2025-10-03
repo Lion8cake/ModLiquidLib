@@ -1,9 +1,6 @@
-﻿using ModLiquidLib.Utils.ManualHooks;
+﻿using ModLiquidLib.ID;
+using MonoMod.Cil;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,17 +9,53 @@ namespace ModLiquidLib.Hooks
 {
 	internal class NPCLoaderHooks
 	{
-		internal static int? DisableWaterSpawning(On_NPCLoader.orig_ChooseSpawn orig, NPCSpawnInfo spawnInfo)
+		internal static void DoAlternativeVanillaSpawning(ILContext il)
 		{
-			//Ideally should be done through editing NPC.SpawnNPC, but due to a garbage collection issue, it has to be done through this instead.
-			if (Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].LiquidAmount > 0 && Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 2].LiquidAmount > 0 && Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].LiquidType != LiquidID.Lava)
+			ILCursor c = new(il);
+			c.Index = 0;
+			c.EmitLdarga(0);
+			c.EmitDelegate((ref NPCSpawnInfo spawnInfo) =>
 			{
-				if (Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].LiquidType != LiquidID.Water)
+				if (Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].LiquidAmount > 0 && Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 2].LiquidAmount > 0)
 				{
-					spawnInfo.Water = false;
+					if (Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].LiquidType != LiquidID.Water)
+					{
+						spawnInfo.Water = false;
+					}
 				}
-			}
-			return orig.Invoke(spawnInfo);
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchRet(), i => i.MatchLdloc(out _));
+			c.EmitLdarg(0);
+			c.EmitDelegate((int? type, NPCSpawnInfo spawnInfo) =>
+			{
+				if (type == 0)
+				{
+					SpawnNPC.SpawnNPC_SpawnVanillaNPC(spawnInfo);
+					return null;
+				}
+				if (type != null)
+				{
+					int num = spawnInfo.SpawnTileX;
+					int num24 = spawnInfo.SpawnTileY;
+					bool flag12 = true;
+					if (flag12)
+					{
+						if (Main.tile[num, num24 - 1].liquid > 0 && Main.tile[num, num24 - 2].liquid > 0)
+						{
+							if (Main.tile[num, num24 - 1].LiquidType > LiquidID.Shimmer && !LiquidID_TLmod.Sets.CanModdedNPCSpawnInModdedLiquid[(int)type][Main.tile[num, num24 - 1].LiquidType])
+							{
+								flag12 = false;
+							}
+						}
+					}
+					if (!flag12)
+					{
+						return null;
+					}
+				}
+				return type;
+			});
 		}
 	}
 }

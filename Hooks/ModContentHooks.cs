@@ -16,6 +16,10 @@ namespace ModLiquidLib.Hooks
 			{
 				System.Array.Resize(ref LiquidID_TLmod.Sets.CountsAsLiquidSource[i], LiquidLoader.LiquidCount);
 			}
+			for (int i = 0; i < NPCLoader.NPCCount; i++)
+			{
+				System.Array.Resize(ref LiquidID_TLmod.Sets.CanModdedNPCSpawnInModdedLiquid[i], LiquidLoader.LiquidCount);
+			}
 		}
 	}
 }

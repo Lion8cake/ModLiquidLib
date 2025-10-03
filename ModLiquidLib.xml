@@ -13,6 +13,12 @@
         <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CanBeAbsorbedBy">
             <summary> Whats Items a liquid can be absorbed by. Used for defining sponges. </summary>
         </member>
+        <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CanModdedNPCSpawnInModdedLiquid">
+            <summary> Whether or not the NPC can spawn in the liquid specified. NOTE: only works for modded liquids and npcs </summary>
+        </member>
+        <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.UsesWaterFishingLootPool">
+            <summary> Whether or not the liquid uses the water loot pool when fished it. NOTE: this set does not effect/change Water, lava or honey and is mainly used for modded liquids. </summary>
+        </member>
         <member name="T:ModLiquidLib.ModLoader.GlobalLiquid">
             <summary>
             This class allows you to modify the behavior of any liquid in the game, both vanilla and modded.

@@ -26,11 +26,21 @@ namespace ModLiquidLib.ID
 			/// <summary> Whats Items a liquid can be absorbed by. Used for defining sponges. </summary>
 			public static List<int>[] CanBeAbsorbedBy = Factory.CreateNamedSet("CanBeAbsorbedBy")
 			.Description("Whats Items a liquid can be absorbed by. Used for defining sponges.")
-			.RegisterCustomSet<List<int>>(null, 
-				LiquidID.Water, new List<int>() { ItemID.SuperAbsorbantSponge, ItemID.UltraAbsorbantSponge }, 
+			.RegisterCustomSet<List<int>>(null,
+				LiquidID.Water, new List<int>() { ItemID.SuperAbsorbantSponge, ItemID.UltraAbsorbantSponge },
 				LiquidID.Shimmer, new List<int>() { ItemID.SuperAbsorbantSponge, ItemID.UltraAbsorbantSponge },
 				LiquidID.Lava, new List<int>() { ItemID.LavaAbsorbantSponge, ItemID.UltraAbsorbantSponge },
 				LiquidID.Honey, new List<int>() { ItemID.HoneyAbsorbantSponge, ItemID.UltraAbsorbantSponge });
+
+			/// <summary> Whether or not the NPC can spawn in the liquid specified. NOTE: only works for modded liquids and npcs </summary>
+			public static bool[][] CanModdedNPCSpawnInModdedLiquid = NPCID.Sets.Factory.CreateNamedSet("CanModdedNPCSpawnInModdedLiquid")
+				.Description("Whether or not the NPC can spawn in the liquid specified. NOTE: only works for modded liquids and npcs")
+				.RegisterCustomSet(new bool[4]);
+
+			/// <summary> Whether or not the liquid uses the water loot pool when fished it. NOTE: this set does not effect/change Water, lava or honey and is mainly used for modded liquids. </summary>
+			public static bool[] UsesWaterFishingLootPool = Factory.CreateNamedSet("UsesWaterFishingLootPool")
+				.Description("Whether or not the liquid uses the water loot pool when fished it. NOTE: this set does not effect/change Water, lava or honey and is mainly used for modded liquids.")
+				.RegisterBoolSet(false);
 
 			static Sets()
 			{
