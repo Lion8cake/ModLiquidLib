@@ -34,37 +34,37 @@ namespace ModLiquidLib.ModLoader
 		/// <summary> The slope texture of this liquid. Used for rendering the liquids next to tile slopes. </summary>
 		public virtual string SlopeTexture => Texture + "_Slope";
 
-		/// <summary> A property that controls LiquidRenderer.WATERFALL_LENGTH for this LiquidID. <br/>
-		/// This is the length that liquids draw downwards when falling or when there is a half slope below. <br/>
-		/// Defaults to 10. </summary>
-		public int LiquidFallLength 
-		{
-			get
-			{
-				return LiquidRenderer.WATERFALL_LENGTH[Type];
-			}
-			set
-			{
-				LiquidRenderer.WATERFALL_LENGTH[Type] = value;
-			}
-		}
+		///// <summary> A property that controls LiquidRenderer.WATERFALL_LENGTH for this LiquidID. <br/>
+		///// This is the length that liquids draw downwards when falling or when there is a half slope below. <br/>
+		///// Defaults to 10. </summary>
+		//public int LiquidFallLength 
+		//{
+		//	get
+		//	{
+		//		return LiquidRenderer.WATERFALL_LENGTH[Type];
+		//	}
+		//	set
+		//	{
+		//		LiquidRenderer.WATERFALL_LENGTH[Type] = value;
+		//	}
+		//}
 
-		/// <summary> A property that controls LiquidRenderer.DEFAULT_OPACITY for this LiquidID. <br/>
-		/// This is the Opacity of this liquid when in not in any retro lighting mode. <br/>
-		/// Defaults to 0.6f.<br/> <br/>
-		/// For retro opacity, please see RetroDrawEffects's RetroLiquidDrawInfo.liquidAlphaMultiplier. <br/>
-		/// For slope opacity, please see SlopeOpacity property. </summary>
-		public float DefaultOpacity 
-		{
-			get
-			{
-				return LiquidRenderer.DEFAULT_OPACITY[Type];
-			}
-			set
-			{
-				LiquidRenderer.DEFAULT_OPACITY[Type] = value;
-			}
-		}
+		///// <summary> A property that controls LiquidRenderer.DEFAULT_OPACITY for this LiquidID. <br/>
+		///// This is the Opacity of this liquid when in not in any retro lighting mode. <br/>
+		///// Defaults to 0.6f.<br/> <br/>
+		///// For retro opacity, please see RetroDrawEffects's RetroLiquidDrawInfo.liquidAlphaMultiplier. <br/>
+		///// For slope opacity, please see SlopeOpacity property. </summary>
+		//public float DefaultOpacity 
+		//{
+		//	get
+		//	{
+		//		return LiquidRenderer.DEFAULT_OPACITY[Type];
+		//	}
+		//	set
+		//	{
+		//		LiquidRenderer.DEFAULT_OPACITY[Type] = value;
+		//	}
+		//}
 
 		/// <summary> A property that controls LiquidRenderer.VISCOSITY_Mask for this LiquidID. <br/>
 		/// This is how powerful the ripples are for this liquid. Be careful when setting this property to larger numbers (ie: 255). <br/>
