@@ -14,11 +14,11 @@ using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib.Hooks
 {
-	internal class LiquidRendererHooks
+	public class LiquidRendererHooks
 	{
-		internal static int[] liquidAnimationFrame = new int[LiquidID.Count];
+		public static int[] liquidAnimationFrame = new int[LiquidID.Count];
 
-		internal static float[] liquidFrameState = new float[LiquidID.Count];
+		public static float[] liquidFrameState = new float[LiquidID.Count];
 
 		internal static void UpdateLiquidArrayFrames(On_LiquidRenderer.orig_Update orig, LiquidRenderer self, GameTime gameTime)
 		{
