@@ -600,11 +600,6 @@
         <member name="P:ModLiquidLib.ModLoader.ModLiquid.SlopeTexture">
             <summary> The slope texture of this liquid. Used for rendering the liquids next to tile slopes. </summary>
         </member>
-        <member name="P:ModLiquidLib.ModLoader.ModLiquid.VisualViscosity">
-            <summary> A property that controls LiquidRenderer.VISCOSITY_Mask for this LiquidID. <br/>
-            This is how powerful the ripples are for this liquid. Be careful when setting this property to larger numbers (ie: 255). <br/>
-            Defaults to 0.</summary>
-        </member>
         <member name="P:ModLiquidLib.ModLoader.ModLiquid.SplashSound">
             <summary> The default sound that plays when an entity enters and exits this liquid. Overriding any OnSplash hooks/methods will prevent this from being used. </summary>
         </member>
