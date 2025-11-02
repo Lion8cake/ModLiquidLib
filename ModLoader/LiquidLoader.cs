@@ -19,6 +19,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
+using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib.ModLoader
 {
@@ -235,7 +236,6 @@ namespace ModLiquidLib.ModLoader
 			{
 				LiquidRenderer.Instance._cache = new LiquidRenderer.LiquidCache[1];
 				LiquidRenderer.Instance._drawCache = new LiquidRenderer.LiquidDrawCache[1];
-				LiquidRenderer.Instance._drawCacheForShimmer = new LiquidRenderer.SpecialLiquidDrawCache[1];
 			}
 			Array.Resize(ref LiquidAssets, LiquidCount);
 			Array.Resize(ref LiquidBlockAssets, LiquidCount);

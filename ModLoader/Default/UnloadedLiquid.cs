@@ -1,5 +1,6 @@
 ﻿using ModLiquidLib.IO;
 using Terraria;
+using Terraria.GameContent.Liquid;
 
 namespace ModLiquidLib.ModLoader.Default
 {
@@ -9,7 +10,7 @@ namespace ModLiquidLib.ModLoader.Default
 
 		public override void SetStaticDefaults()
 		{
-			LiquidFallLength = 1; //makes unloaded floating liquids look less odd
+			LiquidRenderer.WATERFALL_LENGTH[Type] = 1; //makes unloaded floating liquids look less odd
 			LiquidIO.Liquids.unloadedTypes.Add(Type);
 		}
 

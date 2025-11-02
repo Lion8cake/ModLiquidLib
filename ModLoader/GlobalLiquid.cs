@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.Graphics;
 using Terraria.Graphics.Light;
 using Terraria.ModLoader;
+using static Terraria.GameContent.Liquid.LiquidRenderer;
 
 namespace ModLiquidLib.ModLoader
 {

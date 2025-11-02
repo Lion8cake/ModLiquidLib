@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
@@ -13,10 +13,6 @@
 	<ItemGroup>
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
 		<Publicize Include="tModLoader" PublicizeTarget="Fields, Types, Methods" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="lib\LiquidSlopesPatch.dll" />
 	</ItemGroup>
 
 </Project>

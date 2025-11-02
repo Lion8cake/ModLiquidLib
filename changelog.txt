@@ -1,7 +1,3 @@
-v2025.08.0
+v2025.09
 
-Added CanBeAbsorbedBy ID set, used to create and modify which sponges suck up a liquid
-Added CanModdedNPCSpawnInModdedLiquid ID set, used to allow spawning for certain NPCs in certain liquids
-Added UsesWaterFishingLootPool ID set, used to return liquids back to the default fishing mechanics
-Fixed modded liquids having the water fishing pool by default (this can be reverted using the UsesWaterFishingLootPool ID set)
-Fixed Vanilla NPCs spawning in modded liquids
+Updated to the latest stable version (basically, updated the version number to indicate that the version is stable)
