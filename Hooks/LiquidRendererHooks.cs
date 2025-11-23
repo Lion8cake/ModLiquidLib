@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using ReLogic.Content;
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 using Terraria;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
@@ -54,6 +55,11 @@ namespace ModLiquidLib.Hooks
 			ILCursor c = new(il);
 			int pointer2_varNum = -1;
 			int miscWatersType_varNum = -1;
+			int drawArea_varNum = -1;
+			int i_varNum = -1;
+			int j_varNum = -1;
+
+			c.GotoNext(i => i.MatchLdloc(out drawArea_varNum), i => i.MatchLdfld<Rectangle>("X"), i => i.MatchStloc(out i_varNum), i => i.MatchBr(out _), i => i.MatchLdloc(drawArea_varNum), i => i.MatchLdfld<Rectangle>("Y"), i => i.MatchStloc(out j_varNum));
 
 			c.GotoNext(MoveType.After, i => i.MatchLdloc(out pointer2_varNum), i => i.MatchLdfld<LiquidDrawCache>("IsVisible"));
 			c.EmitLdloc(pointer2_varNum);
@@ -61,11 +67,14 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(3);
 			c.EmitLdarg(4);
 			c.EmitLdarg(5);
-			c.EmitDelegate((bool isVisibleCondition, IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw) =>
+			c.EmitLdloc(drawArea_varNum);
+			c.EmitLdloc(i_varNum);
+			c.EmitLdloc(j_varNum);
+			c.EmitDelegate((bool isVisibleCondition, IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw, Rectangle drawArea, int i, int j) =>
 			{
 				return isVisibleCondition && LiquidLoader.PreDraw(
-					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).X,
-					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Y, 
+					i,
+					j,
 					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type,
 					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2), 
 					drawOffset, 
@@ -116,11 +125,14 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(3);
 			c.EmitLdarg(4);
 			c.EmitLdarg(5);
-			c.EmitDelegate((IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw) =>
+			c.EmitLdloc(drawArea_varNum);
+			c.EmitLdloc(i_varNum);
+			c.EmitLdloc(j_varNum);
+			c.EmitDelegate((IntPtr ptr2, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw, Rectangle drawArea, int i, int j) =>
 			{
 				LiquidLoader.PostDraw(
-					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).X,
-					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Y, 
+					i,
+					j, 
 					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2).Type,
 					Unsafe.AsRef<LiquidDrawCache>((void*)ptr2), 
 					drawOffset, 
