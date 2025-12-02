@@ -1,3 +1,3 @@
-v2025.10.0 (Beta)
+v2025.10.0
 
-Updated to the latest preview
+Updated to the current stable release
