@@ -40,7 +40,7 @@ namespace ModLiquidLib.Hooks
 		internal static LightMaskMode EditLiquidMaskdMode(On_TileLightScanner.orig_GetTileMask orig, TileLightScanner self, Tile tile)
 		{
 			LightMaskMode maskMode = orig.Invoke(self, tile);
-			if (self.LightIsBlocked(tile) && tile.TileType != 131 && !tile.IsActuated && tile.Slope == 0)
+			if (self.LightIsBlocked(tile) && tile.TileType != TileID.InactiveStoneBlock && !tile.IsActuated && tile.Slope == 0)
 			{
 				return maskMode;
 			}

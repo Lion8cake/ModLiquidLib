@@ -11,34 +11,34 @@ namespace ModLiquidLib.IO
 {
 	internal class LiquidIO : ModSystem
 	{
-		public abstract class IOLiquidImpl<TLiquid, TEntry> where TLiquid : ModLiquid where TEntry : ModLiquidEntry
+		public class LiquidIOImpl
 		{
 			public readonly string entriesKey;
 
 			public readonly string dataKey;
 
-			public TEntry[] entries;
+			public ModLiquidEntry[] entries;
 
 			public PosData<ushort>[] unloadedEntryLookup;
 
 			public List<ushort> unloadedTypes = new List<ushort>();
 
-			protected abstract int LoadedLiquidCount { get; }
+			protected int LoadedLiquidCount => LiquidLoader.LiquidCount;
 
-			protected abstract IEnumerable<TLiquid> LoadedLiquids { get; }
+			protected IEnumerable<ModLiquid> LoadedLiquids => LiquidLoader.liquids;
 
-			protected IOLiquidImpl(string entriesKey, string dataKey)
+			public LiquidIOImpl()
 			{
-				this.entriesKey = entriesKey;
-				this.dataKey = dataKey;
+				this.entriesKey = "liquidMap";
+				this.dataKey = "liquidData";
 			}
 
-			protected abstract TEntry ConvertLiquidToEntry(TLiquid liquid);
+			protected ModLiquidEntry ConvertLiquidToEntry(ModLiquid liquid) => new ModLiquidEntry(liquid);
 
-			private List<TEntry> CreateEntries()
+			private List<ModLiquidEntry> CreateEntries()
 			{
-				List<TEntry> entries = Enumerable.Repeat<TEntry>(null, LoadedLiquidCount).ToList();
-				foreach (TLiquid Liquid in LoadedLiquids)
+				List<ModLiquidEntry> entries = Enumerable.Repeat<ModLiquidEntry>(null, LoadedLiquidCount).ToList();
+				foreach (ModLiquid Liquid in LoadedLiquids)
 				{
 					if (!unloadedTypes.Contains(Liquid.Type))
 					{
@@ -48,36 +48,39 @@ namespace ModLiquidLib.IO
 				return entries;
 			}
 
-			public void LoadEntries(TagCompound tag, out TEntry[] savedEntryLookup)
+			public void LoadEntries(TagCompound tag, out ModLiquidEntry[] savedEntryLookup)
 			{
-				IList<TEntry> savedEntryList = tag.GetList<TEntry>(entriesKey);
-				List<TEntry> Entries = CreateEntries();
+				IList<ModLiquidEntry> savedEntryList = tag.GetList<ModLiquidEntry>(entriesKey);
+				List<ModLiquidEntry> Entries = CreateEntries();
 				if (savedEntryList.Count == 0)
 				{
 					savedEntryLookup = null;
 				}
 				else
 				{
-					savedEntryLookup = new TEntry[savedEntryList.Max((TEntry e) => e.type) + 1];
-					foreach (TEntry entry in savedEntryList)
+					savedEntryLookup = new ModLiquidEntry[savedEntryList.Max((ModLiquidEntry e) => e.type) + 1];
+					foreach (ModLiquidEntry entry in savedEntryList)
 					{
 						savedEntryLookup[entry.type] = entry;
-						if (ModContent.TryFind<TLiquid>(entry.modName, entry.name, out var Liquid))
+						if (ModContent.TryFind<ModLiquid>(entry.modName, entry.name, out var Liquid))
 						{
 							entry.type = (entry.loadedLiquid = Liquid.Type);
 							continue;
 						}
 						entry.type = (ushort)Entries.Count;
-						entry.loadedLiquid = (ModContent.TryFind<TLiquid>(entry.unloadedType, out var unloadedLiquid) ? unloadedLiquid : entry.DefaultUnloadedPlaceholder).Type;
+						entry.loadedLiquid = (ModContent.TryFind<ModLiquid>(entry.unloadedType, out var unloadedLiquid) ? unloadedLiquid : entry.DefaultUnloadedPlaceholder).Type;
 						Entries.Add(entry);
 					}
 				}
 				entries = Entries.ToArray();
 			}
 
-			protected abstract void ReadData(Tile tile, TEntry entry, BinaryReader reader);
+			protected void ReadData(Tile tile, ModLiquidEntry entry, BinaryReader reader)
+			{
+				tile.LiquidType = entry.loadedLiquid;
+			}
 
-			public void LoadData(TagCompound tag, TEntry[] savedEntryLookup)
+			public void LoadData(TagCompound tag, ModLiquidEntry[] savedEntryLookup)
 			{
 				if (!tag.ContainsKey(dataKey))
 				{
@@ -92,7 +95,7 @@ namespace ModLiquidLib.IO
 						ushort saveType = reader.ReadUInt16();
 						if (saveType != 0)
 						{
-							TEntry entry = savedEntryLookup[saveType];
+							ModLiquidEntry entry = savedEntryLookup[saveType];
 							ReadData(Main.tile[x, y], entry, reader);
 							if (entry.IsUnloaded)
 							{
@@ -114,7 +117,7 @@ namespace ModLiquidLib.IO
 				tag[entriesKey] = SelectEntries(hasLiquid, entries).ToList();
 			}
 
-			private IEnumerable<TEntry> SelectEntries(bool[] select, TEntry[] entries)
+			private IEnumerable<ModLiquidEntry> SelectEntries(bool[] select, ModLiquidEntry[] entries)
 			{
 				for (int i = 0; i < select.Length; i++)
 				{
@@ -125,9 +128,19 @@ namespace ModLiquidLib.IO
 				}
 			}
 
-			protected abstract int GetModLiquidType(Tile tile);
+			protected int GetModLiquidType(Tile tile)
+			{
+				if (tile.LiquidAmount == 0 || tile.LiquidType < LiquidID.Count)
+				{
+					return 0;
+				}
+				return tile.LiquidType;
+			}
 
-			protected abstract void WriteData(BinaryWriter writer, Tile tile, TEntry entry);
+			protected void WriteData(BinaryWriter writer, Tile tile, ModLiquidEntry entry)
+			{
+				writer.Write(entry.type);
+			}
 
 			public byte[] SaveData(out bool[] hasObj)
 			{
@@ -161,42 +174,6 @@ namespace ModLiquidLib.IO
 			{
 				entries = null;
 				unloadedEntryLookup = null;
-			}
-		}
-
-		public class LiquidIOImpl : IOLiquidImpl<ModLiquid, ModLiquidEntry>
-		{
-			protected override int LoadedLiquidCount => LiquidLoader.LiquidCount;
-
-			protected override IEnumerable<ModLiquid> LoadedLiquids => LiquidLoader.liquids;
-
-			public LiquidIOImpl()
-				: base("liquidMap", "liquidData")
-			{
-			}
-
-			protected override ModLiquidEntry ConvertLiquidToEntry(ModLiquid tile)
-			{
-				return new ModLiquidEntry(tile);
-			}
-
-			protected override int GetModLiquidType(Tile tile)
-			{
-				if (tile.LiquidAmount == 0 || tile.LiquidType < LiquidID.Count)
-				{
-					return 0;
-				}
-				return tile.LiquidType;
-			}
-
-			protected override void ReadData(Tile tile, ModLiquidEntry entry, BinaryReader reader)
-			{
-				tile.LiquidType = entry.loadedLiquid;
-			}
-
-			protected override void WriteData(BinaryWriter writer, Tile tile, ModLiquidEntry entry)
-			{
-				writer.Write(entry.type);
 			}
 		}
 
