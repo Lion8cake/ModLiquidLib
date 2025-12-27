@@ -1,7 +1,7 @@
-﻿using ModLiquidLib.ModLoader;
+﻿using ModLiquidLib.ID;
+using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -11,6 +11,43 @@ namespace ModLiquidLib.Hooks
 {
 	public class LiquidHooks
 	{
+		internal static void WorldgenIgnoreTilesWhenMovingLiquids(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+			ILLabel IL_0000 = c.DefineLabel();
+			c.GotoNext(MoveType.After, i => i.MatchLdcI4(190), i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchCeq(), i => i.MatchStelemI1());
+			c.MarkLabel(IL_0000);
+			c.GotoPrev(MoveType.Before, i => i.MatchLdsfld<Main>(nameof(Main.tileSolid)), i => i.MatchLdcI4(10));
+			c.EmitLdarg(0);
+			c.EmitDelegate((bool ignoreSolids) =>
+			{
+				for (int i = 0; i < TileLoader.TileCount; i++)
+					if (LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgen[i])
+						Main.tileSolid[i] = !ignoreSolids;
+			});
+			c.EmitBr(IL_0000);
+		}
+
+		internal static void IgnoreTilesWhenMovingLiquids(ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+			ILLabel IL_0000 = c.DefineLabel();
+			c.GotoNext(MoveType.After, i => i.MatchLdcI4(546), i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchCeq(), i => i.MatchStelemI1());
+			c.MarkLabel(IL_0000);
+			c.GotoPrev(MoveType.Before, i => i.MatchLdsfld<Main>(nameof(Main.tileSolid)), i => i.MatchLdcI4(138));
+			c.EmitLdarg(0);
+			c.EmitDelegate((bool ignoreSolids) =>
+			{
+				for (int i = 0; i < TileLoader.TileCount; i++)
+					if (LiquidID_TLmod.Sets.IgnoresWater[i])
+					{
+						Main.tileSolid[i] = !ignoreSolids;
+						//Main.NewText("Updated " + TileID.Search.GetName(i) + "'s solid check for liquid movement ");
+					}
+			});
+			c.EmitBr(IL_0000);
+		}
+
 		internal static void EditLiquidTileTransformations(ILContext il)
 		{
 			ILCursor c = new(il);

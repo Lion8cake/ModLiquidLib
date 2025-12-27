@@ -37,6 +37,12 @@ That has been expanded to 64, allowing modders a whole 59 new liquids to work wi
 What is the .TLMap file in player folders?
 This file is handled just for map data for liquids, standing as Tmodloader Liquid Map file. When moving players, please move this file as well to keep liquid map data.
 
+Is this mod coming to native tmodloader?
+Yes, this mod currently had a PR drafted up ready to be added in 1.4.5. This means that this library mod will become legacy and will only exist on 1.4.4 versions of tmodloader.
+Until 1.4.5, this mod will be maintained to be up to date with all the features the PR has.
+If you want to support the PR and have a github account, you can show support by visiting the PR below and reacting to it with either a thumbs up or rocket.
+ModLiquid PR: https://github.com/tModLoader/tModLoader/pull/4899
+
 How compatable is this with other mods?
 Be careful and aware of other mods that edit or add liquids, as this mod heavily edits everything liquid related in Terraria.
 Most mods will work with this library but for mods that don't, please report on the github linked above.
