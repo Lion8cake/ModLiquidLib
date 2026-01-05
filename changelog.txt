@@ -1,3 +1,3 @@
-v2025.11.01
+v2025.12.0
 
-Optimised the new TileID sets for liquid movement. These new sets were the cause of some nasty world load times
+Changed ignoresWater and ignoresWaterDuringWorldgen to be Lists rather than arrays so liquid settling doesn't take absurdly long
