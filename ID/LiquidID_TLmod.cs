@@ -52,6 +52,12 @@ namespace ModLiquidLib.ID
 				.Description("Whether or not the liquid uses the water loot pool when fished it. NOTE: this set does not effect/change Water, lava or honey and is mainly used for modded liquids.")
 				.RegisterBoolSet(false);
 
+			/// <summary> Whether or not the tile is non-solid to liquids, allowing them to flow through. This is a list containing the tiles that CAN ignore water. DO NOT add your tile to this list, please set it in IgnoresWater.</summary>
+			public static List<int> IgnoresWaterList;
+
+			/// <summary> Whether or not the tile is non-solid to liquids during worldgen. This is a list containing the tiles that CAN ignore water during worldgen. DO NOT add your tile to this list, please set it in IgnoresWaterDuringWorldgen.</summary>
+			public static List<int> IgnoresWaterDuringWorldgenList;
+
 			static Sets()
 			{
 				for (int i = 0; i < CanBeAbsorbedBy.Length; i++)

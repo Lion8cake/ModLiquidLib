@@ -102,6 +102,8 @@ namespace ModLiquidLib
 
 			MapLiquidLoader.FinishSetup();
 
+			LiquidID_TLmod.Sets.IgnoresWaterList = new List<int>();
+			LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgenList = new List<int>();
 			for (int i = 0; i < TileLoader.TileCount; i++)
 			{
 				if (TileID.Sets.CountsAsWaterSource[i])
@@ -112,6 +114,10 @@ namespace ModLiquidLib
 					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Honey] = TileID.Sets.CountsAsHoneySource[i];
 				if (TileID.Sets.CountsAsShimmerSource[i])
 					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Shimmer] = TileID.Sets.CountsAsShimmerSource[i];
+				if (LiquidID_TLmod.Sets.IgnoresWater[i])
+					LiquidID_TLmod.Sets.IgnoresWaterList.Add(i);
+				if (LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgen[i])
+					LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgenList.Add(i);
 			}
 		}
 
