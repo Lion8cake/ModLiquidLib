@@ -4,7 +4,8 @@
 Have you ever wanted to create a modded liquid, but realised that tmodloader lacks support for custom liquids?
 This mod is for you!
 
-This mod is a library to be used by mods and developers to allow for the creation of modded liquids. This mod adds no additional content.
+This mod is a library to be used by mods and developers to allow for the creation of modded liquids. 
+[b]This mod adds no additional content by itself![/b]
 
 This mod handles implementation of liquids in the same way how tmodloader handles modded tiles and walls. 
 
@@ -22,11 +23,15 @@ This mod adds tools for developers to allow them to do the following:
     [*]Do more with Tiles
 [/list]
 
+This library is also an early look into 1.4.5's Modded Liquid system hopefully coming to tmodloader. Using this library will help the development of this system coming to tmodloader.
+If you want to read more about this library being merged into tmodloader itself, you can read it in the FAQ section.
+
 [hr][/hr]
 Relevant Links:
 [url=https://github.com/Lion8cake/ModLiquidLib] Github Page [/url]
 [url=https://github.com/Lion8cake/ModLiquidLib/wiki] Mod's Wiki (incomplete) [/url]
 [url=https://github.com/Lion8cake/ModLiquidLib/issues] Please report issues here [/url]
+[url=https://github.com/tModLoader/tModLoader/pull/4899] The Pull Request of this library coming to tmodloader [/url]
 
 [hr][/hr]
 Translation Credits:
@@ -46,6 +51,12 @@ That has been expanded to 64, allowing modders a whole 59 new liquids to work wi
 
 [i][b]What is the .TLMap file in player folders?[/b][/i]
 This file is handled just for map data for liquids, standing as Tmodloader Liquid Map file. When moving players, please move this file as well to keep liquid map data.
+
+[i][b]Is this mod coming to native tmodloader?[/b][/i]
+Yes, this mod currently has a PR drafted up ready to be added in 1.4.5. This means that this mod will eventually become legacy and only supported for 1.4.4 versions of tmodloader.
+Until 1.4.5, this mod will be maintained to be up to date with all the features the PR has.
+If you want to support the PR and have a github account, you can show support by visiting the PR below and reacting to it with either a thumbs up or rocket.
+ModLiquid PR: https://github.com/tModLoader/tModLoader/pull/4899
 
 [i][b]How compatable is this with other mods?[/b][/i]
 Be careful and aware of other mods that edit or add liquids, as this mod heavily edits everything liquid related in Terraria.
