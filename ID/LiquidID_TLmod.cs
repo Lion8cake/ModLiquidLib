@@ -18,6 +18,16 @@ namespace ModLiquidLib.ID
 			.Description("Indicates if the tile nearby counts towards a certain liquid  when crafting.")
 			.RegisterCustomSet(new bool[4]);
 
+			/// <summary> Whether or not the tile is non-solid to liquids, allowing them to flow through. </summary>
+			public static bool[] IgnoresWater = TileID.Sets.Factory.CreateNamedSet("IgnoresWater")
+			.Description("Whether or not the tile is non-solid to liquids, allowing them to flow through.")
+			.RegisterBoolSet(138, 484, 546);
+
+			/// <summary> Whether or not the tile is non-solid to liquids during worldgen. </summary>
+			public static bool[] IgnoresWaterDuringWorldgen = TileID.Sets.Factory.CreateNamedSet("IgnoresWaterDuringWorldgen")
+			.Description("Whether or not the tile is non-solid to liquids during worldgen.")
+			.RegisterBoolSet(10, 192, 191, 190);
+
 			/// <summary> The Item created when a bucket is used on a liquid selected </summary>
 			public static int[] CreateLiquidBucketItem = Factory.CreateNamedSet("CreateLiquidBucketItem")
 			.Description("The Item created when a bucket is used on a liquid selected")

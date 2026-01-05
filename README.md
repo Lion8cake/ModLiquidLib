@@ -8,23 +8,23 @@ The library will include:
 * GlobalLiquid
 * ModLiquidFall (an updated and expanded upon ModWaterfallStyle, used for more than just water styles)
 * Extentions for ModTiles
+* Several ID sets for multiple different use cases
 
 This mod is now on the workshop, download it here:
 https://steamcommunity.com/sharedfiles/filedetails/?id=3539368598
-
-This mod is in it's beta phase, with enough content for mod use, although with future plans and bugfixes still left to do before fully done.
 
 For developers looking to use this mod, please see this mod's example mod. It contains a few examples of what you can do with this library.
 Please see the example mod's github below:
 https://github.com/Lion8cake/ModLiquidExampleMod
 
+This mod currently is being drafted into tmodloader natively, if you want to show support, please see the PR below:
+https://github.com/tModLoader/tModLoader/pull/4899
+
 FaQ:
 
 ### When will it be released?
 
-The mod is currently released to the workshop for the preview version of Tmodloader. Mods are able to use this library there.
-This mod is planned to release on the stable branch on the 1st of September (although this can change).
-...as usual, still will come when its ready!
+This mod is currently released! To use the mod reference ModLiquidLib in your mod's build.txt file and users will use your mod alongside ModLiquid Library.
 
 
 ### Am I able to download and use this mod?
@@ -35,9 +35,7 @@ This mod is now on the workshop, download and use this there for both players an
 ### Is this mod too early in development to use?
 
 Nope! 
-Currently you are able to make a whole new liquid and do a lot with it.
-Feel free to check out the mod now! The more people using it, the more issues and suggestions will be fixed and added before it's full release, only making the mod better.
-
+Currently this mod is fully releaseds, feature complete in all aspects ready for both developers and players!
 
 ### I've found an issue, where do I report?
 
@@ -62,11 +60,16 @@ If you want to contact me personally (Lion8cake), please do so on discord (frien
 
 ### Why is this a mod and not in Tmodloader itself?
 
-It's planned to have ModLiquid added to tmodloader when the Terraria 1.4.5 update drops. Once it comes out, all these features will be brought over to tmodloader.
-A main reason why this library will appeal to you is hopefully, in the future, all you'll need when tmodloader 1.4.5 comes out to update is removing this from your mod dependencies.
+Actually, it is! 
+The mod currently has been ported into tmodloader and a whole PR has been made for ModLiquid to be added into tmodloader.
+The Tmodloader team is currently awaiting for the 1.4.5 update to start intergrating this mod into tmodloader.
+Until 1.4.5 tmod comes out, this mod will be updated to contain features added to the PR when possible (Features like 'liquidsIn' for the FishingAttempt struct wont be possible for mod).
+Once 1.4.5 tmod comes out, this mod will become legacy and will stay and be updated on the 1.4.4 versions of the game.
+Hopefully, a reason why this mod may appeal to you as it's being intergrated into tmodloader and extremely easy to port from using this library into using native tmodloader.
+Please see the PR here: https://github.com/tModLoader/tModLoader/pull/4899
 
 
 ### Wiki on how to use this library?
 
-A wiki has been started, but it’s extremely bare bones, pages will slowly be made on how to use this mod, although the top priority currently is working on this library for an official workshop release.
+A wiki has been started, but it’s extremely bare bones, pages will slowly be made on how to use this mod.
 As for documentation in general, All/most hooks and fields for GLobalLiquid and ModLiquid have had comments added, describing what a hook/field does.

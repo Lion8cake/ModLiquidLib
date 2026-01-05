@@ -89,11 +89,11 @@ namespace ModLiquidLib
 			IL_LiquidRenderer.DrawShimmer += LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight += WaterfallManagerHooks.SemiFixforWaterfallLighting;
 			IL_NPCLoader.ChooseSpawn += NPCLoaderHooks.DoAlternativeVanillaSpawning;
+			IL_Liquid.tilesIgnoreWater += LiquidHooks.IgnoreTilesWhenMovingLiquids;
+			IL_Liquid.worldGenTilesIgnoreWater += LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 
 			MapHelper.Initialize();
 		}
-
-		
 
 		public override void PostSetupContent()
 		{
@@ -185,6 +185,8 @@ namespace ModLiquidLib
 			IL_LiquidRenderer.DrawShimmer -= LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight -= WaterfallManagerHooks.SemiFixforWaterfallLighting;
 			IL_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DoAlternativeVanillaSpawning;
+			IL_Liquid.tilesIgnoreWater -= LiquidHooks.IgnoreTilesWhenMovingLiquids;
+			IL_Liquid.worldGenTilesIgnoreWater -= LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 		}
 
 		public enum MessageType : byte

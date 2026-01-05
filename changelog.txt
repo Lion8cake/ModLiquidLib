@@ -1,3 +1,5 @@
-v2025.10.0
+v2025.11.0
 
-Updated to the current stable release
+Updated to the latest stable
+
+Updated the mod to be on the same content level as the ModLiquid PR (Tmodloader PR #4899, link: https://github.com/tModLoader/tModLoader/pull/4899)
