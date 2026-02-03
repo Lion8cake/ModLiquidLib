@@ -1,3 +1,3 @@
 v2025.12.0
 
-Changed ignoresWater and ignoresWaterDuringWorldgen to be Lists rather than arrays so liquid settling doesn't take absurdly long
+Changes to liquids ignoring tiles both in worldgen and ingame library code (Developers please see ExampleMod (ModLiquid)'s Example Grate to update your mods if they have broken)

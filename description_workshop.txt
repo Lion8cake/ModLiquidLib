@@ -9,7 +9,7 @@ This mod is a library to be used by mods and developers to allow for the creatio
 
 This mod handles implementation of liquids in the same way how tmodloader handles modded tiles and walls. 
 
-[img]https://i.imgur.com/NpnX4G5.gif[/img]
+[img]https://i.imgur.com/a/c8C3kKB.gif[/img]
 
 This mod also handles and provides a very wide range of hooks and fields for developers to do whatever they desire with liquids ingame, whether than be adding or editing a liquid to the game.
 
@@ -23,8 +23,17 @@ This mod adds tools for developers to allow them to do the following:
     [*]Do more with Tiles
 [/list]
 
+[img]https://i.imgur.com/a/pjHShl4.gif[/img]
+
 This library is also an early look into 1.4.5's Modded Liquid system hopefully coming to tmodloader. Using this library will help the development of this system coming to tmodloader.
 If you want to read more about this library being merged into tmodloader itself, you can read it in the FAQ section.
+
+[hr][/hr]
+
+Want to support me and my work?
+I have a Ko-fi where you can help donate to me as a mod developer as I continue working on this library and other mods.
+If you can't support me financially, leaving a positive review and sharing this to other mod developers can help me out a lot as well!
+[url=https://ko-fi.com/lion8cake] [img]https://i.imgur.com/a/P6J9N1W.gif[/img] [/url]
 
 [hr][/hr]
 Relevant Links:
@@ -42,6 +51,12 @@ Translation Credits:
 [/list]
 
 All other translations were made by myself (Lion8cake), I do not speak any of these languages so please inform me of any inaccuracies if found.
+
+[hr][/hr]
+
+Although this library doesn't add any content, there are still a few mods out on the workshop that do use this library to add new modded liquids for you to try out!
+
+[img]https://i.imgur.com/a/tTMpyhY.gif[/img]
 
 [hr][/hr]
 [h3]QnA:[/h3]
