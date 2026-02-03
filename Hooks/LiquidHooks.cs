@@ -21,10 +21,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((bool ignoreSolids) =>
 			{
-				//for (int i = 0; i < TileLoader.TileCount; i++)
-				//	if (LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgen[i])
-				//		Main.tileSolid[i] = !ignoreSolids;
-				foreach (int tileType in LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgenList)
+				foreach (int tileType in LiquidID_TLmod.Sets.IgnoresWaterDuringWorldgen)
 					Main.tileSolid[tileType] = !ignoreSolids;
 			});
 			c.EmitBr(IL_0000);
@@ -40,11 +37,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 			c.EmitDelegate((bool ignoreSolids) =>
 			{
-				//for (int i = 0; i < TileLoader.TileCount; i++)
-				//	if (LiquidID_TLmod.Sets.IgnoresWater[i])
-				//		Main.tileSolid[i] = !ignoreSolids;
-
-				foreach (int tileType in LiquidID_TLmod.Sets.IgnoresWaterList)
+				foreach (int tileType in LiquidID_TLmod.Sets.IgnoresWater)
 					Main.tileSolid[tileType] = !ignoreSolids;
 
 			});

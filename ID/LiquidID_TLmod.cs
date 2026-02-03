@@ -19,14 +19,10 @@ namespace ModLiquidLib.ID
 			.RegisterCustomSet(new bool[4]);
 
 			/// <summary> Whether or not the tile is non-solid to liquids, allowing them to flow through. </summary>
-			public static bool[] IgnoresWater = TileID.Sets.Factory.CreateNamedSet("IgnoresWater")
-			.Description("Whether or not the tile is non-solid to liquids, allowing them to flow through.")
-			.RegisterBoolSet(138, 484, 546);
+			public static List<int> IgnoresWater = new List<int> { 138, 484, 546 };
 
 			/// <summary> Whether or not the tile is non-solid to liquids during worldgen. </summary>
-			public static bool[] IgnoresWaterDuringWorldgen = TileID.Sets.Factory.CreateNamedSet("IgnoresWaterDuringWorldgen")
-			.Description("Whether or not the tile is non-solid to liquids during worldgen.")
-			.RegisterBoolSet(10, 192, 191, 190);
+			public static List<int> IgnoresWaterDuringWorldgen = new List<int> { 10, 192, 191, 190 };
 
 			/// <summary> The Item created when a bucket is used on a liquid selected </summary>
 			public static int[] CreateLiquidBucketItem = Factory.CreateNamedSet("CreateLiquidBucketItem")
@@ -51,12 +47,6 @@ namespace ModLiquidLib.ID
 			public static bool[] UsesWaterFishingLootPool = Factory.CreateNamedSet("UsesWaterFishingLootPool")
 				.Description("Whether or not the liquid uses the water loot pool when fished it. NOTE: this set does not effect/change Water, lava or honey and is mainly used for modded liquids.")
 				.RegisterBoolSet(false);
-
-			/// <summary> Whether or not the tile is non-solid to liquids, allowing them to flow through. This is a list containing the tiles that CAN ignore water. DO NOT add your tile to this list, please set it in IgnoresWater.</summary>
-			public static List<int> IgnoresWaterList;
-
-			/// <summary> Whether or not the tile is non-solid to liquids during worldgen. This is a list containing the tiles that CAN ignore water during worldgen. DO NOT add your tile to this list, please set it in IgnoresWaterDuringWorldgen.</summary>
-			public static List<int> IgnoresWaterDuringWorldgenList;
 
 			static Sets()
 			{

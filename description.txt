@@ -19,6 +19,11 @@ This mod adds tools for developers to allow them to do the following:
 This library is also an early look into 1.4.5's Modded Liquid system hopefully coming to tmodloader. Using this library will help the development of this system coming to tmodloader.
 If you want to read more about this library being merged into tmodloader itself, you can read it in the FAQ section.
 
+Want to support me?
+I have a Ko-fi where you can help donate to me as a mod developer as I continue working on this library and other mods.
+Ko-fi Link:
+https://ko-fi.com/lion8cake
+
 Github Page:
 https://github.com/Lion8cake/ModLiquidLib
 
