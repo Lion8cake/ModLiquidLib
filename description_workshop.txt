@@ -30,7 +30,8 @@ If you want to read more about this library being merged into tmodloader itself,
 
 Want to support me and my work?
 I have a Ko-fi where you can help donate to me as a mod developer as I continue working on this library and other mods.
-If you can't support me financially, leaving a positive review and sharing this to other mod developers can help me out a lot as well!
+If you can't support me financially, leaving a positive review and sharing this to other mod developers can help me out a lot too!
+[url=https://ko-fi.com/lion8cake]https://ko-fi.com/lion8cake [/url]
 [url=https://ko-fi.com/lion8cake] [img]https://i.imgur.com/fpKh5VX.png[/img] [/url]
 
 [hr][/hr]
@@ -52,7 +53,7 @@ All other translations were made by myself (Lion8cake), I do not speak any of th
 
 [hr][/hr]
 
-Although this library doesn't add any content, there are still a few mods out on the workshop that do use this library to add new modded liquids for you to try out!
+Although this library doesn't add any content, there are still a few mods out on the workshop that do use this library to add new modded liquids!
 
 [img]https://i.imgur.com/DqQ2fUQ.png[/img]
 
