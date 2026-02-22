@@ -207,6 +207,7 @@ namespace ModLiquidLib.ModLoader
 		{
 			return ModContent.GetInstance<T>()?.Type ?? 0;
 		}
+
         public static Condition NearLiquid(int liquidID)
         {
             string liquidMapName = "";
