@@ -24,7 +24,7 @@ namespace ModLiquidLib.Hooks
 			orig.Invoke(self);
 			var ass = typeof(Mod).Assembly;
 
-			if (Terraria.ModLoader.ModLoader.TryGetMod(self.ModName, out var loadedMod))
+			if (Terraria.ModLoader.ModLoader.TryGetMod(self.ModName, out var loadedMod) && self.ModName != nameof(ModLiquidLib))
 			{
 				int liquidCount = loadedMod.GetContent<ModLiquid>().Count();
 

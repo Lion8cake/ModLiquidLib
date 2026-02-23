@@ -1,3 +1,4 @@
-v2025.12.0
+v2026.01 (Beta)
 
-Changes to liquids ignoring tiles both in worldgen and ingame library code (Developers please see ExampleMod (ModLiquid)'s Example Grate to update your mods if they have broken)
+Added the ability to give a liquid a recipe crafting name without needing to register a map entry with a name text
+Prevented ModLiquid Library from displaying "1 Liquid" on the mod enabled page. The liquid added is the unloaded liquid and is not intented to be used in normal gameplay
