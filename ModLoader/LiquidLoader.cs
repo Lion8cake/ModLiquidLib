@@ -208,29 +208,42 @@ namespace ModLiquidLib.ModLoader
 			return ModContent.GetInstance<T>()?.Type ?? 0;
 		}
 
-		public static Condition NearLiquid(int liquidID)
-		{
-			string liquidMapName = "";
-			if (liquidID < MapLiquidLoader.liquidLookup.Length)
-			{
-				liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
-			}
-			LocalizedText text;
-			if (liquidID == LiquidID.Water)
-				text = Language.GetText("Conditions.NearWater");
-			else if (liquidID == LiquidID.Lava)
-				text = Language.GetText("Conditions.NearLava");
-			else if (liquidID == LiquidID.Honey)
-				text = Language.GetText("Conditions.NearHoney");
-			else if (liquidID == LiquidID.Shimmer)
-				text = Language.GetText("Conditions.NearShimmer");
-			else
-				text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(liquidMapName == "" ? LiquidLoader.GetLiquid(liquidID).Name : liquidMapName);
+        public static Condition NearLiquid(int liquidID)
+        {
+            string liquidMapName = "";
+            if (liquidID < MapLiquidLoader.liquidLookup.Length)
+            {
+                liquidMapName = Lang.GetMapObjectName(MapLiquidLoader.liquidLookup[liquidID]);
+            }
+            if (string.IsNullOrEmpty(liquidMapName))
+            {
+                ModLiquid liquid = LiquidLoader.GetLiquid(liquidID);
+                string key = $"Mods.{liquid.Mod.Name}.Liquids.{liquid.Name}.MapEntry"; // this is it's own separate property for readability
+                liquidMapName = Language.GetOrRegister(key, liquid.PrettyPrintName).Value;
+            }
+            LocalizedText text;
+            switch (liquidID)
+            {
+                case LiquidID.Water:
+                    text = Language.GetText("Conditions.NearWater");
+                    break;
+                case LiquidID.Lava:
+                    text = Language.GetText("Conditions.NearLava");
+                    break;
+                case LiquidID.Honey:
+                    text = Language.GetText("Conditions.NearHoney");
+                    break;
+                case LiquidID.Shimmer:
+                    text = Language.GetText("Conditions.NearShimmer");
+                    break;
+                default:
+                    text = Language.GetText("Mods.ModLiquidLib.Conditions.NearLiquid").WithFormatArgs(liquidMapName);
+                    break;
+            }
+            return new Condition(text, () => Main.LocalPlayer.GetAdjLiquids(liquidID));
+        }
 
-			return new Condition(text, () => Main.LocalPlayer.GetAdjLiquids(liquidID));
-		}
-
-		internal static void ResizeArrays(bool unloading = false)
+        internal static void ResizeArrays(bool unloading = false)
 		{
 			if (!Main.dedServ)
 			{
