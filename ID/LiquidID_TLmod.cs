@@ -1,5 +1,6 @@
 ﻿using ModLiquidLib.ModLoader;
 using ReLogic.Reflection;
+using System;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -39,6 +40,7 @@ namespace ModLiquidLib.ID
 				LiquidID.Honey, new List<int>() { ItemID.HoneyAbsorbantSponge, ItemID.UltraAbsorbantSponge });
 
 			/// <summary> Whether or not the NPC can spawn in the liquid specified. NOTE: only works for modded liquids and npcs </summary>
+			[Obsolete("Nolonger Needed")]
 			public static bool[][] CanModdedNPCSpawnInModdedLiquid = NPCID.Sets.Factory.CreateNamedSet("CanModdedNPCSpawnInModdedLiquid")
 				.Description("Whether or not the NPC can spawn in the liquid specified. NOTE: only works for modded liquids and npcs")
 				.RegisterCustomSet(new bool[4]);

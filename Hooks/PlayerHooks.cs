@@ -153,7 +153,7 @@ namespace ModLiquidLib.Hooks
 				if (LiquidID_TLmod.Sets.CreateLiquidBucketItem[tile.LiquidType] != -1)
 				{
 					sItem.stack--;
-					self.PutItemInInventoryFromItemUsage(LiquidID_TLmod.Sets.CreateLiquidBucketItem[tile.LiquidType], self.selectedItem);
+					self.PutItemInInventoryFromItemUsage(LiquidID_TLmod.Sets.CreateLiquidBucketItem[tile.LiquidType]);
 					return true;
 				}
 				return false;
@@ -210,7 +210,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloca(flag_var4);
 			c.EmitDelegate((Player self, ref bool flag) =>
 			{
-				self.adjWater = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[0];
+				self.adjWaterSource = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[0];
 				self.adjLava = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[1];
 				self.adjHoney = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[2];
 				self.adjShimmer = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[3];
@@ -799,21 +799,21 @@ namespace ModLiquidLib.Hooks
 				}
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("trident"), i => i.MatchBrtrue(out IL_82ba), i => i.MatchLdarg(0), i => i.MatchLdloc(out fallThrough_var14), i => i.MatchLdloc(out ignorePlats_var13), i => i.MatchCall<Player>("WaterCollision"), i => i.MatchBr(out IL_838e));
-			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _), i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"), i => i.MatchBrfalse(out _));
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("trident"), i => i.MatchBrtrue(out IL_82ba), i => i.MatchLdarg(0), i => i.MatchLdloc(out fallThrough_var14), i => i.MatchLdloc(out ignorePlats_var13), i => i.MatchCall<Player>("WatCollision"), i => i.MatchBr(out IL_838e));
+			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _));
 			c.EmitLdloc(ignorePlats_var13);
 			c.EmitLdloc(fallThrough_var14);
 			c.EmitDelegate((Player self, bool ignorePlats, bool fallThrough) =>
 			{
+				float num20 = 0.5f;
+				float num21 = 0.5f;
+				float movementSpeed = 0.25f;
+				float num22 = 0.375f;
 				if (self.shimmering)
 				{
-					if (LiquidLoader.PlayerLiquidMovement(LiquidID.Shimmer, self, fallThrough, ignorePlats))
-					{
-						self.ShimmerCollision(fallThrough, ignorePlats, true);
-					}
-					return true;
+					self.position += self.velocity * num22;
 				}
-				else if (self.wet)
+				else
 				{
 					if (LiquidLoader.PlayerLiquidMovement(WetToLiquidID(self), self, fallThrough, ignorePlats))
 					{
@@ -821,17 +821,17 @@ namespace ModLiquidLib.Hooks
 						{
 							ModLiquidCollision(self, WetToLiquidID(self), fallThrough, ignorePlats);
 						}
-						else if (self.shimmerWet || self.shimmering)
+						else if (self.shimmerWet)
 						{
-							self.ShimmerCollision(fallThrough, ignorePlats, self.shimmering);
+							self.WetCollision(fallThrough, ignorePlats, num22);
 						}
 						else if (self.honeyWet && !self.ignoreWater)
 						{
-							self.HoneyCollision(fallThrough, ignorePlats);
+							self.WetCollision(fallThrough, ignorePlats, movementSpeed);
 						}
-						else if (!self.merman && !self.ignoreWater && !self.trident)
+						else if (self.wet && !self.merman && !self.ignoreWater && !self.trident)
 						{
-							self.WaterCollision(fallThrough, ignorePlats);
+							self.WetCollision(fallThrough, ignorePlats, self.lavaWet ? num21 : num20);
 						}
 						else
 						{

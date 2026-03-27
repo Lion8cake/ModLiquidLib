@@ -480,7 +480,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="item">The item instance thats entering or exiting the liquid.</param>
 		/// <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
 		/// <returns></returns>
-		public virtual bool OnItemSplash(Item item, bool isEnter)
+		public virtual bool OnItemSplash(WorldItem item, bool isEnter)
 		{
 			return true;
 		}
@@ -530,7 +530,7 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="wetVelocity">The velocity of the item when in the liquid.</param>
 		/// <param name="gravity">The gravity of the item.</param>
 		/// <param name="maxFallSpeed">The maximum fall speed of the item.</param>
-		public virtual void ItemLiquidCollision(Item item, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
+		public virtual void ItemLiquidCollision(WorldItem item, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed)
 		{
 		}
 

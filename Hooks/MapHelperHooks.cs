@@ -2,6 +2,7 @@
 using ModLiquidLib.IO;
 using ModLiquidLib.ModLoader;
 using MonoMod.Cil;
+using System;
 using Terraria.ID;
 
 namespace ModLiquidLib.Hooks
@@ -22,19 +23,24 @@ namespace ModLiquidLib.Hooks
 			});
 		}
 
-		internal static void AddLiquidMapEntrys(ILContext il)
+		internal static void LiquidMapEntries(MonoMod.Cil.ILContext il)
 		{
 			ILCursor c = new(il);
 			int mapTile_varNum = -1;
 			int mapIndex_varNum = -1;
-			int mapType_varNum = -1;
-			c.GotoNext(MoveType.After, i => i.MatchLdsfld("Terraria.Map.MapHelper", "liquidPosition"), i => i.MatchLdloc(out mapIndex_varNum), i => i.MatchAdd(), i => i.MatchStloc(out mapTile_varNum));
-			c.EmitLdloca(mapTile_varNum);
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(5), i => i.MatchLdsfld("Terraria.Map.MapHelper", "liquidPosition"), i => i.MatchLdloc(out mapIndex_varNum), i => i.MatchAdd(), i => i.MatchStindI4(), i => i.MatchRet());
+			c.EmitLdarga(5);
 			c.EmitLdloc(mapIndex_varNum);
-			c.EmitDelegate((ref int num5, int num7) =>
+			c.EmitDelegate((ref int baseType, int num) =>
 			{
-				num5 = MapLiquidLoader.liquidLookup[num7];
+				baseType = MapLiquidLoader.liquidLookup[num];
 			});
+		}
+
+		internal static void AddLiquidMapEntrys(ILContext il)
+		{
+			ILCursor c = new(il);
+			int mapType_varNum = -1;
 			c.GotoNext(MoveType.After, i => i.MatchLdloca(out mapType_varNum), i => i.MatchLdarg(0), i => i.MatchLdarg(1), i => i.MatchCall("Terraria.ModLoader.MapLoader", "ModMapOption"));
 			c.EmitLdloca(mapType_varNum);
 			c.EmitLdarg(0);

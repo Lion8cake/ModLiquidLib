@@ -26,7 +26,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloca(wetVel_varNum);
 			c.EmitLdloca(grav_varNum);
 			c.EmitLdloca(maxFall_varNum);
-			c.EmitDelegate((Item self, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed) =>
+			c.EmitDelegate((WorldItem self, ref Vector2 wetVelocity, ref float gravity, ref float maxFallSpeed) =>
 			{
 				if (self.shimmerWet)
 				{
@@ -54,7 +54,7 @@ namespace ModLiquidLib.Hooks
 		internal static int WetToLiquidID(WorldItem self)
 		{
 			int modLiquidID = -1;
-			if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+			if (self.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 			{
 				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
 				{
@@ -93,14 +93,14 @@ namespace ModLiquidLib.Hooks
 
 			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>("LavaCollision"), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);
-			c.EmitDelegate((Item self) =>
+			c.EmitDelegate((WorldItem self) =>
 			{
 				LiquidCollision.GetAppropriateWets(self.position, self.width, self.height, out bool[] liquidIn);
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
 					if (liquidIn[i])
 					{
-						if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+						if (self.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 						{
 							liquidItem.moddedWet[i - LiquidID.Count] = true;
 						}
@@ -115,14 +115,14 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdarg(0);
 				if (j == 0)
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Shimmer, self, true);
 					});
 				}
 				else
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Shimmer, self, false);
 					});
@@ -136,14 +136,14 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdarg(0);
 				if (j == 0)
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Honey, self, true);
 					});
 				}
 				else
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Honey, self, false);
 					});
@@ -157,11 +157,11 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdarg(0);
 				if (j == 0)
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 						{
-							if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+							if (self.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 							{
 								if (liquidItem.moddedWet[i - LiquidID.Count])
 								{
@@ -194,11 +194,11 @@ namespace ModLiquidLib.Hooks
 				}
 				else
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 						{
-							if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+							if (self.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 							{
 								if (liquidItem.moddedWet[i - LiquidID.Count])
 								{
@@ -233,14 +233,14 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdarg(0);
 				if (j == 0)
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Water, self, true);
 					});
 				}
 				else
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Water, self, false);
 					});
@@ -254,14 +254,14 @@ namespace ModLiquidLib.Hooks
 				c.EmitLdarg(0);
 				if (j == 0)
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Lava, self, true);
 					});
 				}
 				else
 				{
-					c.EmitDelegate((Item self) =>
+					c.EmitDelegate((WorldItem self) =>
 					{
 						return LiquidLoader.OnItemSplash(LiquidID.Lava, self, false);
 					});
@@ -272,11 +272,11 @@ namespace ModLiquidLib.Hooks
 
 			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("honeyWet"), i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchStfld<Entity>("shimmerWet"));
 			c.EmitLdarg(0);
-			c.EmitDelegate((Item self) =>
+			c.EmitDelegate((WorldItem self) =>
 			{
 				for (int i = LiquidID.Count; i < LiquidLoader.LiquidCount; i++)
 				{
-					if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))
+					if (self.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 					{
 						liquidItem.moddedWet[i - LiquidID.Count] = false;
 					}

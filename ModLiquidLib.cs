@@ -38,7 +38,7 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath += PlayerFileDataHooks.AddLiquidMapFile;
 			IL_WorldMap.Load += WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapHelperHooks.SaveTLMap;
-			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
+			//IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering; //Broken
 			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
@@ -59,7 +59,7 @@ namespace ModLiquidLib
 			IL_Player.Update += PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision += CollisionHooks.LiquidDrownCollisionCheck;
 			IL_Player.CheckDrowning += PlayerHooks.CanPlayerEmitDrowningBubbles;
-			IL_Item.MoveInWorld += ItemHooks.UpdateItemSplash;
+			IL_WorldItem.MoveInWorld += ItemHooks.UpdateItemSplash;
 			IL_NPC.UpdateCollision += NPCHooks.UnwetNPCsAndUpdateWetVel;
 			IL_NPC.Collision_WaterCollision += NPCHooks.UpdateNPCSplash;
 			IL_Projectile.Update += ProjectileHooks.UpdateProjectileSplash;
@@ -80,7 +80,7 @@ namespace ModLiquidLib
 			IL_Player.DryCollision += PlayerHooks.AllowCustomAccessories;
 			On_WaterfallManager.UpdateFrame += WaterfallManagerHooks.AnimateModWaterfall;
 			IL_Main.DrawInfoAccs += MainHooks.ModifyStopWatchLiquidMultipliers;
-			IL_Item.UpdateItem += ItemHooks.EditItemLiquidMovement;
+			IL_WorldItem.UpdateItem += ItemHooks.EditItemLiquidMovement;
 			On_NPC.LazySetLiquidMovementDD2 += NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity += NPCHooks.EditNPCLiquidMovement;
 			IL_Projectile.HandleMovement += ProjectileHooks.EditProjectileLiquidMovement;
@@ -93,15 +93,13 @@ namespace ModLiquidLib
 			IL_Liquid.worldGenTilesIgnoreWater += LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 
 			//1.4.5 Edits
-			IL_Player.PlaceThing_Tiles += PreventTilesPlacingInModdedLiquids;
+			IL_Player.PlaceThing_Tiles += PlayerHooks.PreventTilesPlacingInModdedLiquids;
+			IL_MapHelper.GetWallType += MapHelperHooks.LiquidMapEntries;
 
 			MapHelper.Initialize();
 		}
 
-		private void PreventTilesPlacingInModdedLiquids(MonoMod.Cil.ILContext il)
-		{
-			throw new NotImplementedException();
-		}
+		
 
 		public override void PostSetupContent()
 		{
@@ -141,7 +139,7 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath -= PlayerFileDataHooks.AddLiquidMapFile;
 			IL_WorldMap.Load -= WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap -= MapHelperHooks.SaveTLMap;
-			IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering;
+			//IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering; //Broken
 			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_LiquidRenderer.InternalPrepareDraw -= LiquidRendererHooks.SpawnDustBubbles;
@@ -163,7 +161,7 @@ namespace ModLiquidLib
 			IL_Player.Update -= PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision -= CollisionHooks.LiquidDrownCollisionCheck;
 			IL_Player.CheckDrowning -= PlayerHooks.CanPlayerEmitDrowningBubbles;
-			IL_Item.MoveInWorld -= ItemHooks.UpdateItemSplash;
+			IL_WorldItem.MoveInWorld -= ItemHooks.UpdateItemSplash;
 			IL_NPC.UpdateCollision -= NPCHooks.UnwetNPCsAndUpdateWetVel;
 			IL_NPC.Collision_WaterCollision -= NPCHooks.UpdateNPCSplash;
 			IL_Projectile.Update -= ProjectileHooks.UpdateProjectileSplash;
@@ -184,7 +182,7 @@ namespace ModLiquidLib
 			IL_Player.DryCollision -= PlayerHooks.AllowCustomAccessories;
 			On_WaterfallManager.UpdateFrame -= WaterfallManagerHooks.AnimateModWaterfall;
 			IL_Main.DrawInfoAccs -= MainHooks.ModifyStopWatchLiquidMultipliers;
-			IL_Item.UpdateItem -= ItemHooks.EditItemLiquidMovement;
+			IL_WorldItem.UpdateItem -= ItemHooks.EditItemLiquidMovement;
 			On_NPC.LazySetLiquidMovementDD2 -= NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity -= NPCHooks.EditNPCLiquidMovement;
 			IL_Projectile.HandleMovement -= ProjectileHooks.EditProjectileLiquidMovement;
@@ -195,6 +193,10 @@ namespace ModLiquidLib
 			//IL_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DoAlternativeVanillaSpawning;
 			IL_Liquid.tilesIgnoreWater -= LiquidHooks.IgnoreTilesWhenMovingLiquids;
 			IL_Liquid.worldGenTilesIgnoreWater -= LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
+
+			//1.4.5 Edits
+			IL_Player.PlaceThing_Tiles -= PlayerHooks.PreventTilesPlacingInModdedLiquids;
+			IL_MapHelper.GetWallType -= MapHelperHooks.LiquidMapEntries;
 		}
 
 		public enum MessageType : byte

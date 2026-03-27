@@ -302,7 +302,7 @@
             <param name="type"></param>
             <returns></returns>
         </member>
-        <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.OnItemSplash(Terraria.Item,System.Int32,System.Boolean)">
+        <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.OnItemSplash(Terraria.WorldItem,System.Int32,System.Boolean)">
             <summary>
             Allows you to decide what happens when an item enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when an item enters and leaves. <br/>
             Items now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
@@ -337,7 +337,7 @@
             <param name="jumpHeight">The current Player.jumpHeight being changed.</param>
             <param name="jumpSpeed">The current Player.jumpSpeed being changed.</param>
         </member>
-        <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.ItemLiquidCollision(Terraria.Item,System.Int32,Microsoft.Xna.Framework.Vector2@,System.Single@,System.Single@)">
+        <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.ItemLiquidCollision(Terraria.WorldItem,System.Int32,Microsoft.Xna.Framework.Vector2@,System.Single@,System.Single@)">
             <summary>
             Allows the user to specify how a liquid interacts with an item (especially item gravity and movement). <br/>
             Please see <see cref="P:Terraria.Item.UpdateItem" />, to see how vanilla handles it's liquid collision. <br/> <br/>
@@ -936,7 +936,7 @@
             <param name="isEnter">Whether the currently the liquid is being entered or exited.</param>
             <returns></returns>
         </member>
-        <member name="M:ModLiquidLib.ModLoader.ModLiquid.OnItemSplash(Terraria.Item,System.Boolean)">
+        <member name="M:ModLiquidLib.ModLoader.ModLiquid.OnItemSplash(Terraria.WorldItem,System.Boolean)">
             <summary>
             Allows you to decide what happens when an item enters and exits this liquid. Vanilla liquids use this to spawn dusts and make a splashing noise when an item enters and leaves. <br/>
             Items now also have a moddedWet array to show which modded liquids are being entered in at a time. Please see <see cref="P:ModLiquidLib.Utils.ModLiquidPlayer.moddedWet" /> array on how to use it. <br/>
@@ -976,7 +976,7 @@
             <param name="jumpHeight">The current Player.jumpHeight being changed.</param>
             <param name="jumpSpeed">The current Player.jumpSpeed being changed.</param>
         </member>
-        <member name="M:ModLiquidLib.ModLoader.ModLiquid.ItemLiquidCollision(Terraria.Item,Microsoft.Xna.Framework.Vector2@,System.Single@,System.Single@)">
+        <member name="M:ModLiquidLib.ModLoader.ModLiquid.ItemLiquidCollision(Terraria.WorldItem,Microsoft.Xna.Framework.Vector2@,System.Single@,System.Single@)">
             <summary>
             Allows the user to specify how the liquid interacts with an item (especially item gravity and movement). <br/>
             Please see <see cref="P:Terraria.Item.UpdateItem" />, to see how vanilla handles it's liquid collision. <br/> <br/>
