@@ -258,7 +258,7 @@ namespace ModLiquidLib.IO
 			while (NextTile(ref nextI, ref nextJ))
 			{
 				MapTile nextTile = Main.Map[nextI, nextJ];
-				if (tile.Equals(ref nextTile) && sameCount < uint.MaxValue)
+				if (tile.Equals(nextTile) && sameCount < uint.MaxValue)
 				{
 					sameCount++;
 					i = nextI;

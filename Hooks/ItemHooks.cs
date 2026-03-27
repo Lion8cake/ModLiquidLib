@@ -51,7 +51,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(0);
 		}
 
-		internal static int WetToLiquidID(Item self)
+		internal static int WetToLiquidID(WorldItem self)
 		{
 			int modLiquidID = -1;
 			if (self.TryGetGlobalItem(out ModLiquidItem liquidItem))

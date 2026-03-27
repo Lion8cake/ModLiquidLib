@@ -24,7 +24,7 @@ namespace ModLiquidLib.Hooks
 		internal static void UpdateLiquidArrayFrames(On_LiquidRenderer.orig_Update orig, LiquidRenderer self, GameTime gameTime)
 		{
 			orig.Invoke(self, gameTime);
-			if (!Main.gamePaused && Main.hasFocus)
+			if (!FocusHelper.PauseLiquidRenderer)
 			{
 				for (int i = 0; i < liquidFrameState.Length; i++)
 				{

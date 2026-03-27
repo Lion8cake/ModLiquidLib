@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace ModLiquidLib.Hooks
 {
@@ -227,9 +228,9 @@ namespace ModLiquidLib.Hooks
 		internal static void PreventLiquidBlockswap(ILContext il)
 		{
 			ILCursor c = new(il);
-			ILLabel IL_005f = c.DefineLabel();
+			ILLabel IL_005e = c.DefineLabel();
 
-			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Player>("tileTargetX"), i => i.MatchLdsfld<Player>("tileTargetY"), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _));
+			c.GotoNext(MoveType.After, i => i.MatchLdsfld<Player>(nameof(Player.tileTargetX)), i => i.MatchLdsfld<Player>(nameof(Player.tileTargetY)), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
@@ -237,37 +238,87 @@ namespace ModLiquidLib.Hooks
 				{
 					if (LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, i))
 					{
-						return !WorldGen.WouldTileReplacementBeBlockedByLiquid(Player.tileTargetX, Player.tileTargetY, i);
+						return !WouldTileReplacementBeBlockedByLiquid(Player.tileTargetX, Player.tileTargetY, i);
 					}
 				}
 				return true;
 			});
-			c.EmitBrtrue(IL_005f);
+			c.EmitBrtrue(IL_005e);
 			c.EmitLdcI4(0);
 			c.EmitRet();
-			c.MarkLabel(IL_005f);
+			c.MarkLabel(IL_005e);
 
-			c.GotoNext(MoveType.Before, i => i.MatchCall<WorldGen>("WouldTileReplacementBeBlockedByLiquid"), i => i.MatchBrfalse(out _));
-			c.EmitLdarg(0);
-			c.EmitDelegate((int lavaID, Player self) =>
+			//ILLabel IL_005f = c.DefineLabel();
+
+			//c.GotoNext(MoveType.After, i => i.MatchLdsfld<Player>("tileTargetX"), i => i.MatchLdsfld<Player>("tileTargetY"), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _));
+			//c.EmitLdarg(0);
+			//c.EmitDelegate((Player self) =>
+			//{
+			//	for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+			//	{
+			//		if (LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, i))
+			//		{
+			//			return !WorldGen.WouldTileReplacementBeBlockedByLiquid(Player.tileTargetX, Player.tileTargetY, i);
+			//		}
+			//	}
+			//	return true;
+			//});
+			//c.EmitBrtrue(IL_005f);
+			//c.EmitLdcI4(0);
+			//c.EmitRet();
+			//c.MarkLabel(IL_005f);
+
+			//c.GotoNext(MoveType.Before, i => i.MatchCall<WorldGen>("WouldTileReplacementBeBlockedByLiquid"), i => i.MatchBrfalse(out _));
+			//c.EmitLdarg(0);
+			//c.EmitDelegate((int lavaID, Player self) =>
+			//{
+			//	if (LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, lavaID))
+			//	{
+			//		return lavaID;
+			//	}
+			//	return -1;
+			//});
+		}
+
+		public static bool WouldTileReplacementBeBlockedByLiquid(int x, int y, int liquidType)
+		{
+			if ((Main.tile[x - 1, y].LiquidAmount <= 0 || Main.tile[x - 1, y].LiquidType != liquidType) && (Main.tile[x + 1, y].LiquidAmount <= 0 || Main.tile[x + 1, y].LiquidType != liquidType))
 			{
-				if (LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, lavaID))
+				if (Main.tile[x, y - 1].LiquidAmount > 0)
 				{
-					return lavaID;
+					return Main.tile[x, y - 1].LiquidType == liquidType;
 				}
-				return -1;
+				return false;
+			}
+			return true;
+		}
+
+		internal static void PreventTilesPlacingInModdedLiquids(ILContext il)
+		{
+			ILCursor c = new(il);
+			c.GotoNext(MoveType.After, i => i.MatchStfld<Player>(nameof(Player.cursorItemIconEnabled)));
+			c.EmitLdarg(0);
+			c.EmitDelegate((Player self) =>
+			{
+				PlaceThing_Tiles_CheckLiquidBlocking(self);
 			});
 		}
 
-		internal static void PreventPlacingTilesInLiquids(ILContext il)
+		private static bool PlaceThing_Tiles_CheckLiquidBlocking(Player self)
 		{
-			ILCursor c = new(il);
-			c.GotoNext(MoveType.After, i => i.MatchCall<Tile>("lava"));
-			c.EmitLdarg(0);
-			c.EmitDelegate((bool isLavaTile, Player self) =>
+			bool result = false;
+			if (Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidAmount > 0 && LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidType))
 			{
-				return LiquidLoader.BlocksTilePlacement(self, Player.tileTargetX, Player.tileTargetY, Main.tile[Player.tileTargetX, Player.tileTargetY].LiquidType);
-			});
+				if (Main.tileSolid[self.inventory[self.selectedItem].createTile])
+				{
+					result = true;
+				}
+				else if (!TileObjectData.CheckLiquidPlacement(self.inventory[self.selectedItem].createTile, self.inventory[self.selectedItem].placeStyle, Main.tile[Player.tileTargetX, Player.tileTargetY]))
+				{
+					result = true;
+				}
+			}
+			return result;
 		}
 
 		internal static void PreventRopePlacingInLiquid(ILContext il)

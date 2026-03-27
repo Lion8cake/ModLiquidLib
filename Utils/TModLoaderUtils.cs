@@ -163,16 +163,16 @@ namespace ModLiquidLib.Utils
 				return proj.wet;
 		}
 
-		public static bool[] GetModdedWetArray(this Item item)
+		public static bool[] GetModdedWetArray(this WorldItem item)
 		{
-			if (item.TryGetGlobalItem(out ModLiquidItem liquidItem))
+			if (item.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 			{
 				return liquidItem.moddedWet;
 			}
 			return new bool[LiquidLoader.LiquidCount - LiquidID.Count];
 		}
 
-		public static bool GetWet(this Item item, int liquidID)
+		public static bool GetWet(this WorldItem item, int liquidID)
 		{
 			if (liquidID == 1)
 				return item.lavaWet;
@@ -182,7 +182,7 @@ namespace ModLiquidLib.Utils
 				return item.shimmerWet;
 			else if (liquidID >= LiquidID.Count)
 			{
-				if (item.TryGetGlobalItem(out ModLiquidItem liquidItem))
+				if (item.inner.TryGetGlobalItem(out ModLiquidItem liquidItem))
 				{
 					return liquidItem.moddedWet[liquidID - LiquidID.Count];
 				}
@@ -206,9 +206,9 @@ namespace ModLiquidLib.Utils
 			{
 				return proj.GetGlobalProjectile<ModLiquidProjectile>().moddedWet;
 			}
-			if (entity is Item item)
+			if (entity is WorldItem item)
 			{
-				item.TryGetGlobalItem(out ModLiquidItem liquidItem);
+				item.inner.TryGetGlobalItem(out ModLiquidItem liquidItem);
 				return liquidItem.moddedWet;
 			}
 			return new bool[LiquidLoader.LiquidCount - LiquidID.Count];
@@ -228,7 +228,7 @@ namespace ModLiquidLib.Utils
 			{
 				return proj.GetWet(liquidID);
 			}
-			if (entity is Item item)
+			if (entity is WorldItem item)
 			{
 				return item.GetWet(liquidID);
 			}

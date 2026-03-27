@@ -363,7 +363,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(1);
 			c.EmitDelegate((Tile tile5, int thisLiquidType, int liquidMergeType, int x, int y) =>
 			{
-				if (!WorldGen.gen)
+				if (!Main.gameMenu && !WorldGen.isGeneratingOrLoadingWorld)
 				{
 					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType);
 				}
@@ -430,7 +430,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdarg(1);
 			c.EmitDelegate((Tile tile5, int thisLiquidType, int liquidMergeType2, int x, int y) =>
 			{
-				if (!WorldGen.gen)
+				if (!Main.gameMenu && !WorldGen.isGeneratingOrLoadingWorld)
 				{
 					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType2);
 				}

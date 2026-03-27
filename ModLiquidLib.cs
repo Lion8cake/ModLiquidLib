@@ -54,7 +54,7 @@ namespace ModLiquidLib
 			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles += PlayerHooks.AddLiquidCraftingConditions;
 			IL_Player.PlaceThing_ValidTileForReplacement += PlayerHooks.PreventLiquidBlockswap;
-			IL_Player.PlaceThing_Tiles_CheckLavaBlocking += PlayerHooks.PreventPlacingTilesInLiquids;
+			//IL_Player.PlaceThing_Tiles_CheckLavaBlocking += PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability += PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update += PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision += CollisionHooks.LiquidDrownCollisionCheck;
@@ -88,11 +88,19 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update += LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer += LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight += WaterfallManagerHooks.SemiFixforWaterfallLighting;
-			IL_NPCLoader.ChooseSpawn += NPCLoaderHooks.DoAlternativeVanillaSpawning;
+			//IL_NPCLoader.ChooseSpawn += NPCLoaderHooks.DoAlternativeVanillaSpawning;
 			IL_Liquid.tilesIgnoreWater += LiquidHooks.IgnoreTilesWhenMovingLiquids;
 			IL_Liquid.worldGenTilesIgnoreWater += LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 
+			//1.4.5 Edits
+			IL_Player.PlaceThing_Tiles += PreventTilesPlacingInModdedLiquids;
+
 			MapHelper.Initialize();
+		}
+
+		private void PreventTilesPlacingInModdedLiquids(MonoMod.Cil.ILContext il)
+		{
+			throw new NotImplementedException();
 		}
 
 		public override void PostSetupContent()
@@ -104,14 +112,14 @@ namespace ModLiquidLib
 
 			for (int i = 0; i < TileLoader.TileCount; i++)
 			{
-				if (TileID.Sets.CountsAsWaterSource[i])
-					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Water] = TileID.Sets.CountsAsWaterSource[i];
-				if (TileID.Sets.CountsAsLavaSource[i])
-					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Lava] = TileID.Sets.CountsAsLavaSource[i];
-				if (TileID.Sets.CountsAsHoneySource[i])
-					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Honey] = TileID.Sets.CountsAsHoneySource[i];
-				if (TileID.Sets.CountsAsShimmerSource[i])
-					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Shimmer] = TileID.Sets.CountsAsShimmerSource[i];
+				if (TileID.Sets.CountsAsWaterForCrafting[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Water] = TileID.Sets.CountsAsWaterForCrafting[i];
+				if (TileID.Sets.CountsAsLavaForCrafting[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Lava] = TileID.Sets.CountsAsLavaForCrafting[i];
+				if (TileID.Sets.CountsAsHoneyForCrafting[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Honey] = TileID.Sets.CountsAsHoneyForCrafting[i];
+				if (TileID.Sets.CountsAsShimmerForCrafting[i])
+					LiquidID_TLmod.Sets.CountsAsLiquidSource[i][LiquidID.Shimmer] = TileID.Sets.CountsAsShimmerForCrafting[i];
 			}
 		}
 
@@ -150,7 +158,7 @@ namespace ModLiquidLib
 			IL_NetMessage.DecompressTileBlock_Inner -= NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles -= PlayerHooks.AddLiquidCraftingConditions;
 			IL_Player.PlaceThing_ValidTileForReplacement -= PlayerHooks.PreventLiquidBlockswap;
-			IL_Player.PlaceThing_Tiles_CheckLavaBlocking -= PlayerHooks.PreventPlacingTilesInLiquids;
+			//IL_Player.PlaceThing_Tiles_CheckLavaBlocking -= PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability -= PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update -= PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision -= CollisionHooks.LiquidDrownCollisionCheck;
@@ -184,7 +192,7 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update -= LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer -= LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight -= WaterfallManagerHooks.SemiFixforWaterfallLighting;
-			IL_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DoAlternativeVanillaSpawning;
+			//IL_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DoAlternativeVanillaSpawning;
 			IL_Liquid.tilesIgnoreWater -= LiquidHooks.IgnoreTilesWhenMovingLiquids;
 			IL_Liquid.worldGenTilesIgnoreWater -= LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 		}
