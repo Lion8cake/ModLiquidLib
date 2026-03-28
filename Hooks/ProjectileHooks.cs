@@ -23,29 +23,31 @@ namespace ModLiquidLib.Hooks
 			int wetX_varNum = -1;
 			int wetY_varNum = -1;
 			int fallthrough_varNum = -1;
+			int ignoreDoor_varNum = -1;
 
 			c.GotoNext(MoveType.After, i => i.MatchBr(out IL_0e54), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"), i => i.MatchBrfalse(out _));
-			c.GotoNext(MoveType.After, i => i.MatchLdloc(out wetPos_varNum), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("velocity"), i => i.MatchLdloc(out wetX_varNum), i => i.MatchLdloc(out wetY_varNum), i => i.MatchLdloc(out fallthrough_varNum), i => i.MatchLdloc(fallthrough_varNum), i => i.MatchLdcI4(1), i => i.MatchCall<Collision>("TileCollision"));
+			c.GotoNext(MoveType.After, i => i.MatchLdloc(out wetPos_varNum), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("velocity"), i => i.MatchLdloc(out wetX_varNum), i => i.MatchLdloc(out wetY_varNum), i => i.MatchLdloc(out fallthrough_varNum), i => i.MatchLdloc(fallthrough_varNum), i => i.MatchLdcI4(1), i => i.MatchLdloc(out ignoreDoor_varNum), i => i.MatchLdcI4(0), i => i.MatchLdcI4(1), i => i.MatchCall<Collision>("TileCollision"));
 			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"));
 			c.EmitLdarga(1);
 			c.EmitLdloc(wetPos_varNum);
 			c.EmitLdloc(wetX_varNum);
 			c.EmitLdloc(wetY_varNum);
 			c.EmitLdloc(fallthrough_varNum);
-			c.EmitDelegate((Projectile self, ref Vector2 wetVelocity, Vector2 vector12, int num12, int num23, bool flag11) =>
+			c.EmitLdloc(ignoreDoor_varNum);
+			c.EmitDelegate((Projectile self, ref Vector2 wetVelocity, Vector2 vector, int colWidth, int colHeight, bool flag6, bool ignoreDoors) =>
 			{
-				if (LiquidLoader.ProjectileLiquidMovement(WetToLiquidID(self), self, ref wetVelocity, vector12, num12, num23, flag11))
+				if (LiquidLoader.ProjectileLiquidMovement(WetToLiquidID(self), self, ref wetVelocity, vector, colWidth, colHeight, flag6, ignoreDoors))
 				{
 					if (hasModdedWet(self))
 					{
-						Vector2 vector = self.velocity;
-						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						Vector2 vector19 = self.velocity;
+						self.velocity = Collision.TileCollision(vector, self.velocity, colWidth, colHeight, flag6, flag6, 1, ignoreDoors);
 						wetVelocity = self.velocity * LiquidLoader.GetLiquid(WetToLiquidID(self)).ProjectileMovementMultiplier;
-						if (self.velocity.X != vector.X)
+						if (self.velocity.X != vector19.X)
 						{
 							wetVelocity.X = self.velocity.X;
 						}
-						if (self.velocity.Y != vector.Y)
+						if (self.velocity.Y != vector19.Y)
 						{
 							wetVelocity.Y = self.velocity.Y;
 						}
@@ -53,7 +55,7 @@ namespace ModLiquidLib.Hooks
 					else if (self.shimmerWet)
 					{
 						Vector2 vector20 = self.velocity;
-						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						self.velocity = Collision.TileCollision(vector, self.velocity, colWidth, colHeight, flag6, flag6, 1, ignoreDoors);
 						wetVelocity = self.velocity * 0.375f;
 						if (self.velocity.X != vector20.X)
 						{
@@ -67,7 +69,7 @@ namespace ModLiquidLib.Hooks
 					else if (self.honeyWet)
 					{
 						Vector2 vector21 = self.velocity;
-						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						self.velocity = Collision.TileCollision(vector, self.velocity, colWidth, colHeight, flag6, flag6, 1, ignoreDoors);
 						wetVelocity = self.velocity * 0.25f;
 						if (self.velocity.X != vector21.X)
 						{
@@ -81,7 +83,7 @@ namespace ModLiquidLib.Hooks
 					else
 					{
 						Vector2 vector22 = self.velocity;
-						self.velocity = Collision.TileCollision(vector12, self.velocity, num12, num23, flag11, flag11);
+						self.velocity = Collision.TileCollision(vector, self.velocity, colWidth, colHeight, flag6, flag6, 1, ignoreDoors);
 						wetVelocity = self.velocity * 0.5f;
 						if (self.velocity.X != vector22.X)
 						{

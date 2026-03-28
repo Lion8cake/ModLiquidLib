@@ -2,6 +2,7 @@
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using MonoMod.Cil;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -27,21 +28,12 @@ namespace ModLiquidLib.Hooks
 			c.EmitBr(IL_0000);
 		}
 
-		internal static void IgnoreTilesWhenMovingLiquids(ILContext il)
+		internal static void IgnoreTilesWhenMovingLiquids(On_Liquid.orig_tilesIgnoreWater orig, bool ignoreSolids)
 		{
-			ILCursor c = new ILCursor(il);
-			ILLabel IL_0000 = c.DefineLabel();
-			c.GotoNext(MoveType.After, i => i.MatchLdcI4(546), i => i.MatchLdarg(0), i => i.MatchLdcI4(0), i => i.MatchCeq(), i => i.MatchStelemI1());
-			c.MarkLabel(IL_0000);
-			c.GotoPrev(MoveType.Before, i => i.MatchLdsfld<Main>(nameof(Main.tileSolid)), i => i.MatchLdcI4(138));
-			c.EmitLdarg(0);
-			c.EmitDelegate((bool ignoreSolids) =>
-			{
-				foreach (int tileType in LiquidID_TLmod.Sets.IgnoresWater)
-					Main.tileSolid[tileType] = !ignoreSolids;
-
-			});
-			c.EmitBr(IL_0000);
+			foreach (int tileType in LiquidID_TLmod.Sets.IgnoresWater)
+				Main.tileSolid[tileType] = !ignoreSolids;
+			return;
+			orig.Invoke(ignoreSolids); //pretty much what the old IL edit did
 		}
 
 		internal static void EditLiquidTileTransformations(ILContext il)
@@ -144,7 +136,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitBrtrue(IL_00cf);
 			c.EmitRet();
 
-			c.GotoNext(MoveType.Before, i => i.MatchBrtrue(out _), i => i.MatchLdloca(Tile5_var4), i => i.MatchCall<Tile>("get_liquid"), i => i.MatchLdindU1(), i => i.MatchLdcI4(0), i => i.MatchBle(out _));
+			c.GotoNext(MoveType.Before, i => i.MatchBrtrue(out _), i => i.MatchLdloca(Tile5_var4), i => i.MatchCall<Tile>("get_liquid"), i => i.MatchLdindU1(), i => i.MatchLdcI4(0));
 			c.EmitLdloc(Tile5_var4);
 			c.EmitDelegate((bool origLiquidID, Tile tile5) =>
 			{
@@ -156,14 +148,14 @@ namespace ModLiquidLib.Hooks
 				return !(bool)flag;
 			});
 
-			c.GotoNext(MoveType.Before, i => i.MatchCall<Tile>("lava"), i => i.MatchBrfalse(out _)); //Jump around the liquid to liquid collision for reimplementation later
+			c.GotoNext(MoveType.Before, i => i.MatchCall<Tile>("lava")); //Jump around the liquid to liquid collision for reimplementation later
 			c.EmitDelegate((ref int tile5) => { }); //the consumer (eats the tile 5)
 			c.EmitBr(IL_0331);
 			c.EmitLdloca(Tile5_var4);
 			c.GotoNext(MoveType.Before, i => i.MatchLdloca(Tile4_var3), i => i.MatchCall<Tile>("nactive"), i => i.MatchBrfalse(out _));
 			c.MarkLabel(IL_0331);
 
-			c.GotoPrev(MoveType.Before, i => i.MatchCall<Tile>("lava"), i => i.MatchBrfalse(out _));
+			c.GotoPrev(MoveType.Before, i => i.MatchCall<Tile>("lava"));
 			c.GotoNext(MoveType.After, i => i.MatchLdloca(Tile4_var3), i => i.MatchCall<Tile>("nactive"));
 			c.EmitLdarg(0);
 			c.EmitLdloc(Tile5_var4);
@@ -287,7 +279,7 @@ namespace ModLiquidLib.Hooks
 
 			c.Index = 0;
 
-			c.GotoNext(MoveType.After, i => i.MatchBeq(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out num_var5));
+			c.GotoNext(MoveType.After, i => i.MatchBr(out _), i => i.MatchLdcI4(1), i => i.MatchStloc(out _), i => i.MatchLdcI4(0), i => i.MatchStloc(out num_var5));
 			c.EmitLdcI4(56);
 			c.EmitStloc(liquidMergeTileType_var6);
 			c.EmitLdcI4(0);
@@ -355,48 +347,7 @@ namespace ModLiquidLib.Hooks
 			c.GotoNext(MoveType.Before, i => i.MatchLdloc(num_var5), i => i.MatchLdcI4(24), i => i.MatchBlt(out _));
 			c.MarkLabel(IL_0000);
 
-			c.GotoNext(MoveType.Before, i => i.MatchVolatile(), i => i.MatchLdsfld<WorldGen>("gen"), i => i.MatchBrtrue(out _));
-			c.EmitLdloc(tile5_var4);
-			c.EmitLdarg(2);
-			c.EmitLdloc(liquidMergeType_var7);
-			c.EmitLdarg(0);
-			c.EmitLdarg(1);
-			c.EmitDelegate((Tile tile5, int thisLiquidType, int liquidMergeType, int x, int y) =>
-			{
-				if (!Main.gameMenu && !WorldGen.isGeneratingOrLoadingWorld)
-				{
-					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType);
-				}
-				if (Main.netMode == NetmodeID.Server)
-				{
-					ModPacket packet = ModContent.GetInstance<ModLiquidLib>().GetPacket();
-					packet.Write((byte)ModLiquidLib.MessageType.SyncCollisionSounds);
-					packet.Write(x);
-					packet.Write(y);
-					packet.Write(thisLiquidType);
-					packet.Write(liquidMergeType);
-					packet.Send();
-				}
-			});
-
-			//Force-fully places a tile if its not frame important. This is due to some non-frame important tiles not placing correctly.
-			c.GotoNext(MoveType.After, i => i.MatchCall<WorldGen>("PlaceTile"));
-			c.EmitLdloc(liquidMergeTileType_var6);
-			c.EmitLdarg(0);
-			c.EmitLdarg(1);
-			c.EmitDelegate((bool resultOfPlaceTile, int liquidMergeTileType, int x, int y) =>
-			{
-				if (!Main.tileFrameImportant[liquidMergeTileType])
-				{
-					Tile placedTile = Main.tile[x, y];
-					placedTile.TileType = (ushort)liquidMergeTileType;
-					placedTile.HasTile = true;
-				}
-				return resultOfPlaceTile;
-			});
-
-			c.GotoNext(MoveType.Before, i => i.MatchLdcI4(0), i => i.MatchStindI1(), i => i.MatchLdarg(2), i => i.MatchLdcI4(1), i => i.MatchSub());
-			c.GotoPrev(MoveType.Before, i => i.MatchLdloca(tile5_var4));
+			c.GotoNext(MoveType.Before, i => i.MatchLdloca(tile5_var4), i => i.MatchCall<Tile>("get_liquid"), i => i.MatchLdcI4(0), i => i.MatchStindI1(), i => i.MatchLdloca(tile4_var3), i => i.MatchCall<Tile>("get_liquid"));
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
 			c.EmitLdarg(2);
@@ -421,18 +372,22 @@ namespace ModLiquidLib.Hooks
 			c.EmitBrtrue(IL_0000_3);
 			c.EmitRet();
 			c.MarkLabel(IL_0000_3);
+		}
 
-			c.GotoNext(MoveType.Before, i => i.MatchLdsfld<Main>("gameMenu"), i => i.MatchBrtrue(out _));
-			c.EmitLdloc(tile5_var4);
+		internal static void LiquidMergeTileCreation(MonoMod.Cil.ILContext il)
+		{
+			ILCursor c = new(il);
+
+			c.GotoNext(MoveType.Before, i => i.MatchBrtrue(out _), i => i.MatchVolatile(), i => i.MatchLdsfld<WorldGen>(nameof(WorldGen.isGeneratingOrLoadingWorld)));
 			c.EmitLdarg(2);
-			c.EmitLdloc(liquidMergeType2_var15);
+			c.EmitLdarg(3);
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
-			c.EmitDelegate((Tile tile5, int thisLiquidType, int liquidMergeType2, int x, int y) =>
+			c.EmitDelegate((bool gameMenu, int thisLiquidType, int liquidMergeType, int x, int y) =>
 			{
 				if (!Main.gameMenu && !WorldGen.isGeneratingOrLoadingWorld)
 				{
-					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType2);
+					PlayLiquidChangeSound(x, y, thisLiquidType, liquidMergeType);
 				}
 				if (Main.netMode == NetmodeID.Server)
 				{
@@ -441,25 +396,29 @@ namespace ModLiquidLib.Hooks
 					packet.Write(x);
 					packet.Write(y);
 					packet.Write(thisLiquidType);
-					packet.Write(liquidMergeType2);
+					packet.Write(liquidMergeType);
 					packet.Send();
 				}
+				return gameMenu;
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchCall<WorldGen>("PlaceTile"));
-			c.EmitLdloc(liquidMergeTileType2_var14);
-			c.EmitLdarg(0);
-			c.EmitLdarg(1);
-			c.EmitDelegate((bool resultOfPlaceTile, int liquidMergeTileType2, int x, int y) =>
-			{
-				if (!Main.tileFrameImportant[liquidMergeTileType2])
-				{
-					Tile placedTile = Main.tile[x, y + 1];
-					placedTile.TileType = (ushort)liquidMergeTileType2;
-					placedTile.HasTile = true;
-				}
-				return resultOfPlaceTile;
-			});
+
+			//Force-fully places a tile if its not frame important. This is due to some non-frame important tiles not placing correctly.
+			//Might be outdated as of 1.4.5.0
+			//c.GotoNext(MoveType.After, i => i.MatchCall<WorldGen>("PlaceTile"));
+			//c.EmitLdloc(liquidMergeTileType_var6);
+			//c.EmitLdarg(0);
+			//c.EmitLdarg(1);
+			//c.EmitDelegate((bool resultOfPlaceTile, int liquidMergeTileType, int x, int y) =>
+			//{
+			//	if (!Main.tileFrameImportant[liquidMergeTileType])
+			//	{
+			//		Tile placedTile = Main.tile[x, y];
+			//		placedTile.TileType = (ushort)liquidMergeTileType;
+			//		placedTile.HasTile = true;
+			//	}
+			//	return resultOfPlaceTile;
+			//});
 		}
 
 		public static void PlayLiquidChangeSound(int x, int y, int type, int otherLiquid)

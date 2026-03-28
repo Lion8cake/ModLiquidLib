@@ -27,7 +27,7 @@ namespace ModLiquidLib
 		public override void Load()
 		{
 			TModLoaderUtils.Load();
-
+			//56/67 fixed (also contains commented out methods) (83.58%)
 			On_ModContent.ResizeArrays += ModContentHooks.ResizeArraysLiquid;
 			On_WaterfallStylesLoader.ResizeArrays += LiquidFallLoader.ResizeMoreFallArrays;
 			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray; //stuff to be done BEFORE resizing arrays
@@ -39,7 +39,7 @@ namespace ModLiquidLib
 			IL_WorldMap.Load += WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapHelperHooks.SaveTLMap;
 			//IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering; //Broken
-			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
+			//IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering; //Broken
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
@@ -54,7 +54,6 @@ namespace ModLiquidLib
 			IL_NetMessage.DecompressTileBlock_Inner += NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles += PlayerHooks.AddLiquidCraftingConditions;
 			IL_Player.PlaceThing_ValidTileForReplacement += PlayerHooks.PreventLiquidBlockswap;
-			//IL_Player.PlaceThing_Tiles_CheckLavaBlocking += PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability += PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update += PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision += CollisionHooks.LiquidDrownCollisionCheck;
@@ -70,7 +69,7 @@ namespace ModLiquidLib
 			On_TileLightScanner.GetTileMask += TileLightScannerHooks.EditLiquidMaskdMode;
 			On_Projectile.FishingCheck_RollEnemySpawns += ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop += ProjectileHooks.ShimmerFishingItemFix;
-			IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport;
+			//IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport; //Broken
 			IL_WaterShaderData.DrawWaves += WaterShaderDataHooks.EditWaveSize;
 			IL_LightMap.BlurLine += LightMapHooks.ModifyLiquidMaskMode;
 			On_Main.DrawTileInWater += MainHooks.RenderWaterTiles;
@@ -83,23 +82,22 @@ namespace ModLiquidLib
 			IL_WorldItem.UpdateItem += ItemHooks.EditItemLiquidMovement;
 			On_NPC.LazySetLiquidMovementDD2 += NPCHooks.ResetLiquidMovementMultipliersForDD2;
 			IL_NPC.UpdateNPC_UpdateGravity += NPCHooks.EditNPCLiquidMovement;
-			IL_Projectile.HandleMovement += ProjectileHooks.EditProjectileLiquidMovement;
+			IL_Projectile.HandleMovement += ProjectileHooks.EditProjectileLiquidMovement; //Broken
 			IL_NPC.CheckDrowning += NPCHooks.EditBreathDusts;
 			On_LiquidRenderer.Update += LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer += LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight += WaterfallManagerHooks.SemiFixforWaterfallLighting;
-			//IL_NPCLoader.ChooseSpawn += NPCLoaderHooks.DoAlternativeVanillaSpawning;
-			IL_Liquid.tilesIgnoreWater += LiquidHooks.IgnoreTilesWhenMovingLiquids;
+			On_Liquid.tilesIgnoreWater += LiquidHooks.IgnoreTilesWhenMovingLiquids;
 			IL_Liquid.worldGenTilesIgnoreWater += LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 
 			//1.4.5 Edits
 			IL_Player.PlaceThing_Tiles += PlayerHooks.PreventTilesPlacingInModdedLiquids;
 			IL_MapHelper.GetWallType += MapHelperHooks.LiquidMapEntries;
+			IL_Liquid.CreateLiquidMergeTile += LiquidHooks.LiquidMergeTileCreation;
+			IL_NPC.TryRemovingWaterPerishableEffects += NPCHooks.RemoveOnFireDebuffs;
 
 			MapHelper.Initialize();
 		}
-
-		
 
 		public override void PostSetupContent()
 		{
@@ -140,7 +138,7 @@ namespace ModLiquidLib
 			IL_WorldMap.Load -= WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap -= MapHelperHooks.SaveTLMap;
 			//IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering; //Broken
-			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering;
+			//IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering; //Broken
 			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_LiquidRenderer.InternalPrepareDraw -= LiquidRendererHooks.SpawnDustBubbles;
 			IL_WaterfallManager.FindWaterfalls -= WaterfallManagerHooks.EditWaterfallStyle;
@@ -156,7 +154,6 @@ namespace ModLiquidLib
 			IL_NetMessage.DecompressTileBlock_Inner -= NetMessageHooks.RecieveLiquidTypes;
 			IL_Player.AdjTiles -= PlayerHooks.AddLiquidCraftingConditions;
 			IL_Player.PlaceThing_ValidTileForReplacement -= PlayerHooks.PreventLiquidBlockswap;
-			//IL_Player.PlaceThing_Tiles_CheckLavaBlocking -= PlayerHooks.PreventPlacingTilesInLiquids;
 			IL_Player.PlaceThing_Tiles_CheckRopeUsability -= PlayerHooks.PreventRopePlacingInLiquid;
 			IL_Player.Update -= PlayerHooks.PlayerLiquidCollision;
 			IL_Collision.DrownCollision -= CollisionHooks.LiquidDrownCollisionCheck;
@@ -172,7 +169,7 @@ namespace ModLiquidLib
 			On_TileLightScanner.GetTileMask -= TileLightScannerHooks.EditLiquidMaskdMode;
 			On_Projectile.FishingCheck_RollEnemySpawns -= ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop -= ProjectileHooks.ShimmerFishingItemFix;
-			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
+			//IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport; //Broken
 			IL_WaterShaderData.DrawWaves -= WaterShaderDataHooks.EditWaveSize;
 			IL_LightMap.BlurLine -= LightMapHooks.ModifyLiquidMaskMode;
 			On_Main.DrawTileInWater -= MainHooks.RenderWaterTiles;
@@ -190,13 +187,14 @@ namespace ModLiquidLib
 			On_LiquidRenderer.Update -= LiquidRendererHooks.UpdateLiquidArrayFrames;
 			IL_LiquidRenderer.DrawShimmer -= LiquidRendererHooks.EditAnimationField;
 			On_WaterfallManager.AddLight -= WaterfallManagerHooks.SemiFixforWaterfallLighting;
-			//IL_NPCLoader.ChooseSpawn -= NPCLoaderHooks.DoAlternativeVanillaSpawning;
-			IL_Liquid.tilesIgnoreWater -= LiquidHooks.IgnoreTilesWhenMovingLiquids;
+			On_Liquid.tilesIgnoreWater -= LiquidHooks.IgnoreTilesWhenMovingLiquids;
 			IL_Liquid.worldGenTilesIgnoreWater -= LiquidHooks.WorldgenIgnoreTilesWhenMovingLiquids;
 
 			//1.4.5 Edits
 			IL_Player.PlaceThing_Tiles -= PlayerHooks.PreventTilesPlacingInModdedLiquids;
 			IL_MapHelper.GetWallType -= MapHelperHooks.LiquidMapEntries;
+			IL_Liquid.CreateLiquidMergeTile -= LiquidHooks.LiquidMergeTileCreation;
+			IL_NPC.TryRemovingWaterPerishableEffects -= NPCHooks.RemoveOnFireDebuffs;
 		}
 
 		public enum MessageType : byte

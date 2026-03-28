@@ -371,7 +371,7 @@
             <param name="gravity">The gravity of the npc.</param>
             <param name="maxFallSpeed">The maximum fall speed of the npc.</param>
         </member>
-        <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.ProjectileLiquidMovement(Terraria.Projectile,System.Int32,Microsoft.Xna.Framework.Vector2@,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Boolean)">
+        <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.ProjectileLiquidMovement(Terraria.Projectile,System.Int32,Microsoft.Xna.Framework.Vector2@,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Allows the user to specify how a liquid interacts with a projectile (especially projectile movement). <br/>
             Please see <see cref="P:Terraria.Projectile.HandleMovement" />, to see how vanilla handles it's liquid collision. <br/>
@@ -385,6 +385,7 @@
             <param name="Width">The modified width of this projectile.</param>
             <param name="Height">The modified height of this projectile.</param>
             <param name="fallThrough">Whether or not the projectile can fall through.</param>
+            <param name="ignoreDoors">Whether or not the projectile moving ignores doors. Mainly used for pets.</param>
             <returns></returns>
         </member>
         <member name="M:ModLiquidLib.ModLoader.GlobalLiquid.ChecksForDrowning(System.Int32)">
@@ -1007,7 +1008,7 @@
             <param name="gravity">The gravity of the npc.</param>
             <param name="maxFallSpeed">The maximum fall speed of the npc.</param>
         </member>
-        <member name="M:ModLiquidLib.ModLoader.ModLiquid.ProjectileLiquidMovement(Terraria.Projectile,Microsoft.Xna.Framework.Vector2@,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Boolean)">
+        <member name="M:ModLiquidLib.ModLoader.ModLiquid.ProjectileLiquidMovement(Terraria.Projectile,Microsoft.Xna.Framework.Vector2@,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Allows the user to specify how the liquid interacts with a projectile (especially projectile movement). <br/>
             Please see <see cref="P:Terraria.Projectile.HandleMovement" />, to see how vanilla handles it's liquid collision. <br/>
@@ -1020,6 +1021,7 @@
             <param name="Width">The modified width of this projectile.</param>
             <param name="Height">The modified height of this projectile.</param>
             <param name="fallThrough">Whether or not the projectile can fall through.</param>
+            /// <param name="ignoreDoors">Whether or not the projectile moving ignores doors. Mainly used for pets.</param>
             <returns></returns>
         </member>
         <member name="M:ModLiquidLib.ModLoader.ModLiquid.CanPlayerDrown(Terraria.Player,System.Boolean@)">

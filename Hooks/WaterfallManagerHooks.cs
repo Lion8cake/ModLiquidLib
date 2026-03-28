@@ -119,10 +119,21 @@ namespace ModLiquidLib.Hooks
 
 			c.GotoNext( //Gets the IL_149d instruction lable
 				MoveType.After,
+				//i => i.MatchLdloc(out waterfallType_numVar),    //if (Main.drewLava || waterfalls[i].stopAtStep == 0)
+				//i => i.MatchLdcI4(25),                          //{
+				//i => i.MatchCeq(),                              //	   continue;
+				//i => i.MatchBr(out _),                          //}
+				//i => i.MatchLdcI4(1),
+				//i => i.MatchStloc(out _),
+				//i => i.MatchLdloc(out _),
+				//i => i.MatchBrfalse(out _),
+				//i => i.MatchNop(),
+				//i => i.MatchLdsfld<Main>(nameof(Main.drewLava)),
+
 				i => i.MatchLdloc(out waterfallType_numVar),//if (Main.drewLava || waterfalls[i].stopAtStep == 0)
-				i => i.MatchLdcI4(25),						//{
-				i => i.MatchBneUn(out _),					//	   continue;
-				i => i.MatchLdsfld<Main>("drewLava"),		//}
+				i => i.MatchLdcI4(25),                      //{
+				i => i.MatchBneUn(out _),                   //	   continue;
+				i => i.MatchLdsfld<Main>("drewLava"),       //}
 				i => i.MatchBrtrue(out IL_149d)); //used to get the ILLable from the continue
 			c.GotoPrev( //Goes to after the intialisation of variables 3 through to 15. This is just before the drawing of lava, honey and shimmer waterfalls
 				MoveType.Before,
@@ -155,6 +166,8 @@ namespace ModLiquidLib.Hooks
 				return regularFrame;
 			});
 
+			//c.GotoNext(MoveType.After, i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(12), i => i.MatchBeq(out IL_0a27), i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(22));
+			//c.GotoNext(MoveType.Before, i => i.MatchLdloc(out _), i => i.MatchLdcI4(16));
 			c.GotoNext(MoveType.After, i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(12), i => i.MatchBeq(out _), i => i.MatchLdloc(waterfallType_numVar), i => i.MatchLdcI4(22), i => i.MatchBeq(out IL_0a27));
 			c.EmitLdloc(waterfallType_numVar);
 			c.EmitDelegate((int style) =>

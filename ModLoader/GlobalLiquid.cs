@@ -462,8 +462,9 @@ namespace ModLiquidLib.ModLoader
 		/// <param name="Width">The modified width of this projectile.</param>
 		/// <param name="Height">The modified height of this projectile.</param>
 		/// <param name="fallThrough">Whether or not the projectile can fall through.</param>
+		/// <param name="ignoreDoors">Whether or not the projectile moving ignores doors. Mainly used for pets.</param>
 		/// <returns></returns>
-		public virtual bool ProjectileLiquidMovement(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
+		public virtual bool ProjectileLiquidMovement(Projectile projectile, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough, bool ignoreDoors)
 		{
 			return true;
 		}

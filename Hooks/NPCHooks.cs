@@ -3,6 +3,7 @@ using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
 using ModLiquidLib.Utils.LiquidContent;
 using MonoMod.Cil;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -252,12 +253,35 @@ namespace ModLiquidLib.Hooks
 			c.EmitBr(IL_00f6);
 		}
 
+		internal static void RemoveOnFireDebuffs(ILContext il)
+		{
+			ILCursor c = new(il);
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(1));
+			c.EmitLdarg(0);
+			c.EmitDelegate((bool isInLava, NPC self) =>
+			{
+				bool putsOutOnfire = true;
+				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+				{
+					if (self.GetWet(i))
+					{
+						if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireDebuffs)
+						{
+							putsOutOnfire = false;
+						}
+					}
+				}
+				return !(!isInLava && putsOutOnfire);
+			});
+		}
+
 		internal static void UpdateNPCSplash(ILContext il)
 		{
 			ILCursor c = new(il);
 			ILLabel[] IL_0000 = new ILLabel[8];
 
-			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>("WetCollision"), i => i.MatchStloc(out _));
+			c.GotoNext(MoveType.After, i => i.MatchCall<Collision>(nameof(Collision.WetCollision)), i => i.MatchStloc(out _));
 			c.EmitLdarg(0);
 			c.EmitDelegate((NPC self) =>
 			{
@@ -294,23 +318,23 @@ namespace ModLiquidLib.Hooks
 					LiquidLoader.OnNPCCollision(LiquidID.Water, self);
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdfld<NPC>("onFire"));
-			c.EmitLdarg(0);
-			c.EmitDelegate((bool onFire, NPC self) =>
-			{
-				bool putsOutOnfire = true;
-				for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
-				{
-					if (self.GetWet(i))
-					{
-						if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireDebuffs)
-						{
-							putsOutOnfire = false;
-						}
-					}
-				}
-				return onFire && putsOutOnfire;
-			});
+			//c.GotoNext(MoveType.After, i => i.MatchLdfld<NPC>("onFire"));
+			//c.EmitLdarg(0);
+			//c.EmitDelegate((bool onFire, NPC self) =>
+			//{
+			//	bool putsOutOnfire = true;
+			//	for (int i = LiquidLoader.LiquidCount - 1; i >= LiquidID.Count; i--)
+			//	{
+			//		if (self.GetWet(i))
+			//		{
+			//			if (!LiquidLoader.GetLiquid(i).ExtinguishesOnFireDebuffs)
+			//			{
+			//				putsOutOnfire = false;
+			//			}
+			//		}
+			//	}
+			//	return onFire && putsOutOnfire;
+			//});
 
 			for (int j = 0; j < 2; j++)
 			{

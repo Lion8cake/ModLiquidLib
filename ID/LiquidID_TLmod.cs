@@ -20,7 +20,7 @@ namespace ModLiquidLib.ID
 			.RegisterCustomSet(new bool[4]);
 
 			/// <summary> Whether or not the tile is non-solid to liquids, allowing them to flow through. </summary>
-			public static List<int> IgnoresWater = new List<int> { 138, 484, 546 };
+			public static List<int> IgnoresWater = new List<int> { 138, 484, 546, 664, 711, 712, 713, 714, 715, 716 };
 
 			/// <summary> Whether or not the tile is non-solid to liquids during worldgen. </summary>
 			public static List<int> IgnoresWaterDuringWorldgen = new List<int> { 10, 192, 191, 190 };

@@ -53,7 +53,7 @@ namespace ModLiquidLib.ModLoader
 
 		private delegate void DelegateNPCGravityModifier(NPC npc, int type, ref float grav, ref float gravMax);
 
-		private delegate bool DelegateProjectileLiquidMovement(Projectile proj, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int height, bool fallThrough);
+		private delegate bool DelegateProjectileLiquidMovement(Projectile proj, int type, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int height, bool fallThrough, bool ignoreDoors);
 
 		private delegate bool DelegateAnimateLiquid(int type, GameTime gameTime, ref int frame, ref float frameState);
 
@@ -738,17 +738,17 @@ namespace ModLiquidLib.ModLoader
 			}
 		}
 
-		public static bool ProjectileLiquidMovement(int type, Projectile proj, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough)
+		public static bool ProjectileLiquidMovement(int type, Projectile proj, ref Vector2 wetVelocity, Vector2 collisionPosition, int Width, int Height, bool fallThrough, bool ignoreDoors)
 		{
 			DelegateProjectileLiquidMovement[] hookProjectileLiquidMovement = HookProjectileLiquidMovement;
 			for (int k = 0; k < hookProjectileLiquidMovement.Length; k++)
 			{
-				if (!hookProjectileLiquidMovement[k](proj, type, ref wetVelocity, collisionPosition, Width, Height, fallThrough))
+				if (!hookProjectileLiquidMovement[k](proj, type, ref wetVelocity, collisionPosition, Width, Height, fallThrough, ignoreDoors))
 				{
 					return false;
 				}
 			}
-			return GetLiquid(type)?.ProjectileLiquidMovement(proj, ref wetVelocity, collisionPosition, Width, Height, fallThrough) ?? true;
+			return GetLiquid(type)?.ProjectileLiquidMovement(proj, ref wetVelocity, collisionPosition, Width, Height, fallThrough, ignoreDoors) ?? true;
 		}
 
 		public static bool? ChecksForDrowning(int type)

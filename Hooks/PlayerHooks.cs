@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Xna.Framework;
 using ModLiquidLib.ID;
 using ModLiquidLib.ModLoader;
 using ModLiquidLib.Utils;
@@ -11,8 +12,10 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace ModLiquidLib.Hooks
@@ -165,11 +168,11 @@ namespace ModLiquidLib.Hooks
 		internal static void AddLiquidCraftingConditions(ILContext il)
 		{
 			ILCursor c = new(il);
-			int j_var6 = -1;
-			int k_var7 = -1;
-			int flag_var4 = -1;
 
-			c.GotoNext(MoveType.After, i => i.MatchCall<Player>("get_adjTile"), i => i.MatchLdlen(), i => i.MatchConvI4(), i => i.MatchBlt(out _));
+			int tile_numVar = -1;
+			ILLabel IL_0125 = null;
+
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<Player>(nameof(Player.adjShimmer)), i => i.MatchStfld<Player>(nameof(Player.oldAdjShimmer)));
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
@@ -180,49 +183,91 @@ namespace ModLiquidLib.Hooks
 				}
 			});
 
-			c.GotoNext(i => i.MatchLdsflda<Main>("tile"), i => i.MatchLdloc(out j_var6), i => i.MatchLdloc(out k_var7), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _));
-
-			c.GotoNext(MoveType.Before, i => i.MatchLdloca(out _), i => i.MatchCall<Tile>("get_liquid"));
+			//This would normally come after the next Goto, but its easier to hook after the setting of tile rather than trying to redirect if statement jumps
+			//c.GotoNext(MoveType.Before, i => i.MatchLdloca(out tile_numVar), i => i.MatchCall<Tile>("active"), i => i.MatchStloc(out _), i => i.MatchLdloc(out _), i => i.MatchBrfalse(out IL_0125));
+			c.GotoNext(MoveType.Before, i => i.MatchLdloca(out tile_numVar), i => i.MatchCall<Tile>("active"), i => i.MatchBrfalse(out IL_0125));
 			c.EmitLdarg(0);
-			c.EmitLdloc(j_var6);
-			c.EmitLdloc(k_var7);
-			c.EmitDelegate((Player self, int j, int k) =>
+			c.EmitLdloc(tile_numVar);
+			c.EmitDelegate((Player self, Tile tile) =>
 			{
-				if (Main.tile[j, k].LiquidAmount > 200)
+				if (tile.LiquidAmount > 200)
 				{
-					self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[Main.tile[j, k].LiquidType] = true;
+					self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[tile.LiquidType] = true;
 				}
-				else
-				{
-					for (int i = 0; i < LiquidLoader.LiquidCount; i++)
-					{
-						if (LiquidID_TLmod.Sets.CountsAsLiquidSource[Main.tile[j, k].TileType][i])
-						{
-							self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = true;
-						}
-					}
-				}
-				LiquidLoader.AdjLiquids(self, Main.tile[j, k].LiquidType);
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchRet(), i => i.MatchLdcI4(0), i => i.MatchStloc(out flag_var4));
+			c.GotoNext(MoveType.After, i => i.MatchLdloca(tile_numVar), i => i.MatchCall<Tile>("get_type"), i => i.MatchLdindU2(), i => i.MatchCall<Player>(nameof(Player.SetAdjTile)));
 			c.EmitLdarg(0);
-			c.EmitLdloca(flag_var4);
-			c.EmitDelegate((Player self, ref bool flag) =>
+			c.EmitLdloc(tile_numVar);
+			c.EmitDelegate((Player self, Tile tile) =>
 			{
-				self.adjWaterSource = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[0];
-				self.adjLava = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[1];
-				self.adjHoney = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[2];
-				self.adjShimmer = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[3];
-				for (int l = 0; l < self.GetModPlayer<ModLiquidPlayer>().AdjLiquid.Length; l++)
+				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
 				{
-					if (self.GetModPlayer<ModLiquidPlayer>().OldAdjLiquid[l] != self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[l])
+					if (LiquidID_TLmod.Sets.CountsAsLiquidSource[tile.TileType][i])
 					{
-						flag = true;
-						break;
+						self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = true;
 					}
 				}
 			});
+
+			//int j_var6 = -1;
+			//int k_var7 = -1;
+			//int flag_var4 = -1;
+
+			//c.GotoNext(MoveType.After, i => i.MatchCall<Player>("get_adjTile"), i => i.MatchLdlen(), i => i.MatchConvI4(), i => i.MatchBlt(out _));
+			//c.EmitLdarg(0);
+			//c.EmitDelegate((Player self) =>
+			//{
+			//	for (int i = 0; i < self.GetModPlayer<ModLiquidPlayer>().AdjLiquid.Length; i++)
+			//	{
+			//		self.GetModPlayer<ModLiquidPlayer>().OldAdjLiquid[i] = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i];
+			//		self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = false;
+			//	}
+			//});
+
+			//c.GotoNext(i => i.MatchLdsflda<Main>("tile"), i => i.MatchLdloc(out j_var6), i => i.MatchLdloc(out k_var7), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out _));
+
+			//c.GotoNext(MoveType.Before, i => i.MatchLdloca(out _), i => i.MatchCall<Tile>("get_liquid"));
+			//c.EmitLdarg(0);
+			//c.EmitLdloc(j_var6);
+			//c.EmitLdloc(k_var7);
+			//c.EmitDelegate((Player self, int j, int k) =>
+			//{
+			//	if (Main.tile[j, k].LiquidAmount > 200)
+			//	{
+			//		self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[Main.tile[j, k].LiquidType] = true;
+			//	}
+			//	else
+			//	{
+			//		for (int i = 0; i < LiquidLoader.LiquidCount; i++)
+			//		{
+			//			if (LiquidID_TLmod.Sets.CountsAsLiquidSource[Main.tile[j, k].TileType][i])
+			//			{
+			//				self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[i] = true;
+			//			}
+			//		}
+			//	}
+			//	LiquidLoader.AdjLiquids(self, Main.tile[j, k].LiquidType);
+			//});
+
+			//c.GotoNext(MoveType.After, i => i.MatchRet(), i => i.MatchLdcI4(0), i => i.MatchStloc(out flag_var4));
+			//c.EmitLdarg(0);
+			//c.EmitLdloca(flag_var4);
+			//c.EmitDelegate((Player self, ref bool flag) =>
+			//{
+			//	self.adjWaterSource = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[0];
+			//	self.adjLava = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[1];
+			//	self.adjHoney = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[2];
+			//	self.adjShimmer = self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[3];
+			//	for (int l = 0; l < self.GetModPlayer<ModLiquidPlayer>().AdjLiquid.Length; l++)
+			//	{
+			//		if (self.GetModPlayer<ModLiquidPlayer>().OldAdjLiquid[l] != self.GetModPlayer<ModLiquidPlayer>().AdjLiquid[l])
+			//		{
+			//			flag = true;
+			//			break;
+			//		}
+			//	}
+			//});
 		}
 
 		internal static void PreventLiquidBlockswap(ILContext il)
@@ -343,7 +388,7 @@ namespace ModLiquidLib.Hooks
 			ILLabel IL_03f2 = null;
 			int flag_var0 = -1;
 
-			c.GotoNext(MoveType.After, i => i.MatchStloc(out flag_var0), i => i.MatchLdsfld<Main>("myPlayer"), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("whoAmI"));
+			c.GotoNext(MoveType.After, i => i.MatchStloc(out flag_var0), i => i.MatchLdsfld<Main>(nameof(Main.myPlayer)), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.whoAmI)));
 			c.EmitLdarg(0);
 			c.EmitLdloca(flag_var0);
 			c.EmitDelegate((bool myPlayerCheck, Player self, ref bool flag) =>
@@ -356,7 +401,7 @@ namespace ModLiquidLib.Hooks
 				return myPlayerCheck;
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("lavaWet"));
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.lavaWet)));
 			c.EmitDelegate((bool isLavaWet) =>
 			{
 				if (isLavaWet)
@@ -370,7 +415,7 @@ namespace ModLiquidLib.Hooks
 				return isLavaWet;
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.honeyWet)));
 			c.EmitDelegate((bool isHoneyWet) =>
 			{
 				if (isHoneyWet)
@@ -384,7 +429,7 @@ namespace ModLiquidLib.Hooks
 				return isHoneyWet;
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchBrtrue(out IL_03f2));
+			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_03f2));
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
@@ -501,14 +546,19 @@ namespace ModLiquidLib.Hooks
 			VariableDefinition liquidWetArr_varDef = new(il.Import(typeof(bool[])));
 			il.Body.Variables.Add(liquidWetArr_varDef);
 
-			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_01fa), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>("honeyWet"));
-			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _), 
-				i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"), i => i.MatchBrfalse(out _),
-				i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("shimmering"), i => i.MatchBrfalse(out _),
-				i => i.MatchLdarg(0), i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("gravity"));
+			//c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_01fa), i => i.MatchNop(), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.honeyWet)));
+			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_01fa), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.honeyWet)));
+			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Player>(nameof(Player.shimmering)), i => i.MatchBrtrue(out _),
+				i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.wet)), i => i.MatchBrfalse(out _),
+				i => i.MatchLdarg(0), i => i.MatchLdfld<Player>(nameof(Player.isPerformingJump_DownDash)));
 			c.EmitDelegate((Player self) => 
 			{
-				if (self.shimmerWet || self.shimmering)
+				if (!self.shimmering && self.wet && self.isPerformingJump_DownDash)
+				{
+					self.gravity *= 0.85f;
+					self.maxFallSpeed *= 0.85f;
+				}
+				else if (self.shimmerWet || self.shimmering)
 				{
 					if (self.shimmering)
 					{
@@ -799,8 +849,8 @@ namespace ModLiquidLib.Hooks
 				}
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Player>("trident"), i => i.MatchBrtrue(out IL_82ba), i => i.MatchLdarg(0), i => i.MatchLdloc(out fallThrough_var14), i => i.MatchLdloc(out ignorePlats_var13), i => i.MatchCall<Player>("WatCollision"), i => i.MatchBr(out IL_838e));
-			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>("shimmerWet"), i => i.MatchBrtrue(out _));
+			c.GotoNext(MoveType.After, i => i.MatchBrtrue(out IL_82ba), i => i.MatchLdarg(0), i => i.MatchLdloc(out fallThrough_var14), i => i.MatchLdloc(out ignorePlats_var13), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.lavaWet)), i => i.MatchBrtrue(out _), i => i.MatchLdloc(out _), i => i.MatchBr(out _), i => i.MatchLdloc(out _), i => i.MatchCall<Player>(nameof(Player.WetCollision)), i => i.MatchBr(out IL_838e));
+			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>(nameof(Entity.shimmerWet)), i => i.MatchBrtrue(out _));
 			c.EmitLdloc(ignorePlats_var13);
 			c.EmitLdloc(fallThrough_var14);
 			c.EmitDelegate((Player self, bool ignorePlats, bool fallThrough) =>
@@ -809,38 +859,31 @@ namespace ModLiquidLib.Hooks
 				float num21 = 0.5f;
 				float movementSpeed = 0.25f;
 				float num22 = 0.375f;
-				if (self.shimmering)
+
+				if (LiquidLoader.PlayerLiquidMovement(WetToLiquidID(self), self, fallThrough, ignorePlats))
 				{
-					self.position += self.velocity * num22;
-				}
-				else
-				{
-					if (LiquidLoader.PlayerLiquidMovement(WetToLiquidID(self), self, fallThrough, ignorePlats))
+					if (hasModdedWet(self))
 					{
-						if (hasModdedWet(self))
-						{
-							ModLiquidCollision(self, WetToLiquidID(self), fallThrough, ignorePlats);
-						}
-						else if (self.shimmerWet)
-						{
-							self.WetCollision(fallThrough, ignorePlats, num22);
-						}
-						else if (self.honeyWet && !self.ignoreWater)
-						{
-							self.WetCollision(fallThrough, ignorePlats, movementSpeed);
-						}
-						else if (self.wet && !self.merman && !self.ignoreWater && !self.trident)
-						{
-							self.WetCollision(fallThrough, ignorePlats, self.lavaWet ? num21 : num20);
-						}
-						else
-						{
-							return false;
-						}
+						ModLiquidCollision(self, WetToLiquidID(self), fallThrough, ignorePlats);
 					}
-					return true;
+					else if (self.shimmerWet)
+					{
+						self.WetCollision(fallThrough, ignorePlats, num22);
+					}
+					else if (self.honeyWet && !self.ignoreWater)
+					{
+						self.WetCollision(fallThrough, ignorePlats, movementSpeed);
+					}
+					else if (self.wet && !self.merman && !self.ignoreWater && !self.trident)
+					{
+						self.WetCollision(fallThrough, ignorePlats, self.lavaWet ? num21 : num20);
+					}
+					else
+					{
+						return false;
+					}
 				}
-				return false;
+				return true;
 			});
 			c.EmitBrtrue(IL_838e);
 			c.EmitBr(IL_82ba);
