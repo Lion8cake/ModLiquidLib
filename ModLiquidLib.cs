@@ -27,7 +27,6 @@ namespace ModLiquidLib
 		public override void Load()
 		{
 			TModLoaderUtils.Load();
-			//56/67 fixed (also contains commented out methods) (83.58%)
 			On_ModContent.ResizeArrays += ModContentHooks.ResizeArraysLiquid;
 			On_WaterfallStylesLoader.ResizeArrays += LiquidFallLoader.ResizeMoreFallArrays;
 			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray; //stuff to be done BEFORE resizing arrays
@@ -38,8 +37,8 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath += PlayerFileDataHooks.AddLiquidMapFile;
 			IL_WorldMap.Load += WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapHelperHooks.SaveTLMap;
-			//IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering; //Broken
-			//IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering; //Broken
+			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering; //Broken
+			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering; //Broken
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
@@ -137,8 +136,8 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath -= PlayerFileDataHooks.AddLiquidMapFile;
 			IL_WorldMap.Load -= WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap -= MapHelperHooks.SaveTLMap;
-			//IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering; //Broken
-			//IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering; //Broken
+			IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering; //Broken
+			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering; //Broken
 			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_LiquidRenderer.InternalPrepareDraw -= LiquidRendererHooks.SpawnDustBubbles;
 			IL_WaterfallManager.FindWaterfalls -= WaterfallManagerHooks.EditWaterfallStyle;

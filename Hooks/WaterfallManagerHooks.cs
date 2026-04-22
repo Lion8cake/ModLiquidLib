@@ -117,6 +117,11 @@ namespace ModLiquidLib.Hooks
 			c.GotoNext(i => i.MatchLdfld<WaterfallManager.WaterfallData>("y"), i => i.MatchStloc(out y_numVar));
 			c.Index = 0;
 
+
+			// ALERT FUTURE LION!!!!!!!!!
+			// If this next set of GOTOs fail, this means you are on a self compiled version of 1.4.5
+			// PLEASE SWITCH TO RELEASE OR TO THE STEAM 1.4.5 BETA
+
 			c.GotoNext( //Gets the IL_149d instruction lable
 				MoveType.After,
 				//i => i.MatchLdloc(out waterfallType_numVar),    //if (Main.drewLava || waterfalls[i].stopAtStep == 0)
@@ -133,7 +138,7 @@ namespace ModLiquidLib.Hooks
 				i => i.MatchLdloc(out waterfallType_numVar),//if (Main.drewLava || waterfalls[i].stopAtStep == 0)
 				i => i.MatchLdcI4(25),                      //{
 				i => i.MatchBneUn(out _),                   //	   continue;
-				i => i.MatchLdsfld<Main>("drewLava"),       //}
+				i => i.MatchLdsfld<Main>(nameof(Main.drewLava)),       //}
 				i => i.MatchBrtrue(out IL_149d)); //used to get the ILLable from the continue
 			c.GotoPrev( //Goes to after the intialisation of variables 3 through to 15. This is just before the drawing of lava, honey and shimmer waterfalls
 				MoveType.Before,

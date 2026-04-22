@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
@@ -37,8 +38,8 @@ namespace ModLiquidLib.Hooks
 			int position_varNum = -1;//17
 			int liquidAlpha_varNum = -1; //18
 			int colors_varNum = -1;//20
-			c.GotoNext(i => i.MatchAdd(), i => i.MatchLdarg(7), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile_varNum));
-			c.GotoNext(i => i.MatchSub(), i => i.MatchLdarg(7), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile2_varNum));
+			c.GotoNext(i => i.MatchAdd(), i => i.MatchLdarg(6), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile_varNum));
+			c.GotoNext(i => i.MatchSub(), i => i.MatchLdarg(6), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile2_varNum));
 			c.GotoNext(i => i.MatchSub(), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile3_varNum));
 			c.GotoNext(i => i.MatchAdd(), i => i.MatchCall<Tilemap>("get_Item"), i => i.MatchStloc(out tile4_varNum));
 			c.GotoNext(i => i.MatchRet(), i => i.MatchLdcI4(0), i => i.MatchStloc(out num_varNum),
@@ -50,23 +51,23 @@ namespace ModLiquidLib.Hooks
 										  i => i.MatchLdcI4(0), i => i.MatchStloc(out num2_varNum));
 			c.GotoNext(i => i.MatchLdloca(out vertecies_varNum), i => i.MatchLdcR4(1), i => i.MatchCall<Lighting>("GetCornerColors"));
 			c.GotoNext(i => i.MatchLdloca(out liquidSize_varNum), i => i.MatchLdcI4(0), i => i.MatchLdcI4(4), i => i.MatchLdcI4(16), i => i.MatchLdcI4(16), i => i.MatchCall<Rectangle>(".ctor"));
-			c.GotoNext(i => i.MatchLdloc(out _), i => i.MatchLdarg(4), i => i.MatchCall<Vector2>("op_Subtraction"), i => i.MatchLdarg(5), i => i.MatchCall<Vector2>("op_Addition"), i => i.MatchStloc(out position_varNum));
+			c.GotoNext(i => i.MatchLdloc(out _), i => i.MatchLdarg(3), i => i.MatchCall<Vector2>("op_Subtraction"), i => i.MatchLdarg(4), i => i.MatchCall<Vector2>("op_Addition"), i => i.MatchStloc(out position_varNum));
 			c.GotoNext(i => i.MatchLdloc(vertecies_varNum), i => i.MatchStloc(out colors_varNum));
 			c.Index = 0;
 
 			c.GotoNext(MoveType.After, i => i.MatchLdcI4(0), i => i.MatchStloc(num_varNum));
 			c.EmitLdcI4(0);
 			c.Emit(OpCodes.Stloc, liquidType_varDef); //create a local var
-			c.GotoNext(MoveType.After, i => i.MatchLdarga(8), i => i.MatchCall<Tile>("get_liquid"), i => i.MatchLdindU1(), i => i.MatchStloc(num_varNum));
+			c.GotoNext(MoveType.After, i => i.MatchLdarga(7), i => i.MatchCall<Tile>("get_liquid"), i => i.MatchLdindU1(), i => i.MatchStloc(num_varNum));
 			c.Emit(OpCodes.Ldloca, liquidType_varDef);
-			c.EmitLdarg(8);
+			c.EmitLdarg(7);
 			c.EmitDelegate((ref int i, Tile tileCache) =>
 			{
 				i = tileCache.LiquidType; //set the local var to liquid type at switch points chosing a liquid to render
 			});
 			c.GotoNext(MoveType.After, i => i.MatchLdcI4(1), i => i.MatchStloc(flag5_varNum));
 			c.Emit(OpCodes.Ldloca, liquidType_varDef);
-			c.EmitLdarg(8);
+			c.EmitLdarg(7);
 			c.EmitDelegate((ref int i, Tile tileCache) =>
 			{
 				i = tileCache.LiquidType;
@@ -99,7 +100,7 @@ namespace ModLiquidLib.Hooks
 			{
 				i = tile4.LiquidType;
 			});
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(5), i => i.MatchCall<Vector2>("op_Addition"), i => i.MatchStloc(position_varNum));
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(4), i => i.MatchCall<Vector2>("op_Addition"), i => i.MatchStloc(position_varNum));
 			c.EmitLdloca(num_varNum);
 			c.Emit(OpCodes.Ldloc, liquidType_varDef);
 			c.EmitDelegate((ref int num, int i) =>
@@ -121,20 +122,20 @@ namespace ModLiquidLib.Hooks
 			//    <- Inject right here
 			//if ((double)tileY <= Main.worldSurface || num7 > 1f)
 			c.GotoNext(MoveType.After, i => i.MatchLdloc(out liquidAlpha_varNum), i => i.MatchLdcR4(1.7f), i => i.MatchMul(), i => i.MatchLdcR4(1), i => i.MatchCall("System.Math", "Max"), 
-				i => i.MatchStloc(liquidAlpha_varNum), i => i.MatchLdarg(7));
+				i => i.MatchStloc(liquidAlpha_varNum), i => i.MatchLdloc(out _));
 			c.EmitLdloca(liquidAlpha_varNum);
 			c.Emit(OpCodes.Ldloc, liquidType_varDef);
-			c.EmitDelegate((int tileY, ref float num7, int i) =>
+			c.EmitDelegate((int locVar10, ref float num7, int i) =>
 			{
 				LiquidLoader.LiquidSlopeOpacity(i, ref num7);
+				return locVar10;
 			});
-			c.EmitLdarg(7);
 
 			//Ok, back to slope rendering stuff
 			c.GotoNext(MoveType.After, i => i.MatchLdloca(vertecies_varNum), i => i.MatchCall<TileDrawing>("DrawPartialLiquid"));
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
-			c.EmitLdarg(8);
+			c.EmitLdarg(7);
 			c.EmitLdloca(position_varNum);
 			c.EmitLdloca(liquidSize_varNum);
 			c.Emit(OpCodes.Ldloc, liquidType_varDef);
@@ -147,7 +148,7 @@ namespace ModLiquidLib.Hooks
 			c.GotoNext(MoveType.After, i => i.MatchLdloca(20), i => i.MatchCall<TileDrawing>("DrawPartialLiquid"));
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
-			c.EmitLdarg(8);
+			c.EmitLdarg(7);
 			c.EmitLdloca(position_varNum);
 			c.EmitLdloca(liquidSize_varNum);
 			c.EmitLdloc(num2_varNum);
