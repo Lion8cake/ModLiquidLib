@@ -95,7 +95,7 @@ namespace ModLiquidLib.Hooks
 						}
 					}
 				}
-				if (!validTypes.Contains(sItem.type) || self.noBuilding || !(self.position.X / 16f - (float)Player.tileRangeX - (float)sItem.tileBoost <= (float)Player.tileTargetX) || !((self.position.X + (float)self.width) / 16f + (float)Player.tileRangeX + (float)sItem.tileBoost - 1f >= (float)Player.tileTargetX) || !(self.position.Y / 16f - (float)Player.tileRangeY - (float)sItem.tileBoost <= (float)Player.tileTargetY) || !((self.position.Y + (float)self.height) / 16f + (float)Player.tileRangeY + (float)sItem.tileBoost - 2f >= (float)Player.tileTargetY))
+				if (!validTypes.Contains(sItem.type) || self.noBuilding || !self.IsInTileInteractionRange(Player.tileTargetX, Player.tileTargetY, TileReachCheckSettings.Simple, sItem.tileBoost))
 				{
 					return true;
 				}
