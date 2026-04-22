@@ -37,8 +37,8 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath += PlayerFileDataHooks.AddLiquidMapFile;
 			IL_WorldMap.Load += WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap += MapHelperHooks.SaveTLMap;
-			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering; //Broken
-			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering; //Broken
+			IL_Main.oldDrawWater += MainHooks.EditOldLiquidRendering;
+			IL_TileDrawing.DrawTile_LiquidBehindTile += TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid += TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_WaterfallManager.FindWaterfalls += WaterfallManagerHooks.EditWaterfallStyle;
 			IL_WaterfallManager.DrawWaterfall_int_float += WaterfallManagerHooks.PreDrawWaterfallModifier;
@@ -68,7 +68,7 @@ namespace ModLiquidLib
 			On_TileLightScanner.GetTileMask += TileLightScannerHooks.EditLiquidMaskdMode;
 			On_Projectile.FishingCheck_RollEnemySpawns += ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop += ProjectileHooks.ShimmerFishingItemFix;
-			//IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport; //Broken
+			IL_Player.ItemCheck_UseBuckets += PlayerHooks.BucketSupport;
 			IL_WaterShaderData.DrawWaves += WaterShaderDataHooks.EditWaveSize;
 			IL_LightMap.BlurLine += LightMapHooks.ModifyLiquidMaskMode;
 			On_Main.DrawTileInWater += MainHooks.RenderWaterTiles;
@@ -136,8 +136,8 @@ namespace ModLiquidLib
 			IL_PlayerFileData.MapBelongsToPath -= PlayerFileDataHooks.AddLiquidMapFile;
 			IL_WorldMap.Load -= WorldMapHooks.InitaliseTLMap;
 			IL_MapHelper.InternalSaveMap -= MapHelperHooks.SaveTLMap;
-			IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering; //Broken
-			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering; //Broken
+			IL_Main.oldDrawWater -= MainHooks.EditOldLiquidRendering;
+			IL_TileDrawing.DrawTile_LiquidBehindTile -= TileDrawingHooks.EditSlopeLiquidRendering;
 			On_TileDrawing.DrawPartialLiquid -= TileDrawingHooks.BlockOldParticalLiquidRendering;
 			IL_LiquidRenderer.InternalPrepareDraw -= LiquidRendererHooks.SpawnDustBubbles;
 			IL_WaterfallManager.FindWaterfalls -= WaterfallManagerHooks.EditWaterfallStyle;
@@ -168,7 +168,7 @@ namespace ModLiquidLib
 			On_TileLightScanner.GetTileMask -= TileLightScannerHooks.EditLiquidMaskdMode;
 			On_Projectile.FishingCheck_RollEnemySpawns -= ProjectileHooks.ShimmerFishingFix;
 			On_Projectile.FishingCheck_RollItemDrop -= ProjectileHooks.ShimmerFishingItemFix;
-			//IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport; //Broken
+			IL_Player.ItemCheck_UseBuckets -= PlayerHooks.BucketSupport;
 			IL_WaterShaderData.DrawWaves -= WaterShaderDataHooks.EditWaveSize;
 			IL_LightMap.BlurLine -= LightMapHooks.ModifyLiquidMaskMode;
 			On_Main.DrawTileInWater -= MainHooks.RenderWaterTiles;

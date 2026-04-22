@@ -63,7 +63,7 @@ namespace ModLiquidLib.Hooks
 		internal static void BucketSupport(ILContext il)
 		{
 			ILCursor c = new(il);
-			ILLabel IL_015d = null;
+			ILLabel IL_00b5 = null;
 			ILLabel IL_0709 = null;
 			ILLabel IL_027d = null;
 			ILLabel IL_0361 = null;
@@ -71,7 +71,7 @@ namespace ModLiquidLib.Hooks
 			ILLabel IL_03be = c.DefineLabel();
 			int num2_varNum = -1;
 
-			c.GotoNext(i => i.MatchBge(out IL_015d), i => i.MatchRet(), i => i.MatchCall<Main>("get_GamepadDisableCursorItemIcon"));
+			c.GotoNext(i => i.MatchBrtrue(out IL_00b5), i => i.MatchRet(), i => i.MatchCall<Main>("get_GamepadDisableCursorItemIcon"));
 			c.GotoNext(i => i.MatchBrfalse(out IL_027d), i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(3032));
 			c.GotoNext(i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(5304), i => i.MatchBneUn(out IL_0709));
 			c.GotoNext(MoveType.After, i => i.MatchStloc(out _), i => i.MatchLdarg(1), i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(3032), i => i.MatchBeq(out IL_04a4),
@@ -101,7 +101,7 @@ namespace ModLiquidLib.Hooks
 				}
 				return false;
 			});
-			c.EmitBrfalse(IL_015d);
+			c.EmitBrfalse(IL_00b5);
 			c.EmitRet();
 
 			c.GotoNext(MoveType.Before, i => i.MatchLdfld<Item>("type"), i => i.MatchLdcI4(205), i => i.MatchBneUn(out _));
