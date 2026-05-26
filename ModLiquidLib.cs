@@ -27,6 +27,7 @@ namespace ModLiquidLib
 		public override void Load()
 		{
 			TModLoaderUtils.Load();
+
 			On_ModContent.ResizeArrays += ModContentHooks.ResizeArraysLiquid;
 			On_WaterfallStylesLoader.ResizeArrays += LiquidFallLoader.ResizeMoreFallArrays;
 			On_SceneMetrics.Reset += SceneMetricsHooks.ResizeLiquidArray; //stuff to be done BEFORE resizing arrays

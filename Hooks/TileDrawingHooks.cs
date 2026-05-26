@@ -9,7 +9,6 @@ using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace ModLiquidLib.Hooks
 {
@@ -145,7 +144,7 @@ namespace ModLiquidLib.Hooks
 			{
 				DrawPartialLiquid(self, !solidLayer, tileCache, ref position, ref liquidSize, i, num, ref vertices);
 			});
-			c.GotoNext(MoveType.After, i => i.MatchLdloca(20), i => i.MatchCall<TileDrawing>("DrawPartialLiquid"));
+			c.GotoNext(MoveType.After, i => i.MatchLdloca(colors_varNum), i => i.MatchCall<TileDrawing>("DrawPartialLiquid"));
 			c.EmitLdarg(0);
 			c.EmitLdarg(1);
 			c.EmitLdarg(7);

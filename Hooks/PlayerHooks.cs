@@ -850,7 +850,7 @@ namespace ModLiquidLib.Hooks
 			});
 
 			c.GotoNext(MoveType.After, i => i.MatchBrtrue(out IL_82ba), i => i.MatchLdarg(0), i => i.MatchLdloc(out fallThrough_var14), i => i.MatchLdloc(out ignorePlats_var13), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.lavaWet)), i => i.MatchBrtrue(out _), i => i.MatchLdloc(out _), i => i.MatchBr(out _), i => i.MatchLdloc(out _), i => i.MatchCall<Player>(nameof(Player.WetCollision)), i => i.MatchBr(out IL_838e));
-			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>(nameof(Entity.shimmerWet)), i => i.MatchBrtrue(out _));
+			c.GotoPrev(MoveType.Before, i => i.MatchLdfld<Entity>(nameof(Entity.shimmerWet)), i => i.MatchBrfalse(out _));
 			c.EmitLdloc(ignorePlats_var13);
 			c.EmitLdloc(fallThrough_var14);
 			c.EmitDelegate((Player self, bool ignorePlats, bool fallThrough) =>

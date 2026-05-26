@@ -26,14 +26,12 @@ namespace ModLiquidLib.Hooks
 		internal static void LiquidMapEntries(MonoMod.Cil.ILContext il)
 		{
 			ILCursor c = new(il);
-			int mapTile_varNum = -1;
 			int mapIndex_varNum = -1;
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(5), i => i.MatchLdsfld("Terraria.Map.MapHelper", "liquidPosition"), i => i.MatchLdloc(out mapIndex_varNum), i => i.MatchAdd(), i => i.MatchStindI4(), i => i.MatchRet());
-			c.EmitLdarga(5);
+			c.GotoNext(MoveType.After, i => i.MatchLdsfld("Terraria.Map.MapHelper", "liquidPosition"), i => i.MatchLdloc(out mapIndex_varNum), i => i.MatchAdd());
 			c.EmitLdloc(mapIndex_varNum);
-			c.EmitDelegate((ref int baseType, int num) =>
+			c.EmitDelegate((int baseType, int num) =>
 			{
-				baseType = MapLiquidLoader.liquidLookup[num];
+				return MapLiquidLoader.liquidLookup[num];
 			});
 		}
 
