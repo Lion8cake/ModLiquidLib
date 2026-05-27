@@ -385,7 +385,7 @@ namespace ModLiquidLib.Hooks
 		internal static void CanPlayerEmitDrowningBubbles(ILContext il)
 		{
 			ILCursor c = new(il);
-			ILLabel IL_03f2 = null;
+			ILLabel IL_02eb = null;
 			int flag_var0 = -1;
 
 			c.GotoNext(MoveType.After, i => i.MatchStloc(out flag_var0), i => i.MatchLdsfld<Main>(nameof(Main.myPlayer)), i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.whoAmI)));
@@ -401,35 +401,8 @@ namespace ModLiquidLib.Hooks
 				return myPlayerCheck;
 			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.lavaWet)));
-			c.EmitDelegate((bool isLavaWet) =>
-			{
-				if (isLavaWet)
-				{
-					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Lava);
-					if (flag != null)
-					{
-						return !(bool)flag;
-					}
-				}
-				return isLavaWet;
-			});
 
-			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.honeyWet)));
-			c.EmitDelegate((bool isHoneyWet) =>
-			{
-				if (isHoneyWet)
-				{
-					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Honey);
-					if (flag != null)
-					{
-						return !(bool)flag;
-					}
-				}
-				return isHoneyWet;
-			});
-
-			c.GotoNext(MoveType.After, i => i.MatchBrfalse(out IL_03f2));
+			c.GotoNext(MoveType.After, i => i.MatchLdfld<Entity>(nameof(Entity.lavaWet)), i => i.MatchBrtrue(out IL_02eb));
 			c.EmitLdarg(0);
 			c.EmitDelegate((Player self) =>
 			{
@@ -485,7 +458,36 @@ namespace ModLiquidLib.Hooks
 				}
 				return false;
 			});
-			c.EmitBrtrue(IL_03f2);
+			c.EmitBrtrue(IL_02eb);
+
+			c.Index = 0;
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.lavaWet)));
+			c.EmitDelegate((bool isLavaWet) =>
+			{
+				if (isLavaWet)
+				{
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Lava);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
+				}
+				return isLavaWet;
+			});
+
+			c.GotoNext(MoveType.After, i => i.MatchLdarg(0), i => i.MatchLdfld<Entity>(nameof(Entity.honeyWet)));
+			c.EmitDelegate((bool isHoneyWet) =>
+			{
+				if (isHoneyWet)
+				{
+					bool? flag = LiquidLoader.PlayersEmitBreathBubbles(LiquidID.Honey);
+					if (flag != null)
+					{
+						return !(bool)flag;
+					}
+				}
+				return isHoneyWet;
+			});
 		}
 
 		private static int? LiquidIDofLiquidWet(Player self)
