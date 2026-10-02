@@ -277,19 +277,19 @@ namespace ModLiquidLib.Utils
 
 		public static int GetWFallFrame(this WaterfallManager self, int type)
 		{
-			if (type >= ID.WaterfallID.Count)
+			if (type >= WaterfallID.LavaRainSecondDrawLayer + 1)
 			{
 				return MainHooks.wFallFrame[type];
 			}
-			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			else if (type == WaterfallID.Lava || type == WaterfallID.Honey || type == WaterfallID.Shimmer)
 			{
 				return self.slowFrame;
 			}
-			else if (type == ID.WaterfallID.Rain)
+			else if (type == WaterfallID.Rain)
 			{
 				return self.rainFrameForeground;
 			}
-			else if (type == ID.WaterfallID.Snow)
+			else if (type == WaterfallID.SnowRain)
 			{
 				return self.snowFrameForeground;
 			}
@@ -301,11 +301,11 @@ namespace ModLiquidLib.Utils
 
 		public static int GetWFallFrameBack(this WaterfallManager self, int type)
 		{
-			if (type >= ID.WaterfallID.Count)
+			if (type >= WaterfallID.LavaRainSecondDrawLayer + 1)
 			{
 				return MainHooks.wFallFrameBack[type];
 			}
-			else if (type == ID.WaterfallID.Rain)
+			else if (type == WaterfallID.Rain)
 			{
 				return self.rainFrameBackground;
 			}
@@ -318,19 +318,19 @@ namespace ModLiquidLib.Utils
 
 		public static int GetWFallFrameCounter(this WaterfallManager self, int type)
 		{
-			if (type >= ID.WaterfallID.Count)
+			if (type >= WaterfallID.LavaRainSecondDrawLayer + 1)
 			{
 				return MainHooks.wFallFrameCounter[type];
 			}
-			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			else if (type == WaterfallID.Lava || type == WaterfallID.Honey || type == WaterfallID.Shimmer)
 			{
 				return self.wFallFrCounter2;
 			}
-			else if (type == ID.WaterfallID.Rain)
+			else if (type == WaterfallID.Rain)
 			{
 				return self.rainFrameCounter;
 			}
-			else if (type == ID.WaterfallID.Snow)
+			else if (type == WaterfallID.SnowRain)
 			{
 				return self.snowFrameCounter;
 			}
@@ -342,19 +342,19 @@ namespace ModLiquidLib.Utils
 
 		public static void SetWFallFrame(this WaterfallManager self, int type, int frame)
 		{
-			if (type >= ID.WaterfallID.Count)
+			if (type >= WaterfallID.LavaRainSecondDrawLayer + 1)
 			{
 				MainHooks.wFallFrame[type] = frame;
 			}
-			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			else if (type == WaterfallID.Lava || type == WaterfallID.Honey || type == WaterfallID.Shimmer)
 			{
 				self.slowFrame = frame;
 			}
-			else if (type == ID.WaterfallID.Rain)
+			else if (type == WaterfallID.Rain)
 			{
 				self.rainFrameForeground = frame;
 			}
-			else if (type == ID.WaterfallID.Snow)
+			else if (type == WaterfallID.SnowRain)
 			{
 				self.snowFrameForeground = frame;
 			}
@@ -366,11 +366,11 @@ namespace ModLiquidLib.Utils
 
 		public static void SetWFallFrameBack(this WaterfallManager self, int type, int frame)
 		{
-			if (type >= ID.WaterfallID.Count)
+			if (type >= WaterfallID.LavaRainSecondDrawLayer + 1)
 			{
 				MainHooks.wFallFrameBack[type] = frame;
 			}
-			else if (type == ID.WaterfallID.Rain)
+			else if (type == WaterfallID.Rain)
 			{
 				self.rainFrameBackground = frame;
 			}
@@ -382,19 +382,19 @@ namespace ModLiquidLib.Utils
 
 		public static void SetWFallFrameCounter(this WaterfallManager self, int type, int frame)
 		{
-			if (type >= ID.WaterfallID.Count)
+			if (type >= WaterfallID.LavaRainSecondDrawLayer + 1)
 			{
 				MainHooks.wFallFrameCounter[type] = frame;
 			}
-			else if (type == ID.WaterfallID.Lava || type == ID.WaterfallID.Honey || type == ID.WaterfallID.Shimmer)
+			else if (type == WaterfallID.Lava || type == WaterfallID.Honey || type == WaterfallID.Shimmer)
 			{
 				self.wFallFrCounter2 = frame;
 			}
-			else if (type == ID.WaterfallID.Rain)
+			else if (type == WaterfallID.Rain)
 			{
 				self.rainFrameCounter = frame;
 			}
-			else if (type == ID.WaterfallID.Snow)
+			else if (type == WaterfallID.SnowRain)
 			{
 				self.snowFrameCounter = frame;
 			}

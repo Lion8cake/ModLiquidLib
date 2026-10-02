@@ -16,7 +16,7 @@
         <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CreateLiquidBucketItem">
             <summary> The Item created when a bucket is used on a liquid selected </summary>
         </member>
-        <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CanBeAbsorbedBy">
+        <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.LiquidSponges">
             <summary> Whats Items a liquid can be absorbed by. Used for defining sponges. </summary>
         </member>
         <member name="F:ModLiquidLib.ID.LiquidID_TLmod.Sets.CanModdedNPCSpawnInModdedLiquid">

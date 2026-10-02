@@ -12,11 +12,11 @@ namespace ModLiquidLib.Hooks
 {
 	internal class MainHooks
 	{
-		internal static int[] wFallFrame = new int[ID.WaterfallID.Count];
+		internal static int[] wFallFrame = new int[WaterfallID.LavaRainSecondDrawLayer + 1];
 
-		internal static int[] wFallFrameBack = new int[ID.WaterfallID.Count];
+		internal static int[] wFallFrameBack = new int[WaterfallID.LavaRainSecondDrawLayer + 1];
 
-		internal static int[] wFallFrameCounter = new int[ID.WaterfallID.Count];
+		internal static int[] wFallFrameCounter = new int[WaterfallID.LavaRainSecondDrawLayer + 1];
 
 		internal static void ModifyStopWatchLiquidMultipliers(ILContext il)
 		{

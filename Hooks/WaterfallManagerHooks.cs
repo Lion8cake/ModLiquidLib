@@ -18,7 +18,7 @@ namespace ModLiquidLib.Hooks
 			{
 				return;
 			}
-			if (waterfallType >= 26)
+			if (waterfallType >= 28)
 			{
 				LoaderManager.Get<WaterFallStylesLoader>().Get(waterfallType).AddLight(x, y);
 			}
@@ -34,7 +34,7 @@ namespace ModLiquidLib.Hooks
 				Array.Resize(ref MainHooks.wFallFrameBack, totalCount);
 				Array.Resize(ref MainHooks.wFallFrameCounter, totalCount);
 			}
-			for (int i = ID.WaterfallID.Count; i < MainHooks.wFallFrame.Length; i++)
+			for (int i = WaterfallID.LavaRainSecondDrawLayer + 1; i < MainHooks.wFallFrame.Length; i++)
 			{
 				if (LoaderManager.Get<WaterFallStylesLoader>().Get(i) is ModLiquidFall)
 				{
@@ -164,7 +164,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitLdloc(waterfallType_numVar);
 			c.EmitDelegate((int regularFrame, int num4) =>
 			{
-				if (num4 >= ID.WaterfallID.Count && num4 < MainHooks.wFallFrame.Length)
+				if (num4 >= (WaterfallID.LavaRainSecondDrawLayer + 1) && num4 < MainHooks.wFallFrame.Length)
 				{
 					return MainHooks.wFallFrame[num4];
 				}

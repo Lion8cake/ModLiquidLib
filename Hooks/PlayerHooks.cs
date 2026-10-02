@@ -87,7 +87,7 @@ namespace ModLiquidLib.Hooks
 				List<int> validTypes = new List<int> { ItemID.EmptyBucket, ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket, ItemID.BottomlessLavaBucket, ItemID.BottomlessHoneyBucket, ItemID.BottomlessShimmerBucket };
 				for (int i = 0; i < LiquidLoader.LiquidCount; i++)
 				{
-					foreach (int iD in LiquidID_TLmod.Sets.CanBeAbsorbedBy[i])
+					foreach (int iD in LiquidID_TLmod.Sets.LiquidSponges[i])
 					{
 						if (!validTypes.Contains(iD))
 						{
@@ -117,7 +117,7 @@ namespace ModLiquidLib.Hooks
 					}
 				}
 				tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-				if (LiquidID_TLmod.Sets.CanBeAbsorbedBy[tile.LiquidType].Contains(sItem.type))
+				if (LiquidID_TLmod.Sets.LiquidSponges[tile.LiquidType].Contains(sItem.type))
 				{
 					return false;
 				}
@@ -134,7 +134,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitDelegate((int num2, Item sItem) =>
 			{
 				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-				return (tile.liquid <= 0 || (num2 <= 100 && !LiquidID_TLmod.Sets.CanBeAbsorbedBy[tile.LiquidType].Contains(sItem.type)));
+				return (tile.liquid <= 0 || (num2 <= 100 && !LiquidID_TLmod.Sets.LiquidSponges[tile.LiquidType].Contains(sItem.type)));
 			});
 			c.EmitBrfalse(IL_0361);
 			c.EmitRet();
@@ -144,7 +144,7 @@ namespace ModLiquidLib.Hooks
 			c.EmitDelegate((Item sItem) =>
 			{
 				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-				return !LiquidID_TLmod.Sets.CanBeAbsorbedBy[tile.LiquidType].Contains(sItem.type);
+				return !LiquidID_TLmod.Sets.LiquidSponges[tile.LiquidType].Contains(sItem.type);
 			});
 			c.EmitBrfalse(IL_04a4);
 			c.EmitLdarg(0);

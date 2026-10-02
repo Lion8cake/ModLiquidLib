@@ -31,7 +31,7 @@ namespace ModLiquidLib.ID
 			.RegisterIntSet(-1, Water, ItemID.WaterBucket, Lava, ItemID.LavaBucket, Honey, ItemID.HoneyBucket);
 
 			/// <summary> Whats Items a liquid can be absorbed by. Used for defining sponges. </summary>
-			public static List<int>[] CanBeAbsorbedBy = Factory.CreateNamedSet("CanBeAbsorbedBy")
+			public static List<int>[] LiquidSponges = Factory.CreateNamedSet("CanBeAbsorbedBy")
 			.Description("Whats Items a liquid can be absorbed by. Used for defining sponges.")
 			.RegisterCustomSet<List<int>>(null,
 				LiquidID.Water, new List<int>() { ItemID.SuperAbsorbantSponge, ItemID.UltraAbsorbantSponge },
@@ -52,11 +52,11 @@ namespace ModLiquidLib.ID
 
 			static Sets()
 			{
-				for (int i = 0; i < CanBeAbsorbedBy.Length; i++)
+				for (int i = 0; i < LiquidSponges.Length; i++)
 				{
-					if (CanBeAbsorbedBy[i] == null)
+					if (LiquidSponges[i] == null)
 					{
-						CanBeAbsorbedBy[i] = new List<int>() { ItemID.UltraAbsorbantSponge };
+						LiquidSponges[i] = new List<int>() { ItemID.UltraAbsorbantSponge };
 					}
 				}
 			}
