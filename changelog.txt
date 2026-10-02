@@ -1,4 +1,5 @@
-v2026.01 (Beta)
+v2026.10.0.0
 
-Added the ability to give a liquid a recipe crafting name without needing to register a map entry with a name text
-Prevented ModLiquid Library from displaying "1 Liquid" on the mod enabled page. The liquid added is the unloaded liquid and is not intented to be used in normal gameplay
+Fixed the version number indicating that the mod is an unsafe experimental version (it is not)
+Properly prevented ModLiquid Library from displaying "1 Liquid" on the mod enabled page. The liquid added is the unloaded liquid and is not intented to be used in normal gameplay
+Marked the mod officially as a Library Mod in source. This currently will do nothing until the 1st of November
