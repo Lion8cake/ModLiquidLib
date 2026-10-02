@@ -1,3 +1,5 @@
-v2025.12.0
+v2026.10.0.0
 
-Changes to liquids ignoring tiles both in worldgen and ingame library code (Developers please see ExampleMod (ModLiquid)'s Example Grate to update your mods if they have broken)
+Fixed the version number indicating that the mod is an unsafe experimental version (it is not)
+Properly prevented ModLiquid Library from displaying "1 Liquid" on the mod enabled page. The liquid added is the unloaded liquid and is not intented to be used in normal gameplay
+Marked the mod officially as a Library Mod in source. This currently will do nothing until the 1st of November
